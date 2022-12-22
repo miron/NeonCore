@@ -19,14 +19,14 @@ with open('RTG-CPR-EasyModev1.1.pdf', 'rb') as file:
         text = text.strip() 
         # Replace newline characters with a single space
         text = text.replace('\n', ' ')
-        # Join the word parts that are separated by a hyphen and a newline character
-        text = re.sub(r'- ', '', text)
+        # Replace hyphens and spaces following them with an empty string
+        text = re.sub(r'(\s+-\s+)|(-\s+)|(\s+-)', '', text) 
         # Tokenize the text into sentences
         page_sentences = nltk.sent_tokenize(text)
          # Split the sentences into a list of words
         page_sentences = [sentence.split() for sentence in page_sentences]
         # Remove punctuation using regular expressions
-        page_sentences = [[re.sub(r'[^\w\s\’]', '', word) for word in sentence] for sentence in page_sentences]
+        page_sentences = [[re.sub(r'[^\w\s\’\']', '', word) for word in sentence] for sentence in page_sentences]
         # Join the words into sentences while inserting a single space character between each word
         page_sentences = [' '.join(sentence) for sentence in page_sentences]
         sentences.extend(page_sentences)
