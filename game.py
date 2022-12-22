@@ -1,17 +1,18 @@
+"""A Role Playing Game in the Cyberpunk RED Universe"""
 import random
 
 # Character stats
 stats = {
-    "INT": 0,  #intelligence
-    "REF": 0,  #reflexes
-    "DEX": 0,  #dexterity
+    "INT":  0, #intelligence
+    "REF":  0, #reflexes
+    "DEX":  0, #dexterity
     "TECH": 0, #technique
     "COOL": 0, #cool
     "WILL": 0, #will
     "LUCK": 0, #luck
     "MOVE": 0, #movement
     "BODY": 0, #body
-    "EMP": 0   #empathy
+    "EMP":  0  #empathy
 }
 
 # Character skills
@@ -56,13 +57,35 @@ skills = {
     "Tactics":                  [0, stats["INT"]],
     "Tracking":                 [0, stats["INT"]],
     "Trading":                  [0, stats["COOL"]],
-    "Wardrobe & Style":           [0, stats["COOL"]]
+    "Wardrobe & Style":         [0, stats["COOL"]]
 }
 
-for skill, skill_info in skills.items():
-    skill_level, stat_value = skill_info
+DIFFICULTY_VALUE = {
+    "Everyday": 13,
+    "Difficult": 15,
+    "Professional": 17,
+    "Heroic": 21,
+    "Incredible": 24
+}
+
+def skill_check(skill_name, difficulty_value):
+    """Attacker versus Defender"""
+    # Get the skill level and stat value for the specified skill
+    skill_level, stat_value = skills[skill_name]
     # Generate a random number from 1 to 10
     d10_roll = random.randint(1, 10)
     # Add d10 roll to total skill level
-    # in case of a tie, the Defender always wins
-    print(f"{skill:<25} {skill_level+stat_value+d10_roll:>2}")
+    total_skill_level = skill_level + stat_value + d10_roll
+    # Get the DV for the specified difficulty level
+    d_v = DIFFICULTY_VALUE[difficulty_value]
+    if total_skill_level < d_v:
+        print("Failure!")
+    elif total_skill_level == d_v:
+        print("Tie - attacker loses")
+    else:
+        print("Success!")
+
+for skill, skill_info in skills.items():
+    print(f"{skill:<25} {sum(skill_info):>2}")
+
+skill_check("Acting", "Professional")
