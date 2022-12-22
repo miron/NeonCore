@@ -69,21 +69,39 @@ DIFFICULTY_VALUE = {
 }
 
 def skill_check(skill_name, difficulty_value):
-    """Attacker versus Defender"""
+    """
+    Attacker vs Defender
+    Trying Again:
+      only if chances of success have improved
+      - you took longer
+      - used better tool
+      - you or friends made Complementary Skill Check
+    Complementary Skill Check  
+      Single +1 bonus for subsequent similar skill
+    """
     # Get the skill level and stat value for the specified skill
     skill_level, stat_value = skills[skill_name]
     # Generate a random number from 1 to 10
     d10_roll = random.randint(1, 10)
     # Add d10 roll to total skill level
     total_skill_level = skill_level + stat_value + d10_roll
+    if d10_roll == 10:
+        print("Critical Success! Rolling another one")
+        # Generate another random number from 1 to 10
+        total_skill_level += random.randint(1,10)
+    elif d10_roll == 1:
+        print("Critical Failure! Rolling another one")
+        # Generate another random number from 1 to 10
+        total_skill_level -= random.randint(1,10)
     # Get the DV for the specified difficulty level
     d_v = DIFFICULTY_VALUE[difficulty_value]
-    if total_skill_level < d_v:
-        print("Failure!")
-    elif total_skill_level == d_v:
-        print("Tie - attacker loses")
+    if total_skill_level > d_v:
+        print(f"Success! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
+    elif total_skill_level < d_v:
+        print(f"Failure! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
     else:
-        print("Success!")
+        print(f"Tie! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
+        print("Attacker loses.")
 
 for skill, skill_info in skills.items():
     print(f"{skill:<25} {sum(skill_info):>2}")
