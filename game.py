@@ -109,13 +109,15 @@ def skill_check(skill_name, difficulty_value):
 
 for skill, skill_info in skills.items():
     print(f"{skill:<25} {sum(skill_info):>2}")
-# Open a shelve in write mode
-with shelve.open('timestamp', 'w') as db:
-    # Save the current timestamp
+# Open the database, creating it if it doesn't already exist
+with shelve.open('timestamp', 'c') as db:
+    # Save data to the database
     db['timestamp'] = time.time()
+# The database is automatically closed and saved when the `with` block is exited
+
 skill_check("Acting", "Professional")
 # Open a shelve in read mode
 with shelve.open('timestamp', 'r') as db:
     # Load the timestamp
     timestamp = db['timestamp']
-print("timestamp")
+print(timestamp)
