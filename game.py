@@ -5,17 +5,19 @@ import time
 
 # Character stats
 stats = {
-    "INT":  0, #intelligence
-    "REF":  0, #reflexes
-    "DEX":  0, #dexterity
-    "TECH": 0, #technique
-    "COOL": 0, #cool
-    "WILL": 0, #will
-    "LUCK": 0, #luck
-    "MOVE": 0, #movement
-    "BODY": 0, #body
-    "EMP":  0  #empathy
+    "INT":   0, #intelligence
+    "REF":   0, #reflexes
+    "DEX":   0, #dexterity
+    "TECH":  0, #technique
+    "COOL":  0, #cool
+    "WILL":  0, #will
+    "LUCK": 20, #luck
+    "MOVE":  0, #movement
+    "BODY":  0, #body
+    "EMP":   0  #empathy
 }
+
+lucky_pool = stats['LUCK']
 
 # Character skills
 skills = {
@@ -83,6 +85,7 @@ def skill_check(skill_name, difficulty_value):
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
+    global lucky_pool
     # Get the skill level and stat value for the specified skill
     skill_level, stat_value = skills[skill_name]
     # Generate a random number from 1 to 10
@@ -97,6 +100,16 @@ def skill_check(skill_name, difficulty_value):
         print("Critical Failure! Rolling another one")
         # Generate another random number from 1 to 10
         total_skill_level -= random.randint(1,10)
+    # Prompt the player to enter the number
+    # of lucky points they want to spend
+    lucky_points = input("How many Lucky points)")
+    # Convert the input to an integer
+    lucky_points = int(lucky_points)
+    # Add lucky points to total skill level
+    total_skill_level += lucky_points
+    # Deduct lucky points from lucky pool
+    lucky_pool -= lucky_points
+
     # Get the DV for the specified difficulty level
     d_v = DIFFICULTY_VALUE[difficulty_value]
     if total_skill_level > d_v:
@@ -121,3 +134,4 @@ with shelve.open('timestamp', 'r') as db:
     # Load the timestamp
     timestamp = db['timestamp']
 print(timestamp)
+print(f"Lucky Pool: {lucky_pool}")
