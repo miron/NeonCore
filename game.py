@@ -1,5 +1,7 @@
 """A Role Playing Game in the Cyberpunk RED Universe"""
 import random
+import shelve
+import time
 
 # Character stats
 stats = {
@@ -76,8 +78,10 @@ def skill_check(skill_name, difficulty_value):
       - you took longer
       - used better tool
       - you or friends made Complementary Skill Check
-    Complementary Skill Check  
+    Complementary Skill Check
       Single +1 bonus for subsequent similar skill
+    Taking Extra Time
+      Single +1 bonus when taking four times longer
     """
     # Get the skill level and stat value for the specified skill
     skill_level, stat_value = skills[skill_name]
@@ -105,5 +109,13 @@ def skill_check(skill_name, difficulty_value):
 
 for skill, skill_info in skills.items():
     print(f"{skill:<25} {sum(skill_info):>2}")
-
+# Open a shelve in write mode
+with shelve.open('timestamp', 'w') as db:
+    # Save the current timestamp
+    db['timestamp'] = time.time()
 skill_check("Acting", "Professional")
+# Open a shelve in read mode
+with shelve.open('timestamp', 'r') as db:
+    # Load the timestamp
+    timestamp = db['timestamp']
+print("timestamp")
