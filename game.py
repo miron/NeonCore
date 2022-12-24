@@ -2,6 +2,8 @@
 import random
 import shelve
 import time
+import cmd
+import sys
 
 # Character stats
 stats = {
@@ -72,7 +74,36 @@ DIFFICULTY_VALUE = {
     "Incredible": 24
 }
 
-def skill_check(skill_name, difficulty_value):
+class RPG(cmd.Cmd):
+    intro = 'Welcome to the world of Cyberpunk RED'
+    prompt = '(CP) '
+    def do_quit(self, arg):
+        """Exits Cyberpunk RED"""
+        print('Thank you for playing')
+        sys.exit()
+    def do_stats(self, arg):
+        """Displays the character's stats."""
+        for stat, value in stats.items():
+            print(f"{stat:<25} {value:>2}")
+    def do_skills(self, arg):
+        """Displays the character's skills."""
+        for skill, value in skills.items():
+            print(f"{skill:<25} {value[0]:>2}")
+    def do_use_luck(self, arg):
+        """Spends luck points on a skill check."""
+        global lucky_pool
+        # parse the input to determine the number of luck points to spend
+        luck_points = int(arg)
+        if luck_points > lucky_pool:
+            print("Not enough luck points!")
+        else:
+            # subtract the luck points from the lucky pool
+            lucky_pool -= luck_points
+            skill_check("Acting", "Professional", luck_points)
+           # TODO do_use_luck method needs luck points as arguments
+        print(f"Lucky Pool: {lucky_pool}")
+
+def skill_check(skill_name, difficulty_value, luck_points):
     """
     Attacker vs Defender
     Trying Again:
@@ -85,7 +116,6 @@ def skill_check(skill_name, difficulty_value):
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    global lucky_pool
     # Get the skill level and stat value for the specified skill
     skill_level, stat_value = skills[skill_name]
     # Generate a random number from 1 to 10
@@ -100,15 +130,8 @@ def skill_check(skill_name, difficulty_value):
         print("Critical Failure! Rolling another one")
         # Generate another random number from 1 to 10
         total_skill_level -= random.randint(1,10)
-    # Prompt the player to enter the number
-    # of lucky points they want to spend
-    lucky_points = input("How many Lucky points)")
-    # Convert the input to an integer
-    lucky_points = int(lucky_points)
     # Add lucky points to total skill level
-    total_skill_level += lucky_points
-    # Deduct lucky points from lucky pool
-    lucky_pool -= lucky_points
+    total_skill_level += luck_points
 
     # Get the DV for the specified difficulty level
     d_v = DIFFICULTY_VALUE[difficulty_value]
@@ -120,18 +143,16 @@ def skill_check(skill_name, difficulty_value):
         print(f"Tie! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
         print("Attacker loses.")
 
-for skill, skill_info in skills.items():
-    print(f"{skill:<25} {sum(skill_info):>2}")
 # Open the database, creating it if it doesn't already exist
 with shelve.open('timestamp', 'c') as db:
     # Save data to the database
     db['timestamp'] = time.time()
-# The database is automatically closed and saved when the `with` block is exited
 
-skill_check("Acting", "Professional")
 # Open a shelve in read mode
 with shelve.open('timestamp', 'r') as db:
     # Load the timestamp
     timestamp = db['timestamp']
 print(timestamp)
-print(f"Lucky Pool: {lucky_pool}")
+
+if __name__ == "__main__":
+    RPG().cmdloop()
