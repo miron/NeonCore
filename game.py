@@ -84,7 +84,7 @@ class RPG(cmd.Cmd):
     def do_stats(self, arg):
         """Displays the character's stats."""
         for stat, value in stats.items():
-            print(f"{stat:<25} {value:>2}")
+            print(f"{stat:.<26}{value:>2}")
     def do_skills(self, arg):
         """Displays the character's skills."""
         skill_keys = list(skills.keys())
