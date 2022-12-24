@@ -87,8 +87,10 @@ class RPG(cmd.Cmd):
             print(f"{stat:<25} {value:>2}")
     def do_skills(self, arg):
         """Displays the character's skills."""
-        for skill, value in skills.items():
-            print(f"{skill:<25} {value[0]:>2}")
+        skill_keys = list(skills.keys())
+        skill_values = list(skills.values())
+        skill_list = [(f'{skill_keys:.<26}{skill_values[0]:>2}') for skill_keys,skill_values in zip(skill_keys,skill_values)]
+        self.columnize(skill_list, displaywidth=80)
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
         global lucky_pool
