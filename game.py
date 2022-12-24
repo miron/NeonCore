@@ -75,7 +75,12 @@ DIFFICULTY_VALUE = {
 }
 
 class RPG(cmd.Cmd):
-    intro = 'Welcome to the world of Cyberpunk RED'
+    intro = """--- RPG Cyberpunk RED Universe ---
+    (stats)  View character stats
+    (skills) View character skills
+    (roll)   Roll skill check
+    (help)   Available commands
+    (quit)   Exit game"""
     prompt = '(CP) '
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
