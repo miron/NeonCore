@@ -80,6 +80,10 @@ class RPG(cmd.Cmd):
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
         print('Thank you for playing')
+        # Open database, create if it doesn't already exist
+        with shelve.open('timestamp') as db:
+            # Save data to the database>
+            db['timestamp'] = time.time()
         sys.exit()
     def do_stats(self, arg):
         """Displays the character's stats."""
@@ -102,7 +106,6 @@ class RPG(cmd.Cmd):
             # subtract the luck points from the lucky pool
             lucky_pool -= luck_points
             skill_check("Acting", "Professional", luck_points)
-           # TODO do_use_luck method needs luck points as arguments
         print(f"Lucky Pool: {lucky_pool}")
 
 def skill_check(skill_name, difficulty_value, luck_points):
@@ -145,10 +148,6 @@ def skill_check(skill_name, difficulty_value, luck_points):
         print(f"Tie! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
         print("Attacker loses.")
 
-# Open the database, creating it if it doesn't already exist
-with shelve.open('timestamp', 'c') as db:
-    # Save data to the database
-    db['timestamp'] = time.time()
 
 # Open a shelve in read mode
 with shelve.open('timestamp', 'r') as db:
