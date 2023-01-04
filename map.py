@@ -50,7 +50,7 @@ def main(stdscr):
             break
         # Check if the new position is within the bounds of the map
         if (new_x >= 0 and new_x < len(map_matrix[0]) and new_y >= 0 and new_y < len(map_matrix)):
-            # Check for collision with walls 
+            # Check for collision with walls
             if map_matrix[new_y][new_x] !='#':
                 # Update the player position
                 player_x = new_x

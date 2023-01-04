@@ -1,3 +1,12 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/python:dev-3"
+"image": "mcr.microsoft.com/devcontainers/python:dev-3",
+"customizations": {
+	"vscode": {
+		"extensions": [
+			"vscodevim.vim",
+			"ms-python.vscode-pylance",
+			"ms-python.python"
+		]
+	}
+}
 }
