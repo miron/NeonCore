@@ -1,2 +1,0 @@
-import unicodedata
-unicodedata.name(👨‍🎤)

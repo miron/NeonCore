@@ -1,3 +1,4 @@
+"""Animated Stick Figure"""
 import time
 
 # Define the stick figure frames as a list of lists of strings
@@ -61,10 +62,10 @@ stick_figure_frames = [
 ]
 
 # Define the number of steps to take
-num_steps = 80
+NUM_STEPS = 80
 
 # Animate the stick figure
-for i in range(num_steps):
+for i in range(NUM_STEPS):
     # Clear the console
     print("\033[H\033[J")
 
