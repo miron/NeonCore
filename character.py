@@ -60,7 +60,7 @@ skills = {
 
 
 class Character:
-    """Used by CharacterBuilder to create instances of Players and NPCs"""
+    """Used by CharacterBuilder to create instances of Player and NPCs"""
     def __init__(self):
         self.name = None
         self.stats = None
@@ -78,14 +78,14 @@ class Character:
         """Set Skills"""
         self.skills = skills
         return self
-   # def take_psychological_damage(self, amount):
-   #     self.mental_health -= amount
-    # def use_skill(self, skill):
-     #   if skill in self.skills:
-            # code for using the skill goes here
-     #       pass
-     #   else:
-     #       print(f"{self.name} does not have the {skill} skill.")
+    #def take_psychological_damage(self, amount):
+        #self.mental_health -= amount
+     #def use_skill(self, skill):
+        #if skill in self.skills:
+             #code for using the skill goes here
+            #pass
+        #else:
+            #print(f"{self.name} does not have the {skill} skill.")
 
 class NPC(Character):
     """Adds NPC specific methods"""
@@ -101,26 +101,23 @@ class NPC(Character):
         """Dialogue output"""
         print(self.dialogue)
 
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls)
+class Player(Character):
+    """Player Class Singleton"""
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
 class CharacterBuilder:
     """Build instances of NPCs and Players"""
-    def __init__(self):
-        self.character = None
-
     def create_new_character(self):
         """New Character"""
-        self.character = Character()
-        return self.character
+        return Player()
 
     def create_new_npc(self):
-        """New NPc"""
-        self.character = NPC()
-        return self.character
+        """New NPC"""
+        return NPC()
 
 # Now we can use the CharacterBuilder to create instances of the Character and NPC classes:
 builder = CharacterBuilder()
@@ -130,7 +127,7 @@ player = builder.create_new_character().set_name("John").set_stats(stats).set_sk
 print(player.name)
 player1 = builder.create_new_character().set_name("Jim").set_stats(stats).set_skills(skills)
 print(player1.name)
-print(player.name)
+print(player is player1)
 
 npc1 = builder.create_new_npc().set_name(
     "Bob").set_stats(stats).set_skills(skills).set_dialogue("Hello, how are you?")
