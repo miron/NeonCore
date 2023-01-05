@@ -10,19 +10,19 @@ def main(stdscr):
 
 
     # Set up the map
-    map_matrix = [
-        ['#', '#', '#', ' ', '#', '#', '#', '#', ' ', ' ', '#', '#', '#', '#', '#', '#'],
-        ['#', '#', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', '#', '#', '#', '#', '#', '#'],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'],
-        [' ', '#', '#', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'],
-        [' ', '#', '#', ' ', '#', '#', '#', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', '#'],
-        [' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', '#'],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', '#'],
-        ['#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', '#'],
-        ['#', '#', '#', ' ', '#', '#', '#', '#', ' ', ' ', '#', '#', '#', ' ', ' ', ' '],
-        ['#', '#', '#', ' ', '#', '#', '#', '#', ' ', ' ', '#', '#', '#', ' ', ' ', ' '],
-    ]
+    map_data= (
+    "### ####  ######",
+    "###   ##  ######",
+    "                ",
+    " ##            #",
+    " ## ###        #",
+    " ## ###   ###  #",
+    "    ###   ###  #",
+    "          ###  #",
+    "###       ###  #",
+    "### ####  ###   ",
+    "### ####  ###   "
+)
 
     # Set the initial position of the player character
     player_x = 4
@@ -31,7 +31,7 @@ def main(stdscr):
     # Wait for user input to move the player character
     while True:
         # Redraw the map and update the player position
-        for y_axis, row in enumerate(map_matrix):
+        for y_axis, row in enumerate(map_data):
             for x_axis, cell in enumerate(row):
                 stdscr.addch(y_axis, x_axis, cell)
         stdscr.addch(player_y, player_x, '@', player_color)
@@ -49,9 +49,9 @@ def main(stdscr):
         elif key == ord('q'):
             break
         # Check if the new position is within the bounds of the map
-        if (new_x >= 0 and new_x < len(map_matrix[0]) and new_y >= 0 and new_y < len(map_matrix)):
+        if (new_x >= 0 and new_x < len(map_data[0]) and new_y >= 0 and new_y < len(map_data)):
             # Check for collision with walls
-            if map_matrix[new_y][new_x] !='#':
+            if map_data[new_y][new_x] !='#':
                 # Update the player position
                 player_x = new_x
                 player_y = new_y
