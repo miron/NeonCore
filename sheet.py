@@ -94,7 +94,6 @@ characters_sheet = [
     "Glow Paint": "Glow in the dark spraypaint",
     "Video Camera": "Records up to 12 hours"}, # Gear
     "ascii representation of character",        # Portrait 
-    "Notes",                                    # Notes
-    "placeholder for lifepath generator"        # Lifepath
+    "Notes"                                    # Notes
     ]
 

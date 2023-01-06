@@ -80,7 +80,13 @@ class Character:
         self.gear = character_data[21]
         self.portrait = character_data[22]
         self.notes = character_data[23]
-        self.lifepath = character_data[24]
+        self.lifepath = self.generate_lifepath()
+    
+    # Lifepath generator function
+    def generate_lifepath(self):
+        """ Generate and assign lifepath data""" 
+        return "lifepath placeholder"
+
 
     def skill_total(self, skill_name)
         skill_tuple = self.skills[skill_name]
