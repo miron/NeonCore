@@ -95,7 +95,7 @@ characters_sheet = {
     "Video Camera": "Records up to 12 hours"}, # Gear
     "ascii representation of character",        # Portrait 
     "Notes"                                    # Notes
-    ]
+    ],
 
     "Forty": [             # Handle  
     "Rockerboy",         # Role
