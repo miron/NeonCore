@@ -1,3 +1,4 @@
+from sheet import characters_sheet
 """Character Creator"""
 class Character:
     def __init__(self, character_data):
