@@ -1,6 +1,7 @@
 characters_sheet = [
     "Forty",             # Handle  
     "Rockerboy",         # Role
+
     [ 5,                 # INT
       0,                 # Accounting
       0,                 # Bureaucracy
@@ -59,11 +60,14 @@ characters_sheet = [
     [ 6,                 # EMP
       2,                 # Conversation
       6 ],               # Human Perception
+
       40,                # HP
       20,                # seriously_wounded
       3,                 # death_save
-      "Light Armorjack", # Armor
-      11,                # SP
+
+    [ "Light Armorjack", # Armor
+      11 ],                # SP
+
     [ "Very Heavy Pistol", # Weapon 1
       "4d6",                # DMG
       8,                # Ammo
@@ -90,7 +94,7 @@ characters_sheet = [
     "Glow Paint": "Glow in the dark spraypaint",
     "Video Camera": "Records up to 12 hours"}, # Gear
     "ascii representation of character",        # Portrait 
-    "",                                         # Notes
+    "Notes",                                    # Notes
     "placeholder for lifepath generator"        # Lifepath
     ]
 

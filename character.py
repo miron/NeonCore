@@ -1,145 +1,82 @@
 """Character Creator"""
-# Character stats
-stats = {
-    "INT":   0, #intelligence
-    "REF":   0, #reflexes
-    "DEX":   0, #dexterity
-    "TECH":  0, #technique
-    "COOL":  0, #cool
-    "WILL":  0, #will
-    "LUCK": 20, #luck
-    "MOVE":  0, #movement
-    "BODY":  0, #body
-    "EMP":   0  #empathy
-}
-
-# Character skills
-skills = {
-    "Accounting":               [0, stats["INT"]],
-    "Acting":                   [0, stats["COOL"]],
-    "Athletics":                [0, stats["DEX"]],
-    "Brawling":                 [0, stats["DEX"]],
-    "Bribery":                  [0, stats["COOL"]],
-    "Bureaucracy":              [0, stats["INT"]],
-    "Business":                 [0, stats["INT"]],
-    "Composition":              [0, stats["INT"]],
-    "Conceal/Reveal Object":    [0, stats["INT"]],
-    "Concentration":            [0, stats["WILL"]],
-    "Conversation":             [0, stats["EMP"]],
-    "Criminology":              [0, stats["INT"]],
-    "Cryptography":             [0, stats["INT"]],
-    "Deduction":                [0, stats["INT"]],
-    "Drive Land Vehicle":       [0, stats["REF"]],
-    "Education":                [0, stats["INT"]],
-    "Electronics/Security Tech":[0, stats["TECH"]],
-    "Evasion":                  [0, stats["DEX"]],
-    "First Aid":                [0, stats["TECH"]],
-    "Forgery":                  [0, stats["TECH"]],
-    "Handgun":                  [0, stats["REF"]],
-    "Human Perception":         [0, stats["EMP"]],
-    "Interrogation":            [0, stats["COOL"]],
-    "Library Search":           [0, stats["INT"]],
-    "Local Expert":             [0, stats["INT"]],
-    "Melee Weapon":             [0, stats["DEX"]],
-    "Paramedic":                [0, stats["TECH"]],
-    "Perception":               [0, stats["INT"]],
-    "Persuation":               [0, stats["COOL"]],
-    "Photography/Film":         [0, stats["TECH"]],
-    "Pick Lock":                [0, stats["TECH"]],
-    "Pick Pocket":              [0, stats["TECH"]],
-    "Play Instrument":          [0, stats["TECH"]],
-    "Resist Torture/Drugs":     [0, stats["WILL"]],
-    "Shoulder Arms":            [0, stats["REF"]],
-    "Stealth":                  [0, stats["DEX"]],
-    "Streetwise":               [0, stats["COOL"]],
-    "Tactics":                  [0, stats["INT"]],
-    "Tracking":                 [0, stats["INT"]],
-    "Trading":                  [0, stats["COOL"]],
-    "Wardrobe & Style":         [0, stats["COOL"]]
-}
-
-
 class Character:
-    """Used by CharacterBuilder to create instances of Player and NPCs"""
-    def __init__(self):
-        self.name = None
-        self.stats = None
-        self.skills = None
+    def __init__(self, character_data):
+        self.handle = character_data[0]
+        self.role = character_data[1]
 
-    def set_name(self, name):
-        """Set Character Name"""
-        self.name = name
-        return self
-    def set_stats(self, stats):
-        """Set Stats"""
-        self.stats = stats
-        return self
-    def set_skills(self, skills):
-        """Set Skills"""
-        self.skills = skills
-        return self
-    #def take_psychological_damage(self, amount):
-        #self.mental_health -= amount
-     #def use_skill(self, skill):
-        #if skill in self.skills:
-             #code for using the skill goes here
-            #pass
-        #else:
-            #print(f"{self.name} does not have the {skill} skill.")
+        self.stats = {}
+        self.stats["INT"] = character_data[2][0]
+        self.stats["REF"] = character_data[3][0]
+        self.stats["DEX"] = character_data[4][0]
+        self.stats["TECH"] = character_data[5][0]
+        self.stats["COOL"] = character_data[6][0]
+        self.stats["WILL"] = character_data[7][0]
+        self.stats["LUCK"] = character_data[8]
+        self.stats["MOVE"] = character_data[9]
+        self.stats["BODY"] = character_data[10]
+        self.stats["EMP"] = character_data[11][0]
 
-class NPC(Character):
-    """Adds NPC specific methods"""
-    def __init__(self):
-        super().__init__()
-        self.dialogue = None
+        self.skills = {}
+        self.skills["Accounting"] = (self.stats["INT"], character_data[2][1])
+        self.skills["Bureaucracy"] = (self.stats["INT"], character_data[2][2])
+        self.skills["Business"] = (self.stats["INT"], character_data[2][3])
+        self.skills["Composition"] = (self.stats["INT"], character_data[2][4])
+        self.skills["Conceal/Reveal Object"] = (self.stats["INT"], character_data[2][5])
+        self.skills["Criminology"] = (self.stats["INT"], character_data[2][6])
+        self.skills["Cryptography"] = (self.stats["INT"], character_data[2][7])
+        self.skills["Deduction"] = (self.stats["INT"], character_data[2][8])
+        self.skills["Education"] = (self.stats["INT"], character_data[2][9])
+        self.skills["Library Search"] = (self.stats["INT"], character_data[2][10])
+        self.skills["Local Expert"] = (self.stats["INT"], character_data[2][11])
+        self.skills["Perception"] = (self.stats["INT"], character_data[2][12])
+        self.skills["Tactics"] = (self.stats["INT"], character_data[2][13])
+        self.skills["Tracking"] = (self.stats["INT"], character_data[2][14])
 
-    def set_dialogue(self, dialogue):
-        """NPC dialogues"""
-        self.dialogue = dialogue
-        return self
-    def speak(self):
-        """Dialogue output"""
-        print(self.dialogue)
+        self.skills["Drive Land Vehicle"] = (self.stats["REF"], character_data[3][1])
+        self.skills["Handgun"] = (self.stats["REF"], character_data[3][2])
+        self.skills["Shoulder Arms"] = (self.stats["REF"], character_data[3][3])
 
-class Player(Character):
-    """Player Class Singleton"""
-    _instance = None
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+        self.skills["Athletics"] = (self.stats["DEX"], character_data[4][1])
+        self.skills["Brawling"] = (self.stats["DEX"], character_data[4][2])
+        self.skills["Evasion"] = (self.stats["DEX"], character_data[4][3])
+        self.skills["Melee Weapon"] = (self.stats["DEX"], character_data[4][4])
+        self.skills["Stealth"] = (self.stats["DEX"], character_data[4][5])
 
-class CharacterBuilder:
-    """Build instances of NPCs and Players"""
-    def create_new_character(self):
-        """New Character"""
-        return Player()
+        self.skills["Electronics/Security Tech"] = (self.stats["TECH"], character_data[5][1])
+        self.skills["First Aid"] = (self.stats["TECH"], character_data[5][2])
+        self.skills["Forgery"] = (self.stats["TECH"], character_data[5][3])
+        self.skills["Paramedic"] = (self.stats["TECH"], character_data[5][4])
+        self.skills["Photography/Film"] = (self.stats["TECH"], character_data[5][5])
+        self.skills["Pick Lock"] = (self.stats["TECH"], character_data[5][6])
+        self.skills["Pick Pocket"] = (self.stats["TECH"], character_data[5][7])
+        self.skills["Play Instrument"] = (self.stats["TECH"], character_data[5][8])
 
-    def create_new_npc(self):
-        """New NPC"""
-        return NPC()
+        self.skills["Acting"] = (self.stats["COOL"], character_data[6][1])
+        self.skills["Bribery"] = (self.stats["COOL"], character_data[6][2])
+        self.skills["Interrogation"] = (self.stats["COOL"], character_data[6][3])
+        self.skills["Persuation"] = (self.stats["COOL"], character_data[6][4])
+        self.skills["Streetwise"] = (self.stats["COOL"], character_data[6][5])
+        self.skills["Trading"] = (self.stats["COOL"], character_data[6][6])
+        self.skills["Wardrobe & Style"] = (self.stats["COOL"], character_data[6][7])
 
-# Now we can use the CharacterBuilder to create instances of the Character and NPC classes:
-builder = CharacterBuilder()
+        self.skills["Concentration"] = (self.stats["WILL"], character_data[7][1])
+        self.skills["Resist Torture/Drugs"] = (self.stats["WILL"], character_data[7][2])
 
-player = builder.create_new_character().set_name("John").set_stats(stats).set_skills(skills)
-#print(player.__dict__)
-print(player.name)
-player1 = builder.create_new_character().set_name("Jim").set_stats(stats).set_skills(skills)
-print(player1.name)
-print(player is player1)
+        self.skills["Conversation"] = (self.stats["EMP"], character_data[11][1])
+        self.skills["Human Perception"] = (self.stats["EMP"], character_data[11][2])
 
-npc1 = builder.create_new_npc().set_name(
-    "Bob").set_stats(stats).set_skills(skills).set_dialogue("Hello, how are you?")
-#print(npc1.__dict__)
-print(npc1.dialogue)
-
-npc2 = builder.create_new_npc().set_name(
-    "Sue").set_stats(stats).set_skills(skills).set_dialogue("Nice to meet you.")
-#print(npc2.__dict__)
-print(npc2.dialogue)
-
-npc3 = builder.create_new_npc().set_name(
-    "Tom").set_stats(stats).set_skills(skills).set_dialogue("How's it going?")
-#print(npc3.__dict__)
-print(npc3.dialogue)
+        self.hp = character_data[12]
+        self.seriously_wounded = character_data[13]
+        self.death_save = character_data[14]
+        self.armor = (character_data[15][0], character_data[15][1])
+        self.weapon_1 = (character_data[16][0], character_data[16][1], character_data[16][2], 
+                            character_data[16][3], character_data[16][4])
+        self.weapon_2 = (character_data[17][0], character_data[17][1], character_data[17][2], 
+                            character_data[17][3], character_data[17][4])
+        self.role_ability = character_data[18]
+        self.cyberware_1 = character_data[19]
+        self.cyberware_2 = character_data[20]
+        self.gear = character_data[21]
+        self.portrait = character_data[22]
+        self.notes = character_data[23]
+        self.lifepath = character_data[24]
