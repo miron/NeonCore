@@ -74,17 +74,17 @@ characters_sheet = [
       None,                                       # Ammo
       2,                                          # ROF
       "A sword or a baseball bat. Your choice." ], # Notes
-    "Charismatic Impact
+    """Charismatic Impact
     You know when someone is a fan and            
     receive a +2 to any EMP or COOL 
-    based Skill Check made against them,,
-    including Facedowns.",                         # Role Ability
-    "Internal Agent
+    based Skill Check made against them,
+    including Facedowns.""",                         # Role Ability
+    """Internal Agent
     You have a self-adaptive AI-powered Smart Phone in your head,
-    controlled entirely by voice command."         # Cyberware 1
-    "Paint Editor Chipware
+    controlled entirely by voice command.""",         # Cyberware 1
+    """Paint Editor Chipware
     You can shut off your pain receptors, ignorin you to ignore the -2 to all
-    Checks granted by the Seriously Wounded Wound State.", # Cyberware 2
+    Checks granted by the Seriously Wounded Wound State.""", # Cyberware 2
     {"Musical Instrument": "Player's choice",
     "Pocket Amp": "Amplifies musical instrument",
     "Glow Paint": "Glow in the dark spraypaint",
@@ -92,12 +92,5 @@ characters_sheet = [
     "ascii representation of character",        # Portrait 
     "",                                         # Notes
     "placeholder for lifepath generator"        # Lifepath
-
-
-
-
-
-
-
-
+    ]
 
