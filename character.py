@@ -55,7 +55,7 @@ class Character:
         self.skills["Acting"] = (self.stats["COOL"], character_data[6][1])
         self.skills["Bribery"] = (self.stats["COOL"], character_data[6][2])
         self.skills["Interrogation"] = (self.stats["COOL"], character_data[6][3])
-        self.skills["Persuation"] = (self.stats["COOL"], character_data[6][4])
+        self.skills["Persuasion"] = (self.stats["COOL"], character_data[6][4])
         self.skills["Streetwise"] = (self.stats["COOL"], character_data[6][5])
         self.skills["Trading"] = (self.stats["COOL"], character_data[6][6])
         self.skills["Wardrobe & Style"] = (self.stats["COOL"], character_data[6][7])
@@ -81,3 +81,7 @@ class Character:
         self.portrait = character_data[22]
         self.notes = character_data[23]
         self.lifepath = character_data[24]
+
+    def skill_total(self, skill_name)
+        skill_tuple = self.skills[skill_name]
+        return sum(skill_tuple)

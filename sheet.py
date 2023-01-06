@@ -87,7 +87,7 @@ characters_sheet = [
     You have a self-adaptive AI-powered Smart Phone in your head,
     controlled entirely by voice command.""",         # Cyberware 1
     """Paint Editor Chipware
-    You can shut off your pain receptors, ignorin you to ignore the -2 to all
+    You can shut off your pain receptors, ignoring you to ignore the -2 to all
     Checks granted by the Seriously Wounded Wound State.""", # Cyberware 2
     {"Musical Instrument": "Player's choice",
     "Pocket Amp": "Amplifies musical instrument",
