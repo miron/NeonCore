@@ -88,6 +88,6 @@ class Character:
         return "lifepath placeholder"
 
 
-    def skill_total(self, skill_name)
+    def skill_total(self, skill_name):
         skill_tuple = self.skills[skill_name]
         return sum(skill_tuple)
