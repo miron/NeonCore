@@ -1,175 +1,114 @@
+"""
+Handle, Role
+INT, Accounting, Bureaucracy, Business, Composition,
+     Conceal/Reveal Object, Criminology, Cryptography, Deduction, 
+     Education, Library Search, Local Expert, Perception, Tactics, 
+     Tracking
+REF, Drive Land Vehicle, Handgun, Shoulder Arms
+DEX, Athletics, (Brawling, xd6), Evasion, Melee Weapon, Stealth
+TECH, Electronics/Security Tech, First Aid, Forgery, Paramedic, 
+      Photography/Film, Pick Lock, Pick Pocket, Play Instrument
+COOL, Acting, Bribery, Interrogation, Persuation, Streetwise, Trading,
+      Wardrobe & Style
+WILL, Concentration, Resist Torture/Drugs
+LUCK, MOVE, BODY
+EMP, Conversation, Human Perception
+HP, seriously_wounded, death_save
+Armor, SP
+Weapon 1, DMG xd6, Ammo, ROF, Notes
+Weapon 2, DMG xd6, Ammo, ROF, Notes
+Role Ability
+Cyberware 1, Cyberware 2
+Gear
+Portrait, Notes
+"""
+
 characters_sheet = (
-    ("Forty",                   # Handle  
-    "Rockerboy",                # Role
- 
-    (5,                         # INT
-    0,                          # Accounting
-    0,                          # Bureaucracy
-    0,                          # Business
-    6,                          # Composition
-    0,                          # Conceal/Reveal Object
-    0,                          # Criminology
-    0,                          # Cryptography
-    0,                          # Deduction
-    2,                          # Education
-    0,                          # Library Search
-    4,                          # Local Expert
-    2,                          # Perception
-    0,                          # Tactics
-    0),                         # Tracking
+    ("Forty", "Rockerboy",
+    (5, 0, 0, 0, 6, 0, 0, 0, 0, 2, 0, 4, 2, 0, 0),
+    (6, 0, 6, 0),
+    (7, 2, (6, 1), 6, 6, 2),
+    (5, 0, 6, 0, 0, 0, 0, 0, 6),
+    (7, 0, 0, 0, 6, 6, 0, 4),
+    (8, 2, 0),
+    5, 7, 3,
+    (6, 2, 6),
+    40, 20, 3,
+    ("Light Armorjack", 11),
+    ("Very Heavy Pistol", 4, 8, 1, 6),
+    ("Heavy Melee Weapon", 3, None, 2, ("Sword", "Baseball Bat")),
+    ("Charismatic Impact", 2),
+    "Internal Agent", "Paint Editor Chipware",
+    ("Musical Instrument", "Pocket Amp", "Glow Paint", "Video Camera"),
+    "Ascii Portrait", "Notes"),
 
-    (6,                         # REF
-    0,                          # Drive Land Vehicle
-    6,                          # Handgun
-    0),                         # Shoulder Arms
-
-    (7,                         # DEX
-    2,                          # Athletics
-    (6, 1),                     # Brawling, 1d6
-    6,                          # Evasion
-    6,                          # Melee Weapon
-    2),                         # Stealth
-
-    (5,                         # TECH
-    0,                          # Electronics/Security Tech
-    6,                          # First Aid
-    0,                          # Forgery
-    0,                          # Paramedic
-    0,                          # Photography/Film
-    0,                          # Pick Lock
-    0,                          # Pick Pocket
-    6),                         # Play Instrument
-
-    (7,                         # COOL
-    0,                          # Acting
-    0,                          # Bribery
-    0,                          # Interrogation
-    6,                          # Persuation
-    6,                          # Streetwise
-    0,                          # Trading
-    4),                         # Wardrobe & Style
-
-    (8,                         # WILL
-    2,                          # Concentration
-    0),                         # Resist Torture/Drugs
-
-    5,                          # LUCK
-    7,                          # MOVE
-    3,                          # BODY
-
-    (6,                         # EMP
-    2,                          # Conversation
-    6),                         # Human Perception
-
-    40,                         # HP
-    20,                         # seriously_wounded
-    3,                          # death_save
-
-    ("Light Armorjack", 11),    # Armor, SP
-
-    ("Very Heavy Pistol",       # Weapon 1
-    4,                          # DMG 4d6
-    8,                          # Ammo
-    1,                          # ROF
-    16),                        # extra ammo 
+    ("Mover", "Solo",
+    (7, 0, 0, 0, 0, 8, 0, 0, 0, 2, 0, 2, 8, 6, 0),
+    (7, 0, 6, 6),
+    (6, 2, (2, 3), 6, 0, 6),
+    (5, 0, 6, 0, 0, 0, 0, 0, 0),                         
+    (7, 0, 0, 6, 2, 0, 0, 0),
+    (6, 2, 6),
+    6, 7, 7,
+    (3, 2, 2),
+    45, 23, 7,
+    ("Light Armorjack", 11),
+    ("Shotgun", 5, 4, 1, 8),
+    ("Assault Rifle", 5, 25, 1, 25),
+    "Combat Awareness",
+    "Image Enhance Cybereyes", "Teleoptic Cybereye",
+    "Burner Phone",
+    "Ascii Portrait", "Notes"),
     
-    ("Heavy Melee Weapon",      # Weapon 2
-    3,                          # DMG 3d6
-    None,                       # Ammo
-    2,                          # ROF
-    ("Sword", "Baseball Bat")), # 1 Melee Weapon
-    ("Charismatic Impact", 2),  # Role Ability, EMP/COOL 
-    "Internal Agent",           # Cyberware 1
-    "Paint Editor Chipware",    # Cyberware 2
-    (("Guitar", "Synthesizer", 
-    "Sampler", "Sequencer"),
-    "Pocket Amp", "Glow Paint",
-    "Video Camera"),            # Gear
-    "Ascii Portrait",           # Portrait 
-    "Notes"                     # Notes
-    ),
-
-    ("Mover",                   # Handle  
-    "Solo",                     # Role
-
-    (7,                         # INT
-    0,                          # Accounting
-    0,                          # Bureaucracy
-    0,                          # Business
-    0,                          # Composition
-    8,                          # Conceal/Reveal Object
-    0,                          # Criminology
-    0,                          # Cryptography
-    0,                          # Deduction
-    2,                          # Education
-    0,                          # Library Search
-    2,                          # Local Expert
-    8,                          # Perception
-    6,                          # Tactics
-    0),                         # Tracking
-
-    (7,                         # REF
-    0,                          # Drive Land Vehicle
-    6,                          # Handgun
-    6),                         # Shoulder Arms
-
-    (6,                         # DEX
-    2,                          # Athletics
-    (2, 3),                      # Brawling, 3d6
-    6,                          # Evasion
-    0,                          # Melee Weapon
-    6),                         # Stealth
-
-    (5,                         # TECH
-    0,                          # Electronics/Security Tech
-    6,                          # First Aid
-    0,                          # Forgery
-    0,                          # Paramedic
-    0,                          # Photography/Film
-    0,                          # Pick Lock
-    0,                          # Pick Pocket
-    0),                         # Play Instrument
-
-    (7,                         # COOL
-    0,                          # Acting
-    0,                          # Bribery
-    6,                          # Interrogation
-    2,                          # Persuation
-    0,                          # Streetwise
-    0,                          # Trading
-    0),                         # Wardrobe & Style
-
-    (6,                         # WILL
-    2,                          # Concentration
-    6),                         # Resist Torture/Drugs
-
-    6,                          # LUCK
-    7,                          # MOVE
-    7,                          # BODY
-
-    (3,                         # EMP
-    2,                          # Conversation
-    2),                         # Human Perception
-
-    45,                         # HP
-    23,                         # seriously_wounded
-    7,                          # death_save
-
-    ("Light Armorjack", 11),    # Armor, SP
-    ("Shotgun",                 # Weapon 1
-    5,                          # DMG 5d6
-    4,                          # Ammo
-    1,                          # ROF
-    8),                         # extra ammo
-    ("Assault Rifle",           # Weapon 2
-    5,                          # DMG 5d6
-    25,                         # Ammo
-    1,                          # ROF
-    25),                        # extra ammo
-    "Combat Awareness",         # Role Ability
-    "Image Enhance Cybereyes",  # Cyberware 1
-    "Teleoptic Cybereye",       # Cyberware 2
-    "Burner Phone",             # Gear
-    "Ascii Portrait",           # Portrait 
-    "Notes")                                  # Notes
-)
+    ("Torch", "Tech",
+    (8, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 2, 2, 0, 0),
+    (7, 0, 6, 6),
+    (5, 2, (2, 2), 6, 0, 6),
+    (6, 10, 6, 6, 0, 0, 6, 6, 0),
+    (3, 0, 0, 0, 2, 0, 0, 0),
+    (3, 2, 0),
+    7, 6, 6,
+    (5, 2, 2),
+    35, 18, 6,
+    ("Light Armorjack", 11),
+    ("Heavy Pistol", 3, 8, 2, 16),
+    ("Shotgun", 5, 4, 1, 8),
+    "Maker",
+    "Tool Hand", "Internal Agent",
+    ("Duct Tape", "Flashlight", "Road Flare"),
+    "ASCII Portrait", "Notes"),
+    
+    ("Redtail", "Medtech",
+    (8, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 2, 6, 0, 0),
+    (5, 0, 0, 6),
+    (5, 2, (2, 2), 6, 0, 6),
+    (8, 4, 2, 0, 6, 0, 0, 0, 0),
+    (5, 0, 0, 0, 5, 0, 0, 0),
+    (5, 2, 4),
+    6, 6, 5,
+    (4, 6, 6),
+    35, 18, 5,
+    ("Light Armorjack", 11),
+    ("Shotgun", 5, 4, 1, 8),
+    ("Light Melee Weapon", 1, None, 2, "Small Knife"),
+    "Medicine",
+    "Tool Hand", "Pain Editor Chipware",
+    ("Agent", "Medtech Bag", "Glow Paint", "Flashlight"),
+    "ASCII Portrait", "Notes"),
+    
+    ("24/7", "Media",
+    (7, 0, 0, 0, 6, 8, 0, 0, 0, 2, 4, 6, 8, 0, 0),
+    (5, 0, 6, 0),
+    (5, 2, (2, 2), 6, 6, 6),
+    (4, 0, 2, 6, 0, 0, 0, 0, 0),
+    (8, 0, 0, 0, 6, 0, 0, 0),
+    (7, 2, 0),
+    6, 7, 5,
+    (7, 6, 6),
+    ("Light Armorjack", 11),
+    ("Heavy Pistol", 3, 8, 2, 16),
+    ("Heavy Melee Weapon", 3, None, 2, ("Sword", "Folded Tripod")),
+    "Credibility",
+    "Internal Agent", "Image Enhance Cybereyes",
+    ("Video Camera", "Audio Recorder"),
+    "ASCII Portrait", "Notes"))
