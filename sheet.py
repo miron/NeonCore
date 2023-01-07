@@ -115,7 +115,7 @@ characters_sheet = {
 
     (6,                         # DEX
     2,                          # Athletics
-    (2, 3)                      # Brawling, 3d6
+    (2, 3),                      # Brawling, 3d6
     6,                          # Evasion
     0,                          # Melee Weapon
     6),                         # Stealth
