@@ -103,32 +103,28 @@ class SkillCheck:
         Returns:
         None
         """
-        # Get the skill level and stat value for the specified skill
-        skill_level, stat_value = self.character.skills[skill_name]
 
         # Generate a random number from 1 to 10
         d10_roll = random.randint(1, 10)
         # Add d10 roll to total skill level
-        total_skill_level = skill_level + stat_value + d10_roll
+        skill_check_total = self.character.skill_total(skill_name) + d10_roll + luck_points
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             # Generate another random number from 1 to 10
-            total_skill_level += random.randint(1,10)
+            skill_check_total += random.randint(1,10)
         elif d10_roll == 1:
             print("Critical Failure! Rolling another one")
             # Generate another random number from 1 to 10
-            total_skill_level -= random.randint(1,10)
-        # Add lucky points to total skill level
-        total_skill_level += luck_points
+            skill_check_total -= random.randint(1,10)
 
         # Get the DV for the specified difficulty level
-        d_v = DIFFICULTY_VALUE[difficulty_value]
-        if total_skill_level > d_v:
-            print(f"Success! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
-        elif total_skill_level < d_v:
-            print(f"Failure! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
+        difficulty_value = DIFFICULTY_VALUE[difficulty_value]
+        if skill_check_total > difficulty_value:
+            print(f"Success! Attacker roll: {skill_check_total}, Defender DV: {difficulty_value}")
+        elif skill_check_total < difficulty_value:
+            print(f"Failure! Attacker roll: {skill_check_total}, Defender DV: {difficulty_value}")
         else:
-            print(f"Tie! Attacker roll: {total_skill_level}, Defender DV: {d_v}")
+            print(f"Tie! Attacker roll: {skill_check_total}, Defender DV: {difficulty_value}")
             print("Attacker loses.")
 
 
