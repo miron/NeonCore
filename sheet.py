@@ -1,5 +1,5 @@
-characters_sheet = {
-    "Forty": (                  # Handle  
+characters_sheet = (
+    ("Forty",                   # Handle  
     "Rockerboy",                # Role
  
     (5,                         # INT
@@ -89,7 +89,7 @@ characters_sheet = {
     "Notes"                     # Notes
     ),
 
-    "Mover": (                  # Handle  
+    ("Mover":                   # Handle  
     "Solo",                     # Role
 
     (7,                         # INT
@@ -172,4 +172,4 @@ characters_sheet = {
     "Burner Phone",             # Gear
     "Ascii Portrait",           # Portrait 
     "Notes")                                  # Notes
-}
+)
