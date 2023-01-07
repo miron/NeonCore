@@ -82,13 +82,14 @@ class SkillCheck:
         Returns:
         None
         """
-        if luck_points > character.lucky_pool:
+        if luck_points > self.character.lucky_pool:
             print("Not enough luck points!")
             return False
         else:
             # subtract the luck points from the lucky pool
-            character.lucky_pool -= luck_points
+            self.character.lucky_pool -= luck_points
             return True
+
 
     def perform_check(self, skill_name, difficulty_value, luck_points):
         """
@@ -103,7 +104,7 @@ class SkillCheck:
         None
         """
         # Get the skill level and stat value for the specified skill
-        skill_level, stat_value = skills[skill_name]
+        skill_level, stat_value = self.character.skills[skill_name]
 
         # Generate a random number from 1 to 10
         d10_roll = random.randint(1, 10)
