@@ -4,6 +4,8 @@ import shelve
 import time
 import cmd
 import sys
+from character import Character
+from sheet import characters_sheet
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -22,8 +24,9 @@ class ActionManager(cmd.Cmd):
     (help)   Available commands
     (quit)   Exit game"""
     prompt = '(CP) '
-    def __init__(self):
-        self.skill_check = SkillCheck()
+    def __init__(self, character):
+        self.skill_check = SkillCheck(character)
+        self.character = character
         # Call the __init__ method of the cmd.Cmd
         super().__init__()
     def do_quit(self, arg):
@@ -48,10 +51,10 @@ class ActionManager(cmd.Cmd):
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
         # parse the input to determine the number of luck points to spend
-        luck_points = int(input(f'Use LUCK x/{self.skill_check.lucky_pool}: '))
+        luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
         if self.skill_check.use_luck(luck_points):
             self.skill_check.perform_check('Acting', 'Professional', luck_points)
-        print(f"Lucky Pool: {self.skill_check.lucky_pool}")
+        print(f"Lucky Pool: {self.character.lucky_pool}")
 
 class SkillCheck:
     """
@@ -66,6 +69,9 @@ class SkillCheck:
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
+    def __init__(self, character):
+        self.character = character
+
     def use_luck(self, luck_points):
         """
         Spends a specified number of luck points on a skill check.
@@ -76,15 +82,15 @@ class SkillCheck:
         Returns:
         None
         """
-        if luck_points > self.lucky_pool:
+        if luck_points > character.lucky_pool:
             print("Not enough luck points!")
             return False
         else:
             # subtract the luck points from the lucky pool
-            self.lucky_pool -= luck_points
+            character.lucky_pool -= luck_points
             return True
 
-    def perform_check(self, skill_name, difficulty_value, luck_points ):
+    def perform_check(self, skill_name, difficulty_value, luck_points):
         """
         Perform a skill check using a specified skill and difficulty level.
 
@@ -126,10 +132,18 @@ class SkillCheck:
 
 
 # Open a shelve in read mode
-with shelve.open('timestamp', 'r') as db:
+#with shelve.open('timestamp', 'r') as db:
     # Load the timestamp
-    timestamp = db['timestamp']
-print(timestamp)
+    #timestamp = dbase['timestamp']
+#print(timestamp)
 
 if __name__ == "__main__":
-    ActionManager().cmdloop()
+    for character_data in characters_sheet:
+        handle = character_data[0]
+        locals()[handle.lower()] = Character(character_data)
+    ActionManager(forty).cmdloop()
+
+    instances = locals().copy()
+    for name, value in instances.items():
+        if isinstance(value, Character):
+            print(name)

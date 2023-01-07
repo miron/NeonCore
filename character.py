@@ -1,4 +1,3 @@
-from sheet import characters_sheet
 """Character Creator"""
 class Character:
     def __init__(self, character_data):
@@ -16,6 +15,8 @@ class Character:
         self.stats["MOVE"] = character_data[9]
         self.stats["BODY"] = character_data[10]
         self.stats["EMP"] = character_data[11][0]
+
+        self.lucky_pool = self.stats["LUCK"]
 
         self.skills = {}
         self.skills["Accounting"] = (self.stats["INT"], character_data[2][1])
@@ -92,12 +93,4 @@ class Character:
         skill_tuple = self.skills[skill_name]
         return sum(skill_tuple)
 
-for character_data in characters_sheet:
-    handle = character_data[0]
-    locals()[handle.lower()] = Character(character_data)
-
-instances = locals().copy()
-for name, value in instances.items():
-    if isinstance(value, Character):
-        print(name)
 
