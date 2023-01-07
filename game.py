@@ -4,7 +4,6 @@ import shelve
 import time
 import cmd
 import sys
-from character import skills, stats
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -67,9 +66,6 @@ class SkillCheck:
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    def __init__(self):
-        self.lucky_pool = stats['LUCK']
-    lucky_pool = stats['LUCK']
     def use_luck(self, luck_points):
         """
         Spends a specified number of luck points on a skill check.
