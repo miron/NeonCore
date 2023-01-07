@@ -89,7 +89,7 @@ characters_sheet = (
     "Notes"                     # Notes
     ),
 
-    ("Mover":                   # Handle  
+    ("Mover",                   # Handle  
     "Solo",                     # Role
 
     (7,                         # INT
