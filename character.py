@@ -95,7 +95,8 @@ class Character:
 for character_data in characters_sheet:
     handle = character_data[0]
     locals()[handle.lower()] = Character(character_data)
-instances = locals()
+
+instances = locals().copy()
 for name, value in instances.items():
     if isinstance(value, Character):
         print(name)
