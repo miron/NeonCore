@@ -105,6 +105,7 @@ characters_sheet = (
     (7, 2, 0),
     6, 7, 5,
     (7, 6, 6),
+    40, 20, 5,
     ("Light Armorjack", 11),
     ("Heavy Pistol", 3, 8, 2, 16),
     ("Heavy Melee Weapon", 3, None, 2, ("Sword", "Folded Tripod")),
