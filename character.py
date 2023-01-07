@@ -91,3 +91,12 @@ class Character:
     def skill_total(self, skill_name):
         skill_tuple = self.skills[skill_name]
         return sum(skill_tuple)
+
+for character_data in characters_sheet:
+    handle = character_data[0]
+    locals()[handle.lower()] = Character(character_data)
+instances = locals()
+for name, value in instances.items():
+    if isinstance(value, Character):
+        print(name)
+
