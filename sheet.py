@@ -1,46 +1,131 @@
-"""
-Handle, Role
-INT, Accounting, Bureaucracy, Business, Composition,
-     Conceal/Reveal Object, Criminology, Cryptography, Deduction, 
-     Education, Library Search, Local Expert, Perception, Tactics, 
-     Tracking
-REF, Drive Land Vehicle, Handgun, Shoulder Arms
-DEX, Athletics, (Brawling, xd6), Evasion, Melee Weapon, Stealth
-TECH, Electronics/Security Tech, First Aid, Forgery, Paramedic, 
-      Photography/Film, Pick Lock, Pick Pocket, Play Instrument
-COOL, Acting, Bribery, Interrogation, Persuation, Streetwise, Trading,
-      Wardrobe & Style
-WILL, Concentration, Resist Torture/Drugs
-LUCK, MOVE, BODY
-EMP, Conversation, Human Perception
-HP, seriously_wounded, death_save
-Armor, SP
-Weapon 1, DMG xd6, Ammo, ROF, Notes
-Weapon 2, DMG xd6, Ammo, ROF, Notes
-Role Ability
-Cyberware 1, Cyberware 2
-Gear
-Portrait, Notes
-"""
-
-characters_sheet = (
-    ("Forty", "Rockerboy",
-    (5, 0, 0, 0, 6, 0, 0, 0, 0, 2, 0, 4, 2, 0, 0),
-    (6, 0, 6, 0),
-    (7, 2, (6, 1), 6, 6, 2),
-    (5, 0, 6, 0, 0, 0, 0, 0, 6),
-    (7, 0, 0, 0, 6, 6, 0, 4),
-    (8, 2, 0),
-    5, 7, 3,
-    (6, 2, 6),
-    40, 20, 3,
-    ("Light Armorjack", 11),
-    ("Very Heavy Pistol", 4, 8, 1, 6),
-    ("Heavy Melee Weapon", 3, None, 2, ("Sword", "Baseball Bat")),
-    ("Charismatic Impact", 2),
-    "Internal Agent", "Paint Editor Chipware",
-    ("Musical Instrument", "Pocket Amp", "Glow Paint", "Video Camera"),
-    "Ascii Portrait", "Notes"),
+characters = [
+    {
+        "handle": "Forty",
+        "role": "Rockerboy",
+        "stats": {
+            "int": 5,
+            "ref": 6,
+            "dex": 7,
+            "tech": 5,
+            "cool": 7,
+            "will": 8,
+            "luck": 5,
+            "move": 7,
+            "body": 3,
+            "emp": 6
+        },
+        "combat": {
+            "hp": 15,
+            "seriously_wounded": 10,
+            "death_save": 3
+        }, 
+        "skills": {
+            "accounting": [0, 0],
+            "acting": [0, 0],
+            "athletics": [7, 2],
+            "brawling": [7, 6, 1],
+            "bribery": [0, 0],
+            "bureaucracy": [0, 0],
+            "business": [0, 0],
+            "composition": [5, 6],
+            "conceal_reveal_object": [0, 0],
+            "concentration": [8, 2],
+            "conversation": [6, 2],
+            "criminology": [0, 0],
+            "cryptography": [0, 0],
+            "deduction": [0, 0],
+            "drive_land_vehicle": (0, 0),
+            "education": [5, 2],
+            "electronics_security_tech": [0, 0],
+            "evasion": [7, 6],
+            "first_aid": [5, 6],
+            "forgery": [0, 0],
+            "handgun": [6, 6],
+            "human_perception": [6, 6],
+            "interrogation": [0, 0],
+            "library_search": [0, 0],
+            "local_expert": [5, 4],
+            "melee_weapon": [7, 6],
+            "paramedic": [0, 0],
+            "perception": [5, 2],
+            "persuation": [7, 6],
+            "photography_film": [0, 0],
+            "pick_lock": [0, 0],
+            "pick_pocket": [0, 0],
+            "play_instrument": [5, 6],
+            "resist_torture_drugs": [0, 0],
+            "shoulder_arms": [0, 0],
+            "stealth": [7, 2],
+            "streetwise": [7, 6],
+            "tactics": [0, 0],
+            "tracking": [0, 0],
+            "trading": [0, 0],
+            "wardrobe_and_style": [7, 4]
+        },
+        "armor": {
+            "name": "Light Armorjack",
+            "sp": 11
+        },
+        "weapon": [
+            {
+                "name": "Very Heavy Pistol",
+                "dmg": 4,
+                "ammo": 8,
+                "rof": 1,
+                "notes": 16
+            },
+            {   "name": "Heavy Melee Weapon",
+                "dmg": 3,
+                "ammo": None,
+                "rof": 2
+                "notes": "sword/basball bat"
+            }, 
+        ],
+        "role_ability": {
+            "name": "Charismatic Impact",
+            "notes": """You know when someone is a fan and
+            receive a +2 to any EMP or COOL
+            based Skill Check made against them,
+            including Facedowns."""
+        },
+        "cyberware": [
+            {
+                "name": "Internal Agent",
+                "notes": """You have a self-adaptive AI-powered Smart Phone in your head, 
+                 controlled entirely by voice command"""
+            },
+            {  
+                "name": "Pain Editor Chipware",
+                "notes": """You can shut off your pain receptors, ignoring you to ignore the -2 to all
+                 Checks granted by the Seriously Wounded Wound State."""
+            }
+        ],
+        "gear": [
+            {   
+                "name": "Musical Instrument",
+                "note": "Player's choice"
+            },
+            {
+                "name": "Pocket Amp",
+                "note": "Amplifies musical instrument"
+            },
+            {
+                "name": "Glow Paint",
+                "note": "Glow in the dark spraypaint"
+            },
+            {
+                "name": "Video Camera",
+                "note": "Records up to 12 hours"
+            }
+        ],
+        "ascii_art": """
+                    /\_/\
+                   ( o.o )
+                     >^<
+                     """
+    },
+    # Add more character dictionaries here
+]
 
     ("Mover", "Solo",
     (7, 0, 0, 0, 0, 8, 0, 0, 0, 2, 0, 2, 8, 6, 0),
