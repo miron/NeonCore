@@ -39,14 +39,16 @@ class ActionManager(cmd.Cmd):
         sys.exit()
     def do_stats(self, arg):
         """Displays the character's stats."""
-        for stat, value in stats.items():
+        for stat, value in self.character.stats.items():
             print(f"{stat:.<26}{value:>2}")
     def do_skills(self, arg):
         """Displays the character's skills."""
-        skill_keys = list(skills.keys())
-        skill_values = list(skills.values())
-        skill_list = [(f'{skill_keys:.<26}{skill_values[0]:>2}')
-                        for skill_keys,skill_values in zip(skill_keys,skill_values)]
+        skill_keys = list(self.character.skills.keys())
+        skill_values = list(self.character.skills.values())
+        print(skill_keys)
+        print(skill_values)
+        skill_list = [(f'{key:.<26}{value[0]:>2}')
+                        for key, value in zip(skill_keys,skill_values)]
         self.columnize(skill_list, displaywidth=80)
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
