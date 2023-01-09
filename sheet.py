@@ -230,7 +230,14 @@ characters = [
                 "note": "A disposable phone"
             }
         ],
-        "ascii_art": "︻デ┳═ー"
+        "ascii_art": """
+          …
+         (˙}
+        /(\)\
+        \ᡕᠵ᠊╦╤÷─
+         7˘ \
+         |  ]
+         l  L"""
     },
     {
         "handle": "Torch",
