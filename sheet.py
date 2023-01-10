@@ -496,7 +496,7 @@ characters = [
            \∏ \   
            /˘\ ˘   
            ]  ]
-           L  L
+           l  L
            """
     },
     {
@@ -615,6 +615,13 @@ characters = [
                 "note": "Records up to 12 hours"
         ],
         "ascii_art": """
+       _  ¸¸
+      |\\(˚}
+       \∏(p)]
+        ˘¸v˛|
+         ] ]´        
+         { }
+         ∫ L
         """
     }
 ]
