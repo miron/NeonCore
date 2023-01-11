@@ -612,7 +612,6 @@ characters = [
                 "name": "Audio Recorder",
                 "note": "Records up to 24 hours"
             }
-                "note": "Records up to 12 hours"
         ],
         "ascii_art": """
        _  ¸¸
