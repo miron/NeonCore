@@ -145,9 +145,9 @@ class ActionManager(cmd.Cmd):
         for key, value in self.player.armor.items():
             print(f'{key:.<26}{value}')
         # Display weapon
-        print("\n--WEAPON--")
+        print("\n--WEAPONS--")
         for weapon in self.player.weapons:
-            for key, value in self.player.weapons.items():
+            for key, value in weapon.items():
                 print(f'{key:.<26}{value}')
         # Display role_ability
         print("\n--ROLE_ABILITY--")
