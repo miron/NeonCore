@@ -133,8 +133,33 @@ class ActionManager(cmd.Cmd):
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
-                        for key, value in zip(skill_keys,skill_values)]
+                        for key, value in zip(skill_keys,skill_values) if value[1!=0]]
+        
         self.columnize(skill_list, displaywidth=80)
+        # Display armor
+        print("\n--ARMOR--")
+        for key, value in self.player.armor.items():
+            print(f'{key:.<26}{value}')
+        # Display weapon
+        print("\n--WEAPON--")
+        for key, value in self.player.weapons.items():
+            print(f'{key:.<26}{value}')
+        # Display role_ability
+        print("\n--ROLE_ABILITY--")
+        for key, value in self.player.role_ability.items():
+            print(f'{key:.<26}{value}')
+        # Display cyberware
+        print("\n--CYBERWARE--")
+        for key, value in self.player.cyberware.items():
+            print(f'{key:.<26}{value}')
+        # Display gear
+        print("\n--GEAR--")
+        for key, value in self.player.gear.items():
+            print(f'{key:.<26}{value}')
+            # Display ascii_art
+        print(self.player.ascii_art)
+
+
 
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
