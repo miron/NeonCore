@@ -5,7 +5,7 @@ import time
 import cmd
 import sys
 from character import Character
-from sheet import characters_sheet
+from sheet import characters
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -137,7 +137,7 @@ class SkillCheck:
 #print(timestamp)
 
 if __name__ == "__main__":
-    for character_data in characters_sheet:
+    for character_data in characters:
         handle = character_data[0]
         locals()[handle.lower()] = Character(character_data)
     ActionManager(forty).cmdloop()
