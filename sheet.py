@@ -62,8 +62,8 @@ characters = [
             "trading": [7, 0],
             "wardrobe_and_style": [7, 4]
         },
-        "armor": {
-            "name": "Light Armorjack",
+        "defence": {
+            "armor": "Light Armorjack",
             "sp": 11
         },
         "weapons": [
@@ -194,8 +194,8 @@ characters = [
             "trading": [7, 0],
             "wardrobe_and_style": [7, 0]
         },
-        "armor": {
-            "name": "Light Armorjack",
+        "defene": {
+            "armor": "Light Armorjack",
             "sp": 11
         },
         "weapons": [
@@ -308,8 +308,8 @@ characters = [
             "trading": [3, 0],
             "wardrobe_and_style": [3, 0]
         },
-        "armor": {
-            "name": "Light Armorjack",
+        "defence": {
+            "armor": "Light Armorjack",
             "sp": 11
         },
         "weapons": [
@@ -433,8 +433,8 @@ characters = [
             "trading": [5, 0],
             "wardrobe_and_style": [5, 0]
         },
-        "armor": {
-            "name": "Light Armorjack",
+        "defence": {
+            "armor": "Light Armorjack",
             "sp": 11
         },
         "weapons": [
@@ -562,8 +562,8 @@ characters = [
             "trading": [8, 0],
             "wardrobe_and_style": [8, 0]
         },
-        "armor": {
-            "name": "Light Armorjack",
+        "defence": {
+            "defence": "Light Armorjack",
             "sp": 11
         },
         "weapons": [

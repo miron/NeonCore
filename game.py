@@ -122,7 +122,6 @@ class ActionManager(cmd.Cmd):
     
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
-        # Display handle and role
         print(f'HANDLE {self.player.handle} ROLE {self.player.role}')
         # Display stats
         stat_list = [(f'{key:.<10}{value:>2}')
@@ -132,7 +131,6 @@ class ActionManager(cmd.Cmd):
         combat_list = [(f'{key:.<20}{value:>2}')
                         for key, value in self.player.combat.items()]
         self.columnize(combat_list, displaywidth=80)
-        # Display skills
         print('SKILLS  ' + '/' * 72)
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
@@ -140,25 +138,20 @@ class ActionManager(cmd.Cmd):
                         for key, value in zip(skill_keys,skill_values) if value[1!=0]]
         
         self.columnize(skill_list, displaywidth=80)
-        # Display armor
-        print("ARMOR  //")
-        for key, value in self.player.armor.items():
+        # Display armor & weapons
+        print("WEAPONS & ARMOR  //")
+        for value in self.player.armor.values()):
             print(f'{key:.<26}{value}')
-        # Display weapons
-        print("WEAPONS  //")
         for weapon in self.player.weapons:
             for key, value in weapon.items():
                 print(f'{key:.<26}{value}')
-        # Display role_ability
-        print("ROLE_ABILITY  //")
+        print("ROLE ABILITY  //")
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
-        # Display cyberware
         print("CYBERWARE  //")
         for ware in self.player.cyberware:
             for key, value in ware.items():
                 print(f'{key:.<26}{value}')
-        # Display gear
         print("GEAR  //")
         for item in self.player.gear:
             for key, value in item.items():
