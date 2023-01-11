@@ -24,11 +24,13 @@ class ActionManager(cmd.Cmd):
     (help)   Available commands
     (quit)   Exit game"""
     prompt = '(CP) '
+
     def __init__(self, character):
         self.skill_check = SkillCheck(character)
         self.character = character
         # Call the __init__ method of the cmd.Cmd
         super().__init__()
+
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
         print('Thank you for playing')
@@ -37,10 +39,30 @@ class ActionManager(cmd.Cmd):
             # Save data to the database>
             dbase['timestamp'] = time.time()
         sys.exit()
+
+    def do_choose_character(self, arg):
+        """Prompts the player to choose a character and assigns the selected character to self.character"""
+        self.character = choose_character()
+
+    def choose_character():
+        print("Select a character:")
+        for i, character in enumerate(characters_list):
+            print(f"{i+1}. {character.handle}")
+
+        while True:
+            try:
+                choice = int(input())
+                if 1 <= choice <= len(characters_list):
+                    return characters_list[choice-1]
+            except ValueError:
+                pass
+            print("Invalid choice. Please choose a number between 1 and", len(characters_list))
+
     def do_stats(self, arg):
         """Displays the character's stats."""
         for stat, value in self.character.stats.items():
             print(f"{stat:.<26}{value:>2}")
+            
     def do_skills(self, arg):
         """Displays the character's skills."""
         skill_keys = list(self.character.skills.keys())
@@ -50,6 +72,7 @@ class ActionManager(cmd.Cmd):
         skill_list = [(f'{key:.<26}{value[0]:>2}')
                         for key, value in zip(skill_keys,skill_values)]
         self.columnize(skill_list, displaywidth=80)
+
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
         # parse the input to determine the number of luck points to spend
@@ -71,6 +94,7 @@ class SkillCheck:
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
+    
     def __init__(self, character):
         self.character = character
 
@@ -91,7 +115,6 @@ class SkillCheck:
             # subtract the luck points from the lucky pool
             self.character.lucky_pool -= luck_points
             return True
-
 
     def perform_check(self, skill_name, difficulty_value, luck_points):
         """
