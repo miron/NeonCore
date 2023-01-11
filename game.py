@@ -62,6 +62,11 @@ class ActionManager(cmd.Cmd):
         """Displays the character's stats."""
         for stat, value in self.character.stats.items():
             print(f"{stat:.<26}{value:>2}")
+
+        #stat_list = [(f'{key:.<26}{value:>2}')
+        #                for key, value in self.character.stats.items()]
+        #self.columnize(stat_list, displaywidth=80)
+
             
     def do_skills(self, arg):
         """Displays the character's skills."""
