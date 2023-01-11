@@ -12,8 +12,7 @@ class Character:
         self.cyberware = cyberware
         self.gear = gear
         self.ascii_art = ascii_art
-
-#        self.lucky_pool = self.stats["LUCK"]
+        self.lucky_pool = self.stats["luck"]
 
         self.lifepath = self.generate_lifepath()
     
