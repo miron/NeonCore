@@ -25,9 +25,12 @@ class ActionManager(cmd.Cmd):
     (quit)   Exit game"""
     prompt = '(CP) '
 
-    def __init__(self, character):
+    def __init__(self, characters_list):
         self.skill_check = SkillCheck(character)
-        self.character = character
+        self.characters_list = characters_list
+        self.player = None
+        self.npcs = None
+
         # Call the __init__ method of the cmd.Cmd
         super().__init__()
 
@@ -51,8 +54,9 @@ class ActionManager(cmd.Cmd):
             try:
                 choice = int(choice) - 1
                 if 0 <= choice < len(characters_list):
-                    self.character = characters_list[choice]
-                    character_summary(self.character)
+                    self.player = self.characters_list.pop(choice)
+                    #character_summary(self.player)
+                    self.npcs = self.characters_list
                     confirm = input("Confirm? y/n")
                     if confirm.lower() == 'y':
                         break
