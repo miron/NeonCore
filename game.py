@@ -141,24 +141,25 @@ class ActionManager(cmd.Cmd):
         
         self.columnize(skill_list, displaywidth=80)
         # Display armor
-        print("\n--ARMOR--")
+        print("--ARMOR--")
         for key, value in self.player.armor.items():
             print(f'{key:.<26}{value}')
-        # Display weapon
-        print("\n--WEAPONS--")
+        # Display weapons
+        print("--WEAPONS--")
         for weapon in self.player.weapons:
             for key, value in weapon.items():
                 print(f'{key:.<26}{value}')
         # Display role_ability
-        print("\n--ROLE_ABILITY--")
+        print("--ROLE_ABILITY--")
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
         # Display cyberware
-        print("\n--CYBERWARE--")
-        for key, value in self.player.cyberware.items():
-            print(f'{key:.<26}{value}')
+        print("--CYBERWARE--")
+        for ware in self.player.cyberwares:
+            for key, value in ware.items():
+                print(f'{key:.<26}{value}')
         # Display gear
-        print("\n--GEAR--")
+        print("--GEAR--")
         for key, value in self.player.gear.items():
             print(f'{key:.<26}{value}')
             # Display ascii_art
