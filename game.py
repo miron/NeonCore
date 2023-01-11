@@ -56,7 +56,7 @@ class ActionManager(cmd.Cmd):
                     self.player = self.characters_list.pop(choice)
                     #character_summary(self.player)
                     self.npcs = self.characters_list
-                    confirm = input("Confirm? y/n")
+                    confirm = input("Confirm? y/n: ")
                     if confirm.lower() == 'y':
                         break
             except ValueError:
