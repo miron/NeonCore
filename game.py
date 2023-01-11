@@ -41,15 +41,21 @@ class ActionManager(cmd.Cmd):
         sys.exit()
 
     def choose_character(self):
-        print("Select a character:")
-        for i, character in enumerate(characters_list):
-            print(f"{i+1}. {character.handle}")
-
         while True:
+            print("Select a character:")
+            characters_list = [f"{i+1}. {character.handle}" for i, character in enumerate(characters_list)]
+            self.columnize(characters_list, displaywidth=80)
+            choice = input("Enter the number of your choice or 'q' to quit: ")
+            if choice.lower() == 'q':
+                break
             try:
-                choice = int(input())
-                if 1 <= choice <= len(characters_list):
-                    return characters_list[choice-1]
+                choice = int(choice) - 1
+                if 0 <= choice < len(characters_list):
+                    self.character = characters_list[choice]
+                    character_summary(self.character)
+                    confirm = input("Confirm? y/n")
+                    if confirm.lower() == 'y':
+                        break
             except ValueError:
                 pass
             print("Invalid choice. Please choose a number between 1 and", len(characters_list))
