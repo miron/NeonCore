@@ -40,10 +40,6 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
-    def do_choose_character(self, arg):
-        """Prompts the player to choose a character and assigns the selected character to self.character"""
-        self.character = choose_character()
-
     def choose_character():
         print("Select a character:")
         for i, character in enumerate(characters_list):
@@ -57,6 +53,10 @@ class ActionManager(cmd.Cmd):
             except ValueError:
                 pass
             print("Invalid choice. Please choose a number between 1 and", len(characters_list))
+
+    def do_choose_character(self, arg):
+        """Prompts the player to choose a character and assigns the selected character to self.character"""
+        self.character = choose_character()
 
     def do_stats(self, arg):
         """Displays the character's stats."""
