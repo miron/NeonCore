@@ -1,13 +1,13 @@
 """Character Creator"""
 class Character:
-    def __init__(self, handle, role, stats, combat, skills, armor, weapon, role_ability, cyberware, gear, ascii_art):
+    def __init__(self, handle, role, stats, combat, skills, armor, weapons, role_ability, cyberware, gear, ascii_art):
         self.handle = handle
         self.role = role
         self.stats = stats
         self.combat = combat
         self.skills = skills
         self.armor = armor
-        self.weapon = weapon
+        self.weapons = weapons
         self.role_ability = role_ability
         self.cyberware = cyberware
         self.gear = gear

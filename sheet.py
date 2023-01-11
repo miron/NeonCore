@@ -66,7 +66,7 @@ characters = [
             "name": "Light Armorjack",
             "sp": 11
         },
-        "weapon": [
+        "weapons": [
             {
                 "name": "Very Heavy Pistol",
                 "dmg": 4,
@@ -198,7 +198,7 @@ characters = [
             "name": "Light Armorjack",
             "sp": 11
         },
-        "weapon": [
+        "weapons": [
             {
                 "name": "Shotgun",
                 "dmg": 5,
@@ -312,7 +312,7 @@ characters = [
             "name": "Light Armorjack",
             "sp": 11
         },
-        "weapon": [
+        "weapons": [
             {
                 "name": "Heavy Pistol",
                 "dmg": 3,
@@ -437,7 +437,7 @@ characters = [
             "name": "Light Armorjack",
             "sp": 11
         },
-        "weapon": [
+        "weapons": [
             {
                 "name": "Shotgun",
                 "dmg": 5,
@@ -566,7 +566,7 @@ characters = [
             "name": "Light Armorjack",
             "sp": 11
         },
-        "weapon": [
+        "weapons": [
             {
                 "name": "Heavy Pistol",
                 "dmg": 3,
