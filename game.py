@@ -23,7 +23,7 @@ class ActionManager(cmd.Cmd):
     (roll)   Roll skill check
     (help)   Available commands
     (quit)   Exit game"""
-    prompt = '(CP) '
+    prompt = 'ᐸ/> '
 
     def __init__(self, characters_list):
         self.characters_list = characters_list
