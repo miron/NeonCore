@@ -137,12 +137,9 @@ class SkillCheck:
 #print(timestamp)
 
 if __name__ == "__main__":
-    for character_data in characters:
-        handle = character_data[0]
-        locals()[handle.lower()] = Character(character_data)
-    ActionManager(forty).cmdloop()
-
-    instances = locals().copy()
-    for name, value in instances.items():
-        if isinstance(value, Character):
-            print(name)
+    characters_list = [Character(**char) for char in characters]
+    ActionManager(characters_list).cmdloop()
+   # instances = locals().copy()
+   # for name, value in instances.items():
+   #     if isinstance(value, Character):
+   #         print(name)
