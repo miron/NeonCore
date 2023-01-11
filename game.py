@@ -56,7 +56,7 @@ class ActionManager(cmd.Cmd):
 
     def do_choose_character(self, arg):
         """Prompts the player to choose a character and assigns the selected character to self.character"""
-        self.character = choose_character()
+        self.character = self.choose_character()
 
     def do_stats(self, arg):
         """Displays the character's stats."""
