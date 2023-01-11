@@ -122,11 +122,9 @@ class ActionManager(cmd.Cmd):
     
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
-        for stat, value in self.player.stats.items():
-            print(f"{stat:.<26}{value:>2}")
-        #stat_list = [(f'{key:.<26}{value:>2}')
-        #                for key, value in self.character.stats.items()]
-        #self.columnize(stat_list, displaywidth=80)
+        stat_list = [(f'{key:.<26}{value:>2}')
+                        for key, value in self.player.stats.items()]
+        self.columnize(stat_list, displaywidth=80)
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
