@@ -40,7 +40,7 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
-    def choose_character():
+    def choose_character(self):
         print("Select a character:")
         for i, character in enumerate(characters_list):
             print(f"{i+1}. {character.handle}")
