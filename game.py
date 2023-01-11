@@ -140,7 +140,7 @@ class ActionManager(cmd.Cmd):
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
         print("WEAPONS & ARMOR  //")
-        for value in self.player.defence.values()):
+        for key, value in self.player.defence.items():
             print(f'{key:.<26}{value}')
         for weapon in self.player.weapons:
             for key, value in weapon.items():
