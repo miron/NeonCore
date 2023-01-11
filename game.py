@@ -122,13 +122,17 @@ class ActionManager(cmd.Cmd):
     
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
+        # Display handle and role
         print(f'HANDLE {self.player.handle} ROLE {self.player.role}')
+        # Display stats
         stat_list = [(f'{key:.<10}{value:>2}')
                         for key, value in self.player.stats.items()]
         self.columnize(stat_list, displaywidth=80)
+        # Display combat
         combat_list = [(f'{key:.<20}{value:>2}')
                         for key, value in self.player.combat.items()]
         self.columnize(combat_list, displaywidth=80)
+        # Display skills
         print('SKILLS  ' + '/' * 72)
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
@@ -142,8 +146,9 @@ class ActionManager(cmd.Cmd):
             print(f'{key:.<26}{value}')
         # Display weapon
         print("\n--WEAPON--")
-        for key, value in self.player.weapons.items():
-            print(f'{key:.<26}{value}')
+        for weapon in self.player.weapons:
+            for key, value in self.player.weapons.items():
+                print(f'{key:.<26}{value}')
         # Display role_ability
         print("\n--ROLE_ABILITY--")
         for key, value in self.player.role_ability.items():
