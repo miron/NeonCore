@@ -108,10 +108,10 @@ class ActionManager(cmd.Cmd):
         """Encounter an NPC and assign the selected NPC to self.current_npc"""
         print("Select an NPC:")
         for i, npc in enumerate(self.npcs):
-            print(f"{i}. {npc.handle}")
+            print(f"{i+1}. {npc.handle}")
         while True:
             try:
-                npc_index = int(input())
+                npc_index = int(input()) - 1
                 if 0 <= npc_index < len(self.npcs):
                     self.current_npc = self.npcs[npc_index]
                     self.skill_check = SkillCheck(self.current_npc)
