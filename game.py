@@ -106,7 +106,7 @@ class ActionManager(cmd.Cmd):
 
     def do_encounter_npc(self, arg):
         """Encounter an NPC and assign the selected NPC to self.current_npc"""
-print("Select an NPC:")
+        print("Select an NPC:")
         for i, npc in enumerate(self.npcs):
             print(f"{i}. {npc.handle}")
         while True:
