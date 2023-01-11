@@ -45,7 +45,7 @@ class ActionManager(cmd.Cmd):
     def choose_character(self):
         while True:
             print("Select a character:")
-            characters_list = [f"{i+1}. {character.handle}" for i, character in enumerate(characters_list)]
+            characters_list = [f"{i+1}. {character.handle}" for i, character in enumerate(self.characters_list)]
             self.columnize(characters_list, displaywidth=80)
             choice = input("Enter the number of your choice or 'q' to quit: ")
             if choice.lower() == 'q':
