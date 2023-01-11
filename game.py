@@ -119,22 +119,16 @@ class ActionManager(cmd.Cmd):
             except ValueError:
                 pass
             print("Invalid choice. Please choose a number between 0 and", len(self.npcs)-1)
-
-    def do_stats(self, arg):
-        """Displays the character's stats."""
-        for stat, value in self.character.stats.items():
+    
+    def do_player_sheet(self, arg):
+        """Displays the character sheet"""
+        for stat, value in self.player.stats.items():
             print(f"{stat:.<26}{value:>2}")
-
         #stat_list = [(f'{key:.<26}{value:>2}')
         #                for key, value in self.character.stats.items()]
         #self.columnize(stat_list, displaywidth=80)
-            
-    def do_skills(self, arg):
-        """Displays the character's skills."""
-        skill_keys = list(self.character.skills.keys())
-        skill_values = list(self.character.skills.values())
-        print(skill_keys)
-        print(skill_values)
+        skill_keys = list(self.player.skills.keys())
+        skill_values = list(self.player.kills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
                         for key, value in zip(skill_keys,skill_values)]
         self.columnize(skill_list, displaywidth=80)
