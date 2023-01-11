@@ -105,10 +105,20 @@ class ActionManager(cmd.Cmd):
             print("Can't move in that direction")
 
     def do_encounter_npc(self, arg):
-    """Encounter an NPC and assign the selected NPC to self.current_npc"""
-    self.current_npc = self.npcs[x]
-    self.skill_check = SkillCheck(self.current_npc)
-    # Perform actions with self.current_npc and self.skill_check as needed
+        """Encounter an NPC and assign the selected NPC to self.current_npc"""
+print("Select an NPC:")
+        for i, npc in enumerate(self.npcs):
+            print(f"{i}. {npc.handle}")
+        while True:
+            try:
+                npc_index = int(input())
+                if 0 <= npc_index < len(self.npcs):
+                    self.current_npc = self.npcs[npc_index]
+                    self.skill_check = SkillCheck(self.current_npc)
+                    return
+            except ValueError:
+                pass
+            print("Invalid choice. Please choose a number between 0 and", len(self.npcs)-1)
 
     def do_stats(self, arg):
         """Displays the character's stats."""
