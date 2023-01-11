@@ -26,7 +26,6 @@ class ActionManager(cmd.Cmd):
     prompt = '(CP) '
 
     def __init__(self, characters_list):
-        self.skill_check = SkillCheck(character)
         self.characters_list = characters_list
         self.player = None
         self.npcs = None
@@ -67,6 +66,49 @@ class ActionManager(cmd.Cmd):
     def do_choose_character(self, arg):
         """Prompts the player to choose a character and assigns the selected character to self.character"""
         self.character = self.choose_character()
+        self.skill_check = SkillCheck(self.player)
+
+    def spawn_npcs(self, area):
+        """Randomly spawn NPCs in the specified area"""
+        # Determine the number of NPCs to spawn
+        num_npcs = random.randint(1, 5)
+        for i in range(num_npcs):
+            x, y = random.randint(1, area.width), random.randint(1, area.height)
+            if area.grid[x][y] == ".":
+                npc = self.npcs[random.randint(0, len(self.npcs)-1)]
+                area.grid[x][y] = npc
+                self.npcs.remove(npc)
+
+    def do_move(self, args):
+        """Move player in the specified direction"""
+        x, y = self.player.x, self.player.y
+        if args.lower() == 'up':
+            y -= 1
+        elif args.lower() == 'down':
+            y += 1
+        elif args.lower() == 'left':
+            x -= 1
+        elif args.lower() == 'right':
+            x += 1
+        # Check if the player can move in the specified direction
+        if (1 <= x <= self.area.width and 1 <= y <= self.area.height and
+                self.area.grid[x][y] != "#"):
+            # Update player's position
+            self.area.grid[self.player.x][self.player.y] = "."
+            self.player.x, self.player.y = x, y
+            self.area.grid[x][y] = self.player
+            if type(self.area.grid[x][y]) == Character: # npc encountered 
+                self.current_npc = self.area.grid[x][y]
+                self.skill_check = SkillCheck(self.current_npc)
+            print(self.area)
+        else:
+            print("Can't move in that direction")
+
+    def do_encounter_npc(self, arg):
+    """Encounter an NPC and assign the selected NPC to self.current_npc"""
+    self.current_npc = self.npcs[x]
+    self.skill_check = SkillCheck(self.current_npc)
+    # Perform actions with self.current_npc and self.skill_check as needed
 
     def do_stats(self, arg):
         """Displays the character's stats."""
@@ -76,7 +118,6 @@ class ActionManager(cmd.Cmd):
         #stat_list = [(f'{key:.<26}{value:>2}')
         #                for key, value in self.character.stats.items()]
         #self.columnize(stat_list, displaywidth=80)
-
             
     def do_skills(self, arg):
         """Displays the character's skills."""
