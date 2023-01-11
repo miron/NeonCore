@@ -160,8 +160,8 @@ class ActionManager(cmd.Cmd):
                 print(f'{key:.<26}{value}')
         # Display gear
         print("GEAR  //")
-        for item in self.player.gear.items():
-            for key, value in item:
+        for item in self.player.gear:
+            for key, value in item.items():
                 print(f'{key:.<26}{value}')
             # Display ascii_art
         print(self.player.ascii_art)
