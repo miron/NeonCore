@@ -128,7 +128,7 @@ class ActionManager(cmd.Cmd):
         #                for key, value in self.character.stats.items()]
         #self.columnize(stat_list, displaywidth=80)
         skill_keys = list(self.player.skills.keys())
-        skill_values = list(self.player.kills.values())
+        skill_values = list(self.player.skills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
                         for key, value in zip(skill_keys,skill_values)]
         self.columnize(skill_list, displaywidth=80)
