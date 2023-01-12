@@ -139,27 +139,22 @@ class ActionManager(cmd.Cmd):
         skill_values = list(self.player.skills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
                         for key, value in zip(skill_keys,skill_values) if value[1!=0]]
-        
+        skill_list.append(self.player.ascii_art)
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
         defence_list = ["WEAPONS & ARMOR  //"] +  [' '.join(self.player.defence.keys())] + [' '.join([str(row) for row in self.player.defence.values()])]
         weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join([str(val) for val in row.values()]) for row in self.player.weapons]
         for defence, weapon in zip(defence_list, weapons_list):
-            print(defence.ljust(40) + weapon.rjust(40))
+            print(defence.ljust(40) + weapon.ljust(40))
 
         print("ROLE ABILITY  " + "/" * 24 + "  CYBERWARE  " + "/" * 24 + "  GEAR")
         ability_list = [' '.join([row for row in self.player.role_ability.values()])]
-        ware_list = [(f'{ware["name"]:.<20}{ware["notes"]}')
-                        for ware in self.player.cyberware]
+        ware_list = [' '.join(row.values()) for row in self.player.cyberware]
         gear_list = [' '.join(self.player.gear[0].keys())] + [' '.join(row.values()) for row in self.player.gear]
         #gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
                         #for item in self.player.gear]
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
-            print(ability.ljust(40) + ware.rjust(40) + gear)
-        # Display ascii_art
-        print(self.player.ascii_art)
-
-
+            print(ability.ljust(25) + ware.ljust(25) + gear.ljust(25))
 
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
