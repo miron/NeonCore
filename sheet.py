@@ -84,23 +84,23 @@ characters = [
         "role_ability": {
             "name": "Charismatic Impact",
             "notes": """You know when someone is a fan and
-            receive a +2 to any EMP or COOL
-            based Skill Check made against them,
-            including Facedowns.
-            """
+receive a +2 to any EMP or COOL
+based Skill Check made against them,
+including Facedowns.
+"""
         },
         "cyberware": [
             {
                 "name": "Internal Agent",
                 "notes": """You have a self-adaptive AI-powered Smart Phone in your head, 
-                 controlled entirely by voice command.
-                 """
+controlled entirely by voice command.
+"""
             },
             {  
                 "name": "Pain Editor Chipware",
                 "notes": """You can shut off your pain receptors, ignoring you to ignore the -2 to all
-                 Checks granted by the Seriously Wounded Wound State.
-                 """
+Checks granted by the Seriously Wounded Wound State.
+"""
             }
         ],
         "gear": [
@@ -221,8 +221,8 @@ characters = [
             {
                 "name": "Image Enhance Cybereyes",
                 "notes": """Your eyes are better than human, giving you +2 to Perception and
-                 Conceal/Reveal Object Skills (already included above).
-                 """
+Conceal/Reveal Object Skills (already included above).
+"""
             },
             {  
                 "name": "Teleoptic Cybereye",
@@ -330,21 +330,21 @@ characters = [
         "role_ability": {
             "name": "Maker",
             "notes": """Your Electronics/Security Tech Skill
-            is boosted by +4 (already included above).
-            """
+is boosted by +4 (already included above).
+"""
         },
         "cyberware": [
             {
                 "name": "Tool Hand",
                 "notes": """Your fingers contain a screwdriver, wrench, small drill, and any other
-                tool you might need in the field.
-                """
+tool you might need in the field.
+"""
             },
             {  
                 "name": "Internal Agent",
                 "notes": """You have a self-adaptive AI-powered Smart Phone in your head,
-                controlled entirely by voice command.
-                """
+controlled entirely by voice command.
+"""
             }
         ],
         "gear": [
@@ -462,13 +462,14 @@ characters = [
             {
                 "name": "Tool Hand",
                 "notes": """Your fingers contain a screwdriver, wrench, small drill, and any other
-                tool you might neew in the field.
-                """
+tool you might neew in the field.
+"""
             },
             {  
                 "name": "Pain Editor Chipware",
                 "notes": """You can shut off your pain receptors, ignoring you to ignore the -2 to all
-                 Checks granted by the Seriously Wounded Wound State."""
+Checks granted by the Seriously Wounded Wound State.
+"""
             }
         ],
         "gear": [
@@ -584,23 +585,23 @@ characters = [
         "role_ability": {
             "name": "Credibility",
             "notes": """Once per hour, you may roll a 1d10.
-            If you roll higher than 4, you learn a
-            rumor pertinent to your current 
-            situation. 
-            """
+If you roll higher than 4, you learn a
+rumor pertinent to your current 
+situation. 
+"""
         },
         "cyberware": [
             {
                 "name": "Internal Agent",
                 "notes": """You have a self-adaptive AI-powered Smart Phone in your head, 
-                 controlled entirely by voice command.
-                 """
+controlled entirely by voice command.
+"""
             },
             {  
                 "name": "Image Enhance Cybereyes",
                 "notes": """Your eyes are better than human, giving yu a +2 to Perception and
-                Conceal/Reveal Object Skills (already included above).
-                """
+Conceal/Reveal Object Skills (already included above).
+"""
             }
         ],
         "gear": [
