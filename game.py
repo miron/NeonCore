@@ -142,11 +142,13 @@ class ActionManager(cmd.Cmd):
         
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
-        print("WEAPONS & ARMOR  //")
-        for key, value in zip(self.player.defence.keys(), self.player.defence.values()):
-                print(key, value)
-        weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join(str(row.values())) for row in self.player.weapons]
-        self.columnize(weapons_list, displaywidth=80)
+        defence_list = ["WEAPONS & ARMOR  //"] +  [' '.join(self.player.defence.keys())] + [' '.join([str(row) for row in self.player.defence.values()])]
+        #self.columnize(defence_list, displaywidth=40)
+        weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join([str(val) for val in row.values()]) for row in self.player.weapons]
+        for defence, weapon in zip(defence_list, weapons_list):
+            print(defence.ljust(40) + weapon.rjust(40))
+
+        #self.columnize(weapons_list, displaywidth=40)
         print("ROLE ABILITY  " + "/" * 24 + "  CYBERWARE  " + "/" * 24 + "  GEAR")
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
