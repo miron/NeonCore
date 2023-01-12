@@ -121,15 +121,14 @@ Checks granted by the Seriously Wounded Wound State.
                 "notes": "Records up to 12 hours"
             }
         ],
-        "ascii_art": """
-         ˛⁄_
-         \(∞l 
-          `••\˛_  
-            Y¸∆
-          ¸⁄∫\ 
-           / |   
-          ∫  l
-          """
+        "ascii_art": """˛⁄⁔
+ \(∞l
+  `••\˛_
+   Y¸∆
+ ¸⁄∫𐑘
+  / |
+ ∫  l
+ """
     },
     {
         "handle": "Mover",
