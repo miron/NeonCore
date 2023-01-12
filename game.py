@@ -37,7 +37,7 @@ class ActionManager(cmd.Cmd):
         """Exits Cyberpunk RED"""
         print("""
         Catch you on the flip side, choombatta.
-        Keep your chrome polished and your guns guns loaded,
+        Keep your chrome polished and your guns loaded,
         the neon jungle ain't no walk in the park.""")
         # Open database, create if it doesn't already exist
         with shelve.open('timestamp') as dbase:
@@ -92,7 +92,7 @@ class ActionManager(cmd.Cmd):
         elif args.lower() == 'left':
             x -= 1
         elif args.lower() == 'right':
-            x += 1
+in            x += 1
         # Check if the player can move in the specified direction
         if (1 <= x <= self.area.width and 1 <= y <= self.area.height and
                 self.area.grid[x][y] != "#"):
