@@ -35,7 +35,8 @@ class ActionManager(cmd.Cmd):
 
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
-        print("""Catch you on the flip side, choombatta.
+        print("""
+        Catch you on the flip side, choombatta.
         Keep your chrome polished and your guns guns loaded,
         the neon jungle ain't no walk in the park.""")
         # Open database, create if it doesn't already exist
