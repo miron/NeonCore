@@ -151,11 +151,9 @@ class ActionManager(cmd.Cmd):
         ability_list = [' '.join([row for row in self.player.role_ability.values()])]
         ware_list = [(f'{ware["name"]:.<20}{ware["notes"]}')
                         for ware in self.player.cyberware]
-        self.columnize(ware_list, displaywidth=40)
         gear_list = [' '.join(self.player.gear[0].keys())] + [' '.join(row.values()) for row in self.player.gear]
         #gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
                         #for item in self.player.gear]
-        self.columnize(gear_list, displaywidth=40)
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
             print(ability.ljust(40) + ware.rjust(40) + gear)
         # Display ascii_art
