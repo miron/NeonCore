@@ -153,8 +153,9 @@ class ActionManager(cmd.Cmd):
             for key, value in ware.items():
                 print(f'{key:.<26}{value}')
         print("GEAR  //")
-        gear_list = [(item["Name"], item["Notes"]) for item in self.player.gear]
-        self.columnize(gear_list, ["Name", "Notes"])
+        gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
+                        for item in self.player.gear]
+        self.columnize(gear_list, displaywidth=40)
         for item in self.player.gear:
             for key, value in item.items():
                 print(f'{key:.<26}{value}')
