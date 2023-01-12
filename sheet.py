@@ -106,19 +106,19 @@ characters = [
         "gear": [
             {   
                 "name": "Musical Instrument",
-                "note": "Player's choice"
+                "notes": "Player's choice"
             },
             {
                 "name": "Pocket Amp",
-                "note": "Amplifies musical instrument"
+                "notes": "Amplifies musical instrument"
             },
             {
                 "name": "Glow Paint",
-                "note": "Glow in the dark spraypaint"
+                "notes": "Glow in the dark spraypaint"
             },
             {
                 "name": "Video Camera",
-                "note": "Records up to 12 hours"
+                "notes": "Records up to 12 hours"
             }
         ],
         "ascii_art": """
@@ -232,7 +232,7 @@ characters = [
         "gear": [
             {   
                 "name": "Burner Phone",
-                "note": "A disposable phone"
+                "notes": "A disposable phone"
             }
         ],
         "ascii_art": """
@@ -350,15 +350,15 @@ characters = [
         "gear": [
             {   
                 "name": "Duct Tape",
-                "note": "Perfect for fixing anything"
+                "notes": "Perfect for fixing anything"
             },
             {
                 "name": "Flashlight",
-                "note": "100m/yd long bean of light"
+                "notes": "100m/yd long bean of light"
             },
             {
                 "name": "Road Flare",
-                "note": "Lights up a 100m/yd area"
+                "notes": "Lights up a 100m/yd area"
             }
         ],
         "ascii_art": """
@@ -474,19 +474,19 @@ characters = [
         "gear": [
             {   
                 "name": "Agent",
-                "note": "AI-powered smartphone"
+                "notes": "AI-powered smartphone"
             },
             {
                 "name": "Medtech Bag",
-                "note": "Full selection of medical tools"
+                "notes": "Full selection of medical tools"
             },
             {
                 "name": "Glow Paint",
-                "note": "Glow in the dark spraypaint"
+                "notes": "Glow in the dark spraypaint"
             },
             {
                 "name": "Flashlight",
-                "note": "100m/yd long beam of light"
+                "notes": "100m/yd long beam of light"
             }
         ],
         "ascii_art": """
@@ -606,11 +606,11 @@ characters = [
         "gear": [
             {   
                 "name": "Video Camera",
-                "note": "Records up to 12 hours"
+                "notes": "Records up to 12 hours"
             },
             {
                 "name": "Audio Recorder",
-                "note": "Records up to 24 hours"
+                "notes": "Records up to 24 hours"
             }
         ],
         "ascii_art": """
