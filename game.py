@@ -149,9 +149,9 @@ class ActionManager(cmd.Cmd):
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
         print("CYBERWARE  //")
-        for ware in self.player.cyberware:
-            for key, value in ware.items():
-                print(f'{key:.<26}{value}')
+        ware_list = [(f'{ware["name"]:.<20}{ware["notes"]}')
+                        for ware in self.player.cyberware]
+        self.columnize(ware_list, displaywidth=40)
         print("GEAR  //")
         gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
                         for item in self.player.gear]
