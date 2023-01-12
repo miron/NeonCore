@@ -139,7 +139,7 @@ class ActionManager(cmd.Cmd):
         skill_values = list(self.player.skills.values())
         skill_list = [(f'{key:.<26}{value[0]:>2}')
                         for key, value in zip(skill_keys,skill_values) if value[1!=0]]
-        skill_list.append(self.player.ascii_art)
+        skill_list += self.player.ascii_art.splitlines()
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
         defence_list = ["WEAPONS & ARMOR  //"] +  [' '.join(self.player.defence.keys())] + [' '.join([str(row) for row in self.player.defence.values()])]
