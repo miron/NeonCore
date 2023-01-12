@@ -194,7 +194,7 @@ characters = [
             "trading": [7, 0],
             "wardrobe_and_style": [7, 0]
         },
-        "defene": {
+        "defence": {
             "armor": "Light Armorjack",
             "sp": 11
         },
