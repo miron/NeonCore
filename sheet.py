@@ -83,42 +83,43 @@ characters = [
         ],
         "role_ability": {
             "name": "Charismatic Impact",
-            "notes": """You know when someone is a fan and
-receive a +2 to any EMP or COOL
-based Skill Check made against them,
-including Facedowns.
+            "notes": """You know when someone is a
+fan and receive a +2 to any
+EMP or COOL based Skill
+Check made against them,
+including Facedowns
 """
         },
         "cyberware": [
             {
                 "name": "Internal Agent",
-                "notes": """You have a self-adaptive AI-powered Smart Phone in your head, 
-controlled entirely by voice command.
+                "notes": """AI-powered Smart Phone in
+your head, controlled by voice
 """
             },
             {  
                 "name": "Pain Editor Chipware",
-                "notes": """You can shut off your pain receptors, ignoring you to ignore the -2 to all
-Checks granted by the Seriously Wounded Wound State.
+                "notes": """Shut off pain receptors,
+ignore -2 Seriously Wounded
 """
             }
         ],
         "gear": [
             {   
-                "name": "Musical Instrument",
-                "notes": "Player's choice"
+                "name": "Instrument",
+                "notes": "Choose"
             },
             {
-                "name": "Pocket Amp",
-                "notes": "Amplifies musical instrument"
+                "name": "Amp",
+                "notes": "Amplifies instrument"
             },
             {
-                "name": "Glow Paint",
-                "notes": "Glow in the dark spraypaint"
+                "name": "Spraypaint",
+                "notes": "Glow in dark"
             },
             {
                 "name": "Video Camera",
-                "notes": "Records up to 12 hours"
+                "notes": "12 hours"
             }
         ],
         "ascii_art": """ ˛⁄⁔

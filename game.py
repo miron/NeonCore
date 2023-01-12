@@ -146,15 +146,16 @@ class ActionManager(cmd.Cmd):
         weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join([str(val) for val in row.values()]) for row in self.player.weapons]
         for defence, weapon in zip(defence_list, weapons_list):
             print(defence.ljust(40) + weapon.ljust(40))
-
         print("ROLE ABILITY  " + "/" * 24 + "  CYBERWARE  " + "/" * 24 + "  GEAR")
-        ability_list = [' '.join([row for row in self.player.role_ability.values()])]
-        ware_list = [' '.join(row.values()) for row in self.player.cyberware]
+        ability_list = list(self.player.role_ability.values())
+        ability_list = [row.splitlines() for row in ability_list]
+        ability_list = [item for sublist in ability_list for item in sublist]
+        ware_list = [value for row in self.player.cyberware for key, value in row.items()]
+        ware_list = [row.splitlines() for row in ware_list]
+        ware_list = [item for sublist in ware_list for item in sublist]
         gear_list = [' '.join(self.player.gear[0].keys())] + [' '.join(row.values()) for row in self.player.gear]
-        #gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
-                        #for item in self.player.gear]
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
-            print(ability.ljust(25) + ware.ljust(25) + gear.ljust(25))
+            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
 
     def do_use_luck(self, arg):
         """Spends luck points on a skill check."""
