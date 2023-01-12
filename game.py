@@ -92,7 +92,7 @@ class ActionManager(cmd.Cmd):
         elif args.lower() == 'left':
             x -= 1
         elif args.lower() == 'right':
-in            x += 1
+            x += 1
         # Check if the player can move in the specified direction
         if (1 <= x <= self.area.width and 1 <= y <= self.area.height and
                 self.area.grid[x][y] != "#"):
