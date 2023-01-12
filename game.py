@@ -148,14 +148,12 @@ in            x += 1
         for weapon in self.player.weapons:
             for key, value in weapon.items():
                 print(f'{key:.<26}{value}')
-        print("ROLE ABILITY  //")
+        print("ROLE ABILITY  " + "/" * 24 + "  CYBERWARE  " + "/" * 24 + "  GEAR")
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
-        print("CYBERWARE  //")
         ware_list = [(f'{ware["name"]:.<20}{ware["notes"]}')
                         for ware in self.player.cyberware]
         self.columnize(ware_list, displaywidth=40)
-        print("GEAR  //")
         gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
                         for item in self.player.gear]
         self.columnize(gear_list, displaywidth=40)
