@@ -154,8 +154,9 @@ class ActionManager(cmd.Cmd):
         ware_list = [(f'{ware["name"]:.<20}{ware["notes"]}')
                         for ware in self.player.cyberware]
         self.columnize(ware_list, displaywidth=40)
-        gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
-                        for item in self.player.gear]
+        gear_list = [' '.join(self.player.gear[0].keys())] + [' '.join(row.values()) for row in self.player.gear]
+        #gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
+                        #for item in self.player.gear]
         self.columnize(gear_list, displaywidth=40)
         for item in self.player.gear:
             for key, value in item.items():
