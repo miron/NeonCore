@@ -143,11 +143,10 @@ class ActionManager(cmd.Cmd):
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
         print("WEAPONS & ARMOR  //")
-        for key, value in self.player.defence.items():
-            print(f'{key:.<26}{value}')
-        for weapon in self.player.weapons:
-            for key, value in weapon.items():
-                print(f'{key:.<26}{value}')
+        for key, value in zip(self.player.defence.keys(), self.player.defence.values()):
+                print(key, value)
+        weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join(str(row.values())) for row in self.player.weapons]
+        self.columnize(weapons_list, displaywidth=80)
         print("ROLE ABILITY  " + "/" * 24 + "  CYBERWARE  " + "/" * 24 + "  GEAR")
         for key, value in self.player.role_ability.items():
             print(f'{key:.<26}{value}')
@@ -158,10 +157,7 @@ class ActionManager(cmd.Cmd):
         #gear_list = [(f'{item["name"]:.<20} {item["notes"]:>20}')
                         #for item in self.player.gear]
         self.columnize(gear_list, displaywidth=40)
-        for item in self.player.gear:
-            for key, value in item.items():
-                print(f'{key:.<26}{value}')
-            # Display ascii_art
+        # Display ascii_art
         print(self.player.ascii_art)
 
 
