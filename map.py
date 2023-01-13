@@ -27,7 +27,6 @@ def main(stdscr, curses, player, npcs):
     "### ####  ###   ")
 
     # Spawn the player and NPCs randomly on the map
-#    while True:
     empty_positions = []
     for y, row in enumerate(map_data):
         for x, cell in enumerate(row):
@@ -48,9 +47,8 @@ def main(stdscr, curses, player, npcs):
                 stdscr.addch(y_axis, x_axis, cell)
         stdscr.addch(player_y, player_x, '@', player_color)
         for npc in npcs:
-           stdscr.addch(npc.y, npc.x, 'N', npc_color)
-
         # Draw the NPCs on the map
+            stdscr.addch(npc.y, npc.x, 'N', npc_color)
 
         key = stdscr.getch()
         new_x = player_x
