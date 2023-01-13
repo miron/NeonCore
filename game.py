@@ -17,12 +17,17 @@ DIFFICULTY_VALUE = {
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
-    intro = """--- RPG Cyberpunk RED Universe ---
-    (stats)  View character stats
-    (skills) View character skills
-    (roll)   Roll skill check
-    (help)   Available commands
-    (quit)   Exit game"""
+    intro = """     ᐸ ソ ╱> /Ξ /≥ /> // /𐑘/ /ᐸ
+                     ‾
+   …   ˛⁄⁔      ˛⁔     ⁔  _  ¸¸
+  (˙}  \(∞l   ,, {˚)/ ¸{=}˛|\\\(˚}
+ /(\)╲  `••\˛_ \/(⎔◊𐑘 (\+/) \∏(p)]
+ \ᢘ╦╤═÷- Y¸∆     ¸U˛   \Ξ˛\  ´¸v˛|
+  7˘ 𐑘 ¸⁄∫𐑘      [][]   7 𐑘 `  [ ]´
+  ]  ]  / |      [ [   ]  ]   { }
+  l  L ∫  l      ɺ[ɺ]  l  L   ɺ L 
+    /help/   Available commands
+"""
     prompt = 'ᐸ/> '
 
     def __init__(self, characters_list):
@@ -36,9 +41,9 @@ class ActionManager(cmd.Cmd):
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
         print("""
-        Catch you on the flip side, choombatta.
-        Keep your chrome polished and your guns loaded,
-        the neon jungle ain't no walk in the park.""")
+ Catch you on the flip side, choombatta.
+ Keep your chrome polished and your guns loaded,
+ the neon jungle ain't no walk in the park.""")
         # Open database, create if it doesn't already exist
         with shelve.open('timestamp') as dbase:
             # Save data to the database>
