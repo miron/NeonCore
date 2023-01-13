@@ -94,7 +94,7 @@ including Facedowns
             {
                 "name": "Internal Agent",
                 "notes": """AI-powered Smart Phone in
-your head, controlled by voice
+your head, voice controlled
 """
             },
             {  
