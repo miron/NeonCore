@@ -13,6 +13,8 @@ class Character:
         self.gear = gear
         self.ascii_art = ascii_art
         self.lucky_pool = self.stats["luck"]
+        self.x = None
+        self.y = None
 
         self.lifepath = self.generate_lifepath()
     
