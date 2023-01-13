@@ -66,10 +66,13 @@ def main(stdscr, curses, player, npcs):
         # Check if the new position is within the bounds of the map
         if (new_x >= 0 and new_x < len(map_data[0]) and new_y >= 0 and new_y < len(map_data)):
             # Check for collision with walls
-            if map_data[new_y][new_x] !='#':
-                if type(map_data[new_y][new_x]) == npc: # npc encountered 
-                    skill_check = SkillCheck(npc)
+            if map_data[new_y][new_x] == ' ':
+                for npc in npcs:
+                    if (npc.x, npc.y) == (new_x, new_y): # npc encountered 
+                        skill_check = SkillCheck(player)
+                        skill_check.handle_npc_encounter(npc)
                 player_x = new_x
                 player_y = new_y
+
 
 

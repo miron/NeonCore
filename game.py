@@ -137,14 +137,6 @@ class ActionManager(cmd.Cmd):
             #    gear = "\033[1m" + gear + "\033[0m"
             print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
 
-    def do_use_luck(self, arg):
-        """Spends luck points on a skill check."""
-        # parse the input to determine the number of luck points to spend
-        luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
-        if self.skill_check.use_luck(luck_points):
-            self.skill_check.perform_check('Acting', 'Professional', luck_points)
-        print(f"Lucky Pool: {self.character.lucky_pool}")
-
 class SkillCheck:
     """
     Attacker vs Defender
@@ -162,7 +154,7 @@ class SkillCheck:
     def __init__(self, character):
         self.character = character
 
-    def use_luck(self, luck_points):
+    def handle_npc_encounter(self, npc):
         """
         Spends a specified number of luck points on a skill check.
 
@@ -172,13 +164,15 @@ class SkillCheck:
         Returns:
         None
         """
+        curses.endwin()
+        luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
         if luck_points > self.character.lucky_pool:
             print("Not enough luck points!")
-            return False
         else:
+            self.perform_check('brawling', 'Professional', luck_points)
             # subtract the luck points from the lucky pool
             self.character.lucky_pool -= luck_points
-            return True
+        print(f"Lucky Pool: {self.character.lucky_pool}")
 
     def perform_check(self, skill_name, difficulty_value, luck_points):
         """
@@ -215,6 +209,7 @@ class SkillCheck:
         else:
             print(f"Tie! Attacker roll: {skill_check_total}, Defender DV: {difficulty_value}")
             print("Attacker loses.")
+
 
 
 # Open a shelve in read mode
