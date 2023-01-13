@@ -1,5 +1,6 @@
 """Character Movement on ASCII Map"""
 import curses
+import random
 
 def main(stdscr):
     """wrapped for debugging, will be replaced by curses.endwin()"""
@@ -24,9 +25,14 @@ def main(stdscr):
     "### ####  ###   "
 )
 
-    # Set the initial position of the player character
-    player_x = 4
-    player_y = 2
+    # Spawn the player randomly on the map
+    while True:
+        player_x = random.randint(0, len(map_data[0]) - 1)
+        player_y = random.randint(0, len(map_data) - 1)
+        if map_data[player_y][player_x] != "#":
+            #player.x =  player_x
+            #player.y =  player_y
+            break
 
     # Wait for user input to move the player character
     while True:
