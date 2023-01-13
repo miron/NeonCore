@@ -81,11 +81,6 @@ class ActionManager(cmd.Cmd):
     def do_move(self, args):
         """Move player in the specified direction"""
         curses.wrapper(map.main, curses, self.player, self.npcs)
-        # Check if the player can move in the specified direction
-        if type(self.area.grid[x][y]) == Character: # npc encountered 
-            self.current_npc = self.area.grid[x][y]
-            self.skill_check = SkillCheck(self.current_npc)
-        print(self.area)
 
     def do_encounter_npc(self, arg):
         """Encounter an NPC and assign the selected NPC to self.current_npc"""

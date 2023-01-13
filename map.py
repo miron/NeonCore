@@ -1,5 +1,6 @@
 """Character Movement on ASCII Map"""
 import random
+from game import SkillCheck
 
 def main(stdscr, curses, player, npcs):
     """wrapped for debugging, will be replaced by curses.endwin()"""
@@ -36,6 +37,8 @@ def main(stdscr, curses, player, npcs):
     random.shuffle(empty_positions)
     player_x, player_y = empty_positions.pop()
     npc_positions = empty_positions[:len(npcs)]
+    for npc in npcs:
+        npc.x, npc.y  = empty_positions.pop()
 
     # Wait for user input to move the player character
     while True:
@@ -45,7 +48,6 @@ def main(stdscr, curses, player, npcs):
                 stdscr.addch(y_axis, x_axis, cell)
         stdscr.addch(player_y, player_x, '@', player_color)
         for npc in npcs:
-           npc.x, npc.y  = empty_positions.pop()
            stdscr.addch(npc.y, npc.x, 'N', npc_color)
 
         # Draw the NPCs on the map
@@ -67,7 +69,9 @@ def main(stdscr, curses, player, npcs):
         if (new_x >= 0 and new_x < len(map_data[0]) and new_y >= 0 and new_y < len(map_data)):
             # Check for collision with walls
             if map_data[new_y][new_x] !='#':
-                # Update the player position
+                if type(map_data[new_y][new_x]) == npc: # npc encountered 
+                    skill_check = SkillCheck(npc)
                 player_x = new_x
                 player_y = new_y
+
 
