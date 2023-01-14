@@ -1,7 +1,6 @@
 """Character Movement on ASCII Map"""
 import random
 from game import SkillCheck
-
 def main(stdscr, curses, player, npcs):
     """wrapped for debugging, will be replaced by curses.endwin()"""
     curses.curs_set(False)  # hide the cursor
@@ -71,11 +70,10 @@ def main(stdscr, curses, player, npcs):
                     for npc in npcs:
                         if (npc.x, npc.y) == (new_x, new_y): # npc encountered 
                             skill_check = SkillCheck(player)
+                            curses.endwin()
                             skill_check.handle_npc_encounter(npc)
                     player_x = new_x
                     player_y = new_y
     except StopIteration:
         pass
-
-
 

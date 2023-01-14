@@ -1,14 +1,14 @@
 """A Role Playing Game in the Cyberpunk RED Universe"""
+import cmd
+import os
+import sys
 import random
 import shelve
 import time
-import cmd
-import sys
 from character import Character
 from sheet import characters
 import curses
-import map
-import os
+import map 
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -45,6 +45,28 @@ class ActionManager(cmd.Cmd):
         """ Shell commands can be added here prefixed with !"""
         pass
         os.system('clear')
+
+    def precmd(self, line):
+        os.system('clear')
+        print( '\033[24;0H')
+        return super().precmd(line)
+
+    #def postcmd(self, stop, line):
+    #    # Get the number of rows in the output
+    #    rows, _ = os.popen('stty size', 'r').read().split()
+    #    # Move the cursor to the correct position
+    #    print(f'\033[{int(rows)}H')
+    #    return stop
+
+   # def postcmd(self, stop, line):
+   #     # Get the size of the terminal window
+   #     rows, cols = self.stdscr.getmaxyx()
+   #     # Move the cursor to the 24th row (0-indexed)
+   #     self.stdscr.move(24, 0)
+   #     # Refresh the terminal window
+   #     self.stdscr.refresh()
+   #     return cmd.Cmd.postcmd(self, stop, line)
+
 
     def default(self, line):
         print("WTF dat mean, ain't no command like dat")
@@ -85,7 +107,6 @@ class ActionManager(cmd.Cmd):
     def do_choose_character(self, arg):
         """Prompts the player to choose a character and assigns the selected character to self.character"""
         self.character = self.choose_character()
-        self.skill_check = SkillCheck(self.player)
 
     def do_move(self, args):
         """Move player in the specified direction"""
@@ -171,7 +192,6 @@ class SkillCheck:
         luck_points (int): The number of luck points to spend on the skill check.
         """
         while True:
-            curses.endwin()
             luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
             if luck_points > self.character.lucky_pool:
                 print("Not enough luck points!")
@@ -180,7 +200,7 @@ class SkillCheck:
                 # subtract the luck points from the lucky pool
                 self.character.lucky_pool -= luck_points
                 print(f"Lucky Pool: {self.character.lucky_pool}")
-                breakj
+                break
         raise StopIteration
 
     def perform_check(self, skill_name, difficulty_value, luck_points):
