@@ -131,7 +131,7 @@ class ActionManager(cmd.Cmd):
         """Displays the character sheet"""
         print(f"HANDLE \033[1;3;35m{self.player.handle:⌁^33} \033[0mROLE \033[1;3;35m{self.player.role:⌁^33}\033[0m")
         # Display stats
-        stat_list = [(f'{key:⌁<12}{value:>2}')
+        stat_list = [(f'{key:⌁<12}{self.player.lucky_pool}/{value}' if key == 'luck' else f'{key:⌁<12}{value:>2}')
                         for key, value in self.player.stats.items()]
         self.columnize(stat_list, displaywidth=80)
         # Display combat

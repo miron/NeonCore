@@ -2,12 +2,9 @@
 import random
 import curses
 from game import SkillCheck
-
-stdscr = curses.initscr()
-curses.noecho()
-
 def main(player, npcs):
-    """wrapped for debugging, will be replaced by curses.endwin()"""
+    stdscr = curses.initscr()
+    curses.noecho()
     curses.start_color()
     curses.curs_set(False)  # hide the cursor
     curses.init_color(0, 0, 0, 0)
@@ -15,7 +12,6 @@ def main(player, npcs):
     curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
     player_color = curses.color_pair(1)
     npc_color = curses.color_pair(2)
-
 
     # Set up the map
     map_data= (
@@ -82,4 +78,4 @@ def main(player, npcs):
                     player_y = new_y
     except StopIteration:
         pass
-curses.endwin()
+    curses.endwin()
