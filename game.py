@@ -8,6 +8,7 @@ from character import Character
 from sheet import characters
 import curses
 import map
+import os
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -28,17 +29,25 @@ class ActionManager(cmd.Cmd):
   7˘ 𐑘 ¸⁄∫𐑘      [][]   7 𐑘 `  [ ]´
   ]  ]  / |      [ [   ]  ]   { }
   l  L ∫  l      ɺ[ɺ]  l  L   ɺ L 
-    /help/   Available commands
+    ⌁help⌁   give me the 411
 """
     prompt = 'ᐸ/> '
+    ruler = '⌁'
+    doc_header = "Recorded jive (type help <jargon>):"
 
     def __init__(self, characters_list):
+        super().__init__()
         self.characters_list = characters_list
         self.player = None
         self.npcs = None
 
-        # Call the __init__ method of the cmd.Cmd
-        super().__init__()
+    def do_shell(self, arg):
+        """ Shell commands can be added here prefixed with !"""
+        pass
+        os.system('clear')
+
+    def default(self, line):
+        print("WTF dat mean, ain't no command like dat")
 
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
@@ -220,6 +229,7 @@ class SkillCheck:
 
 if __name__ == "__main__":
     characters_list = [Character(**char) for char in characters]
+    os.system('clear')
     ActionManager(characters_list).cmdloop()
    # instances = locals().copy()
    # for name, value in instances.items():
