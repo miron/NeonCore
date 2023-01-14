@@ -175,16 +175,16 @@ class Lifepath:
                 10: "You are the inheritor of a family debt, you must honor this debt before moving on with your life.",
             },
 			'life_goals': {
-				1: "Get rid of a bad reputation",
-				2: "Gain power and control",
-				3: "Get off The Street no matter what it takes",
-				4: "Cause pain and suffering to anyone who crosses you",
-				5: "Live down your past life and try to forget it",
-				6: "Hunt down those responsible for your miserable life and make them pay",
-				7: "Get what's rightfully yours",
-				8: "Save, if possible, anyone else involved in your background, like a lover, or family member",
-				9: "Gain fame and recognition",
-				10: "Become feared and respected"
+                1: "Get rid of a bad reputation",
+                2: "Gain power and control",
+                3: "Get off The Street no matter what it takes",
+                4: "Cause pain and suffering to anyone who crosses you",
+                5: "Live down your past life and try to forget it",
+                6: "Hunt down those responsible for your miserable life and make them pay",
+                7: "Get what's rightfully yours",
+                8: "Save, if possible, anyone else involved in your background, like a lover, or family member",
+                9: "Gain fame and recognition",
+                10: "Become feared and respected"
 			}
         }
         self.friends = {}
