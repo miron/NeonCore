@@ -28,9 +28,7 @@ class Character:
         self.family_crisis = self.lifepath.roll('family_crisis')
         self.friends = self.lifepath.get_friends()
         self.enemies = self.lifepath.get_enemies()
-
-        
-
+        self.life_goals = self.lifepath.roll('life_goals')
 
     def skill_total(self, skill_name):
         skill_tuple = self.skills[skill_name]
@@ -38,7 +36,6 @@ class Character:
 
 class Lifepath:
     def __init__(self):
-        self.friends = {}
         self.tables = {
             'cultural_regions': {
                 1: "North American",
@@ -88,17 +85,17 @@ class Lifepath:
                 9: "Short and curly",
                 10: "Long and straight" 
             },
-           'value': {
-                    1: "Money",
-                    2: "Honor",
-                    3: "Your word",
-                    4: "Honesty",
-                    5: "Knowledge",
-                    6: "Vengeance",
-                    7: "Love",
-                    8: "Power",
-                    9: "Family",
-                    10: "Friendship"
+            'value': {
+                1: "Money",
+                2: "Honor",
+                3: "Your word",
+                4: "Honesty",
+                5: "Knowledge",
+                6: "Vengeance",
+                7: "Love",
+                8: "Power",
+                9: "Family",
+                10: "Friendship"
             },
             'traits': {
                 1: "I stay neutral.",
@@ -147,21 +144,38 @@ class Lifepath:
                 8: "Your family was scattered to the winds due to relegation.",
                 9: "Your family is cursed with a hereditary feud that has lasted for generations.",
                 10: "You are the inheritor of a family debt, you must honor this debt before moving on with your life.",
-            }
-
+            },
+			'life_goals': {
+				1: "Get rid of a bad reputation",
+				2: "Gain power and control",
+				3: "Get off The Street no matter what it takes",
+				4: "Cause pain and suffering to anyone who crosses you",
+				5: "Live down your past life and try to forget it",
+				6: "Hunt down those responsible for your miserable life and make them pay",
+				7: "Get what's rightfully yours",
+				8: "Save, if possible, anyone else involved in your background, like a lover, or family member",
+				9: "Gain fame and recognition",
+				10: "Become feared and respected"
+			}
         }
+        self.friends = {}
         self.enemies_list = {
-               "Who": ["Ex-friend", "Ex-lover", "Estranged relative", "Childhood enemy",
+            "Who": ["Ex-friend", "Ex-lover", "Estranged relative", "Childhood enemy",
                    "Person working for you", "Person you work for", "Partner or coworker",
                "Corporate exec", "Government official", "Boosterganger"],
-                "What caused it": ["Caused the other to lose face or status.", "Caused the loss of lover, friend, or relative.", 
+            "What caused it": ["Caused the other to lose face or status.", "Caused the loss of lover, friend, or relative.", 
 "Caused a major public humiliation.", "Accused the other of cowardice or some other major personal flaw.", "Deserted or betrayed the other.",
 "Turned down the other's offer of a job or romantic involvement.", "You just don't like each other.", "One of you was a romantic rival.",
 "One of you was a business rival.", "One of you set the other up for a crime they didn't commit"],
-                "What happens": ['Avoid the scum.', 'Avoid the scum.','Go into a murderous rage and try to physically rip their face off.',
+            "What happens": ['Avoid the scum.', 'Avoid the scum.','Go into a murderous rage and try to physically rip their face off.',
 'Go into a murderous rage and try to physically rip their face off.', 'Backstab them indirectly.', 'Backstab them indirectly.', 'Verbally attack them.', 'Verbally attack them.', 'Set them up for a crime or other transgression they didn\'t commit.', 
 'Set out to murder or maim them.']
-}
+        }  
+
+    def roll(self, table_name):
+        table = self.tables[table_name]
+        roll = random.randint(1, 10)
+        return table[roll]
 
     def get_friends(self):
         friend_types = {
@@ -182,7 +196,6 @@ class Lifepath:
             friend_type = random.randint(1, 10)
             self.friends[f"Friend {i+1}"] = friend_types[friend_type]
 
-
     def get_enemies(self):
         num_enemies = max(0, random.randint(1, 10) - 7)
         enemies = []
@@ -194,11 +207,22 @@ class Lifepath:
             enemies.append(enemy)
         return enemies
 
-    def roll(self, table_name):
-        table = self.tables[table_name]
-        roll = random.randint(1, 10)
-        return table[roll]
+    def get_lovers(self):
+        tragic_love_affair = {
+            1: "Your lover died in an accident.",
+            2: "Your lover mysteriously vanished.",
+            3: "It just didn't work out.",
+            4: "A personal goal or vendetta came between you and your lover.",
+            5: "Your lover was kidnapped.",
+            6: "Your lover went insane or cyberpsycho.",
+            7: "Your lover committed suicide.",
+            8: "Your lover was killed in a fight.",
+            9: "A rival cut you out of the action.",
+            10: "Your lover is imprisoned or exiled."
+        }
 
-
-
+        num_lovers = max(0, random.randint(1, 10) - 7)
+        for i in range(num_lovers):
+            love_tragedy = random.randint(1, 10)
+            self.lovers[f'Lover {i+1}'] = tragic_love_afair[love_tragedy]
 
