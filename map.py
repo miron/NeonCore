@@ -1,8 +1,14 @@
 """Character Movement on ASCII Map"""
 import random
+import curses
 from game import SkillCheck
-def main(stdscr, curses, player, npcs):
+
+stdscr = curses.initscr()
+curses.noecho()
+
+def main(player, npcs):
     """wrapped for debugging, will be replaced by curses.endwin()"""
+    curses.start_color()
     curses.curs_set(False)  # hide the cursor
     curses.init_color(0, 0, 0, 0)
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
@@ -76,4 +82,4 @@ def main(stdscr, curses, player, npcs):
                     player_y = new_y
     except StopIteration:
         pass
-
+curses.endwin()

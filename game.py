@@ -7,7 +7,6 @@ import shelve
 import time
 from character import Character
 from sheet import characters
-import curses
 import map 
 
 DIFFICULTY_VALUE = {
@@ -48,7 +47,7 @@ class ActionManager(cmd.Cmd):
 
     def precmd(self, line):
         os.system('clear')
-        print( '\033[24;0H')
+        #print( '\033[24;0H')
         return super().precmd(line)
 
     #def postcmd(self, stop, line):
@@ -110,7 +109,7 @@ class ActionManager(cmd.Cmd):
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        curses.wrapper(map.main, curses, self.player, self.npcs)
+        map.main(self.player, self.npcs)
 
     def do_encounter_npc(self, arg):
         """Encounter an NPC and assign the selected NPC to self.current_npc"""
@@ -192,7 +191,7 @@ class SkillCheck:
         luck_points (int): The number of luck points to spend on the skill check.
         """
         while True:
-            luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
+            luck_points = int(input(f'Use LUCK {self.character.lucky_pool}/{self.character.stats["luck"]} '))
             if luck_points > self.character.lucky_pool:
                 print("Not enough luck points!")
             else:
