@@ -110,16 +110,44 @@ class Lifepath:
                 10: "People are wonderful!"
             },
             'original_background': {
-                1: {'name': 'Corporate Execs', 'description': 'Wealthy, powerful, with servants, luxury homes, and the best of everything. Private security made sure you were always safe. You definitely went to a big-name private school.'},
-                2: {'name': 'Corporate Managers', 'description': 'Well to do, with large homes, safe neighborhoods, nice cars, etc. Sometimes your parents) would hire servants, although this was rare. You had a mix of private and corporate education.'},
-                3: {'name': 'Corporate Technicians', 'description': 'Middle-middle class, with comfortable conapts or Beaverville suburban homes, minivans and corporate-run technical schools. Kind of like living 1950s America crossed with 1984.'},
-                4: {'name': 'Nomad Pack', 'description': 'You had a mix of rugged trailers, vehicles, and huge road kombis for your home. You learned to drive and fight at an early age, but the family was always there to care for you. Food was adually fresh and abundant. Mostly home schooled.'},
-                5: {'name': 'Ganger "Family"', 'description': "A savage, violent home in any place the gang could take over. You were usually hungry, cold, and scared. You probably didn't know who your actual parents were. Education? The Gang taught you how to fight, kill, and steal--what else did you need to know?"},
-                6: {'name': 'Combat Zoners', 'description': 'A step up from a gang "family," your home was a decaying building somewhere in the \'Zone\', heavily fortified. You were hungry at times, but regularly could score a bed and a meal. Home schooled.'},
-                7: {'name': 'Urban Homeless', 'description': 'You lived in cars, dumpsters, or abandoned shipping modules. If you were lucky. You were usually hungry, cold, and scared, unless you were tough enough to fight for the scraps. Education? School of Hard Knocks.'},
-                8: {'name': 'Megastructure', 'description': 'You grew up in one of the huge new megastructures that went up after the War. A tiny conapt, kibble and scop for food, a mostly warm bed. Some better educated adult warren dwellers or a local Corporation may have set up a school.'},
-                9: {'name': 'Warren Rats', 'description': 'You started out on the road, but then moved into one of the deserted ghost towns or cities to rebuild it. A pioneer life: dangerous, but with plenty of simple food and a safe place to sleep. You were home schooled if there was anyone who had the time.'},
-                10: {'name': 'Reclaimers', 'description': 'Your home was always changing based on your parents\' current "job." Could be a luxury apartment, an urban conapt, or a dumpster if you were on the run. Food and shelter ran the gamut from gourmet to kibble.'}
+                1: {'name': 'Corporate Execs',
+                    'description': 'Wealthy, powerful, with servants, luxury homes, and the best of\
+                     everything. Private security made sure you were always safe. You definitely went to a big-name private school.'},
+                2: {'name': 'Corporate Managers', 
+                    'description': 'Well to do, with large homes, safe neighborhoods, nice cars, etc.\
+                    Sometimes your parents) would hire servants, although this was rare. You had a mix\
+                     of private and corporate education.'},
+                3: {'name': 'Corporate Technicians', 
+                    'description': 'Middle-middle class, with comfortable conapts or Beaverville suburban\
+                     homes, minivans and corporate-run technical schools. Kind of like living 1950s America crossed with 1984.'},
+                4: {'name': 'Nomad Pack', 
+                    'description': 'You had a mix of rugged trailers, vehicles, and huge road kombis for your\
+                     home. You learned to drive and fight at an early age, but the family was always there to care\
+                      for you. Food was adually fresh and abundant. Mostly home schooled.'},
+                5: {'name': 'Ganger "Family"', 
+                    'description': "A savage, violent home in any place the gang could take over. You were usually\
+                     hungry, cold, and scared. You probably didn't know who your actual parents were. Education? The\
+                      Gang taught you how to fight, kill, and steal--what else did you need to know?"},
+                6: {'name': 'Combat Zoners', 
+                    'description': 'A step up from a gang "family," your home was a decaying building somewhere in the\
+                     \'Zone\', heavily fortified. You were hungry at times, but regularly could score a bed and a\
+                      meal. Home schooled.'},
+                7: {'name': 'Urban Homeless', 
+                    'description': 'You lived in cars, dumpsters, or abandoned shipping modules. If you were lucky.\
+                     You were usually hungry, cold, and scared, unless you were tough enough to fight for the scraps.\
+                      Education? School of Hard Knocks.'},
+                8: {'name': 'Megastructure', 
+                    'description': 'You grew up in one of the huge new megastructures that went up after the War. A\
+                     tiny conapt, kibble and scop for food, a mostly warm bed. Some better educated adult warren\
+                      dwellers or a local Corporation may have set up a school.'},
+                9: {'name': 'Warren Rats', 
+                    'description': 'You started out on the road, but then moved into one of the deserted ghost towns\
+                     or cities to rebuild it. A pioneer life: dangerous, but with plenty of simple food and a safe\
+                      place to sleep. You were home schooled if there was anyone who had the time.'},
+                10: {'name': 'Reclaimers', 
+                     'description': 'Your home was always changing based on your parents\' current "job." Could be a\
+                      luxury apartment, an urban conapt, or a dumpster if you were on the run. Food and shelter ran\
+                       the gamut from gourmet to kibble.'}
             },
             'childhood_environment': {
                 1: "Ran on The Street, with no adult supervision.",
@@ -140,7 +168,8 @@ class Lifepath:
                 4: "Your family is imprisoned, and you alone escaped.",
                 5: "Your family vanished. You are the only remaining member.",
                 6: "Your family was killed, and you were the only survivor.",
-                7: "Your family is involved in a long-term conspiracy, organization, or association, such as a crime family or revolutionary group.",
+                7: "Your family is involved in a long-term conspiracy, organization, or association, \
+                such as a crime family or revolutionary group.",
                 8: "Your family was scattered to the winds due to relegation.",
                 9: "Your family is cursed with a hereditary feud that has lasted for generations.",
                 10: "You are the inheritor of a family debt, you must honor this debt before moving on with your life.",
@@ -160,16 +189,21 @@ class Lifepath:
         }
         self.friends = {}
         self.enemies_list = {
-            "Who": ["Ex-friend", "Ex-lover", "Estranged relative", "Childhood enemy",
-                   "Person working for you", "Person you work for", "Partner or coworker",
-               "Corporate exec", "Government official", "Boosterganger"],
-            "What caused it": ["Caused the other to lose face or status.", "Caused the loss of lover, friend, or relative.", 
-"Caused a major public humiliation.", "Accused the other of cowardice or some other major personal flaw.", "Deserted or betrayed the other.",
-"Turned down the other's offer of a job or romantic involvement.", "You just don't like each other.", "One of you was a romantic rival.",
-"One of you was a business rival.", "One of you set the other up for a crime they didn't commit"],
-            "What happens": ['Avoid the scum.', 'Avoid the scum.','Go into a murderous rage and try to physically rip their face off.',
-'Go into a murderous rage and try to physically rip their face off.', 'Backstab them indirectly.', 'Backstab them indirectly.', 'Verbally attack them.', 'Verbally attack them.', 'Set them up for a crime or other transgression they didn\'t commit.', 
-'Set out to murder or maim them.']
+            "Who": 
+                ["Ex-friend", "Ex-lover", "Estranged relative", "Childhood enemy",
+                 "Person working for you", "Person you work for", "Partner or coworker",
+                 "Corporate exec", "Government official", "Boosterganger"],
+            "What caused it": 
+                ["Caused the other to lose face or status.", "Caused the loss of lover, friend, or relative.", 
+                 "Caused a major public humiliation.", "Accused the other of cowardice or some other major personal flaw.", 
+                 "Deserted or betrayed the other.", "Turned down the other's offer of a job or romantic involvement.", 
+                 "You just don't like each other.", "One of you was a romantic rival.",
+                 "One of you was a business rival.", "One of you set the other up for a crime they didn't commit"],
+            "What happens":
+                ['Avoid the scum.', 'Avoid the scum.','Go into a murderous rage and try to physically rip their face off.',
+                 'Go into a murderous rage and try to physically rip their face off.', 'Backstab them indirectly.',
+                 'Backstab them indirectly.', 'Verbally attack them.', 'Verbally attack them.', 
+                 'Set them up for a crime or other transgression they didn\'t commit.', 'Set out to murder or maim them.']
         }  
 
     def roll(self, table_name):
@@ -225,4 +259,3 @@ class Lifepath:
         for i in range(num_lovers):
             love_tragedy = random.randint(1, 10)
             self.lovers[f'Lover {i+1}'] = tragic_love_afair[love_tragedy]
-
