@@ -160,19 +160,19 @@ class SkillCheck:
 
         Parameters:
         luck_points (int): The number of luck points to spend on the skill check.
-
-        Returns:
-        None
         """
-        curses.endwin()
-        luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
-        if luck_points > self.character.lucky_pool:
-            print("Not enough luck points!")
-        else:
-            self.perform_check('brawling', 'Professional', luck_points)
-            # subtract the luck points from the lucky pool
-            self.character.lucky_pool -= luck_points
-        print(f"Lucky Pool: {self.character.lucky_pool}")
+        while True:
+            curses.endwin()
+            luck_points = int(input(f'Use LUCK x/{self.character.lucky_pool}: '))
+            if luck_points > self.character.lucky_pool:
+                print("Not enough luck points!")
+            else:
+                self.perform_check('brawling', 'Professional', luck_points)
+                # subtract the luck points from the lucky pool
+                self.character.lucky_pool -= luck_points
+                print(f"Lucky Pool: {self.character.lucky_pool}")
+                breakj
+        raise StopIteration
 
     def perform_check(self, skill_name, difficulty_value, luck_points):
         """
