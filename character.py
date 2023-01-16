@@ -18,17 +18,19 @@ class Character:
         self.y = None
 
         self.lifepath = Lifepath()
-        self.cultural_region = self.lifepath.roll('cultural_region')
-        self.clothing_style = self.lifepath.roll('clothing_style')
-        self.personality = self.lifepath.roll('personality')
-        self.hairstyle = self.lifepath.roll('hairstyle')
-        self.value = self.lifepath.roll('value')
-        self.original_background = self.lifepath.roll('original_background')
-        self.childchood_environment = self.lifepath.roll('childhood_environment')
-        self.family_crisis = self.lifepath.roll('family_crisis')
+        self.cultural_region = self.lifepath.roll('cultural_regions')
+        self.personality = self.lifepath.roll('personalities')
+        self.clothing_style = self.lifepath.roll('clothing_styles')
+        self.hairstyle = self.lifepath.roll('hairstyles')
+        self.value = self.lifepath.roll('values')
+        self.trait = self.lifepath.roll('traits')
+        self.original_background = self.lifepath.roll('original_backgrounds')
+        self.childhood_environment = self.lifepath.roll('childhood_environments')
+        self.family_crisis = self.lifepath.roll('family_crises')
         self.friends = self.lifepath.get_friends()
         self.enemies = self.lifepath.get_enemies()
-        self.life_goals = self.lifepath.roll('life_goal')
+        self.lovers = self.lifepath.get_lovers()
+        self.life_goal = self.lifepath.roll('life_goals')
 
     def skill_total(self, skill_name):
         skill_tuple = self.skills[skill_name]
@@ -37,7 +39,7 @@ class Character:
 class Lifepath:
     def __init__(self):
         self.tables = {
-            'cultural_region': {
+            'cultural_regions': {
                 1: "North American",
                 2: "South/Central American",
                 3: "Western European",
@@ -49,7 +51,7 @@ class Lifepath:
                 9: "East Asian",
                 10: "Oceania/Pacific Islander"
             },
-            'personality': {
+            'personalities': {
                 1: "Shy and secretive",
                 2: "Rebellious, antisocial, and violent",
                 3: "Arrogant, proud, and aloof",
@@ -61,7 +63,7 @@ class Lifepath:
                 9: "Intellectual and detached",
                 10: "Friendly and outgoing"
             },
-            'clothing_style': {
+            'clothing_styles': {
                 1: "Generic Chic (Standard, Colorful, Modular)",
                 2: "Leisurewear (Comfort, Agility, Athleticism)",
                 3: "Urban Flash (Flashy, Technological, Streetwear)",
@@ -73,7 +75,7 @@ class Lifepath:
                 9: "Nomad Leathers (Western, Rugged, Tribal)",
                 10: "Asia Pop (Bright, Costume-like, Youthful)"
             },
-            'hairstyle': {
+            'hairstyles': {
                 1: "Mohawk",
                 2: "Long and ratty",
                 3: "Short and spiked",
@@ -85,7 +87,7 @@ class Lifepath:
                 9: "Short and curly",
                 10: "Long and straight" 
             },
-            'value': {
+            'values': {
                 1: "Money",
                 2: "Honor",
                 3: "Your word",
@@ -97,7 +99,7 @@ class Lifepath:
                 9: "Family",
                 10: "Friendship"
             },
-            'trait': {
+            'traits': {
                 1: "I stay neutral.",
                 2: "I stay neutral.",
                 3: "I like almost everyone.",
@@ -109,7 +111,7 @@ class Lifepath:
                 9: "Wipe 'em all out and let the cockroaches take over.",
                 10: "People are wonderful!"
             },
-            'original_background': {
+            'original_backgrounds': {
                 1: {'name': 'Corporate Execs',
                     'description': 'Wealthy, powerful, with servants, luxury homes, and the best of\
                      everything. Private security made sure you were always safe. You definitely went to a big-name private school.'},
@@ -149,7 +151,7 @@ class Lifepath:
                       luxury apartment, an urban conapt, or a dumpster if you were on the run. Food and shelter ran\
                        the gamut from gourmet to kibble.'}
             },
-            'childhood_environment': {
+            'childhood_environments': {
                 1: "Ran on The Street, with no adult supervision.",
                 2: "Spent in a safe Corp Zone walled off from the rest of the City.",
                 3: "In a Nomad pack moving from place to place.",
@@ -161,7 +163,7 @@ class Lifepath:
                 9: "In a Drift Nation (a floating offshore city) that is a meeting place for all kinds of people.",
                 10: "In a Corporate luxury 'starscraper,' high above the rest of the teeming rabble."
             },
-            'family_crisis': {
+            'family_crises': {
                 1: "Your family lost everything through betrayal.",
                 2: "Your family lost everything through bad management.",
                 3: "Your family was exiled or otherwise driven from their original home/ nation/ Corporation.",
@@ -174,7 +176,7 @@ class Lifepath:
                 9: "Your family is cursed with a hereditary feud that has lasted for generations.",
                 10: "You are the inheritor of a family debt, you must honor this debt before moving on with your life.",
             },
-			'life_goal': {
+			'life_goals': {
                 1: "Get rid of a bad reputation",
                 2: "Gain power and control",
                 3: "Get off The Street no matter what it takes",
@@ -204,7 +206,8 @@ class Lifepath:
                  'Go into a murderous rage and try to physically rip their face off.', 'Backstab them indirectly.',
                  'Backstab them indirectly.', 'Verbally attack them.', 'Verbally attack them.', 
                  'Set them up for a crime or other transgression they didn\'t commit.', 'Set out to murder or maim them.']
-        }  
+        }
+        self.lovers = {}
 
     def roll(self, table_name):
         table = self.tables[table_name]
@@ -229,6 +232,7 @@ class Lifepath:
         for i in range(num_friends):
             friend_type = random.randint(1, 10)
             self.friends[f"Friend {i+1}"] = friend_types[friend_type]
+        return self.friends
 
     def get_enemies(self):
         num_enemies = max(0, random.randint(1, 10) - 7)
@@ -236,8 +240,8 @@ class Lifepath:
         for i in range(num_enemies):
             enemy = {}
             enemy["Who"] = random.choice(self.enemies_list["Who"])
-            enemy["What caused it?"] = random.choice(self.enemies_list["What caused it?"])
-            enemy["What's gonna happen?"] = random.choice(self.enemies_list["What's gonna happen?"])
+            enemy["What caused it"] = random.choice(self.enemies_list["What caused it"])
+            enemy["What happens"] = random.choice(self.enemies_list["What happens"])
             enemies.append(enemy)
         return enemies
 
@@ -258,4 +262,5 @@ class Lifepath:
         num_lovers = max(0, random.randint(1, 10) - 7)
         for i in range(num_lovers):
             love_tragedy = random.randint(1, 10)
-            self.lovers[f'Lover {i+1}'] = tragic_love_afair[love_tragedy]
+            self.lovers[f'Lover {i+1}'] = tragic_love_affair[love_tragedy]
+        return self.lovers

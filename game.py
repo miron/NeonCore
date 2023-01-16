@@ -166,6 +166,22 @@ class ActionManager(cmd.Cmd):
             #    gear = "\033[1m" + gear + "\033[0m"
             print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
 
+    def do_lifepath_sheet(self, arg):
+        print("Lifepath:")
+        print("Cultural Region:", self.player.cultural_region)
+        print("Personality:", self.player.personality)
+        print("Clothing Style:", self.player.clothing_style)
+        print("Hairstyle:", self.player.hairstyle)
+        print("Value:", self.player.value)
+        print("Trait:", self.player.trait)
+        print("Original Background:", self.player.original_background)
+        print("Childhood Environment:", self.player.childhood_environment)
+        print("Family Crisis:", self.player.family_crisis)
+        print("Friends:", self.player.friends)
+        print("Enemies:", self.player.enemies)
+        print("Lovers:", self.player.lovers)
+        print("Life Goals:", self.player.life_goal)
+
 class SkillCheck:
     """
     Attacker vs Defender
