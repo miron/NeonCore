@@ -28,7 +28,7 @@ class Character:
         self.family_crisis = self.lifepath.roll('family_crisis')
         self.friends = self.lifepath.get_friends()
         self.enemies = self.lifepath.get_enemies()
-        self.life_goals = self.lifepath.roll('life_goals')
+        self.life_goals = self.lifepath.roll('life_goal')
 
     def skill_total(self, skill_name):
         skill_tuple = self.skills[skill_name]
@@ -37,7 +37,7 @@ class Character:
 class Lifepath:
     def __init__(self):
         self.tables = {
-            'cultural_regions': {
+            'cultural_region': {
                 1: "North American",
                 2: "South/Central American",
                 3: "Western European",
@@ -49,7 +49,7 @@ class Lifepath:
                 9: "East Asian",
                 10: "Oceania/Pacific Islander"
             },
-            'personalities': {
+            'personality': {
                 1: "Shy and secretive",
                 2: "Rebellious, antisocial, and violent",
                 3: "Arrogant, proud, and aloof",
@@ -97,7 +97,7 @@ class Lifepath:
                 9: "Family",
                 10: "Friendship"
             },
-            'traits': {
+            'trait': {
                 1: "I stay neutral.",
                 2: "I stay neutral.",
                 3: "I like almost everyone.",
@@ -174,7 +174,7 @@ class Lifepath:
                 9: "Your family is cursed with a hereditary feud that has lasted for generations.",
                 10: "You are the inheritor of a family debt, you must honor this debt before moving on with your life.",
             },
-			'life_goals': {
+			'life_goal': {
                 1: "Get rid of a bad reputation",
                 2: "Gain power and control",
                 3: "Get off The Street no matter what it takes",
