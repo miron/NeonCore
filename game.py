@@ -192,9 +192,6 @@ before ya start runnin' with em, ya feel me?i
         self.do_story()  # Start the game's story
         self.hide_commands()  # Hide unnecessary commands
         
-    def do_story(self, args):
-        pass
-
     def do_jack_in(self, args):
         """Yo, chummer! You wanna make some eddies and climb the ranks? You wanna be a 
 player in Night City? Type 'run_job' and let's get this show on the road. Gotta 
@@ -204,9 +201,40 @@ right moves, or you'll end up as another memory on the streets. So, you in or
 what?
 """
         self.character = self.choose_character()
-        self.player.perception_check()  # Perform the Human Perception Check
         self.do_story()  # Start the game's story
-        self.hide_commands()  # Hide unnecessary commands
+        #self.player.perception_check()  # Perform the Human Perception Check
+        self.hide_commands(["do_perception_check", "do_run_job"]) # Hide unnecessary commands
+
+    def do_story(self):
+        print("Yo, listen up. You and your crew just hit the South Night City docks and now you're chillin' with a burner phone call from Lazlo, your fixer.")
+        print("He's all like, 'Yo, we gotta change the spot for the payout. Meet me at the industrial park in Heywood.'")
+        print("But something ain't right, 'cause Lazlo ain't telling you why. He's just saying it's all good, but you can tell he's sweatin'.")
+        print("You got a bad feeling about this. Like, real bad.")
+        print("You wanna roll for perception check? (y/n)")
+
+        answer = input()
+
+        if answer == "y":
+            roll = random.randint(1, 10)
+            human_perception = self.player.skill_total("human_perception")
+            if roll + human_perception > 17:
+                print("Yo, you're suspecting something's off. You're right, Lazlo's being held at gunpoint and is being forced to lure you into a trap.")
+            else:
+                print("You didn't suspect anything unusual with the phone call.")
+        else:
+            print("Alright, play it cool.")
+        print("Lazlo hangs up before you can ask any more questions.")
+
+
+def hide_commands(self, commands_list):
+    """
+    Hides the specified commands from the help menu and command prompt
+    :param commands_list: list of strings containing the names of the commands to be hidden
+    """
+    for command in commands_list:
+        if command in self.get_names():
+            self.hidden_commands.append(command)
+            self.get_names().remove(command)
 
 
 class SkillCheck:
