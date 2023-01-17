@@ -103,9 +103,6 @@ class ActionManager(cmd.Cmd):
                 pass
             print("Invalid choice. Please choose a number between 1 and", len(characters_list))
 
-    def do_choose_character(self, arg):
-        """Prompts the player to choose a character and assigns the selected character to self.character"""
-        self.character = self.choose_character()
 
     def do_move(self, args):
         """Move player in the specified direction"""
@@ -166,7 +163,12 @@ class ActionManager(cmd.Cmd):
             #    gear = "\033[1m" + gear + "\033[0m"
             print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
 
-    def do_lifepath_sheet(self, arg):
+    def do_rap_sheet(self, arg):
+        """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on ya character's 
+backstory, where they came from, who they know, and what they're all about.
+It's like peepin' into they mind, know what I'm sayin'? Gotta know ya homies 
+before ya start runnin' with em, ya feel me?i
+"""
         print("Lifepath:")
         print("Cultural Region:", self.player.cultural_region)
         print("Personality:", self.player.personality)
@@ -182,7 +184,34 @@ class ActionManager(cmd.Cmd):
         print("Lovers:", self.player.lovers)
         print("Life Goals:", self.player.life_goal)
 
+    def do_start_game(self, arg):
+        """Start a new game"""
+        self.player = Character()  # Instantiate a new player character
+        self.player.lifepath.roll_all()  # Roll for all lifepath options
+        self.player.perception_check()  # Perform the Human Perception Check
+        self.do_story()  # Start the game's story
+        self.hide_commands()  # Hide unnecessary commands
+        
+    def do_story(self, args):
+        pass
+
+    def do_jack_in(self, args):
+        """Yo, chummer! You wanna make some eddies and climb the ranks? You wanna be a 
+player in Night City? Type 'run_job' and let's get this show on the road. Gotta 
+choose your character first, make sure you roll 'em up tight and make the right 
+choice. Remember, in Night City, you gotta be quick on your feet and make the 
+right moves, or you'll end up as another memory on the streets. So, you in or 
+what?
+"""
+        self.character = self.choose_character()
+        self.player.perception_check()  # Perform the Human Perception Check
+        self.do_story()  # Start the game's story
+        self.hide_commands()  # Hide unnecessary commands
+
+
 class SkillCheck:
+
+
     """
     Attacker vs Defender
     Trying Again:
@@ -253,8 +282,6 @@ class SkillCheck:
         else:
             print(f"Tie! Attacker roll: {skill_check_total}, Defender DV: {difficulty_value}")
             print("Attacker loses.")
-
-
 
 # Open a shelve in read mode
 #with shelve.open('timestamp', 'r') as db:
