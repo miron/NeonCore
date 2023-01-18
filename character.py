@@ -36,14 +36,6 @@ class Character:
         skill_list = self.skills[skill_name]
         return sum(skill_list)
 
-    def perception_check(self):
-        roll = random.randint(1, 10)
-        human_perception = self.skill_total("human_perception")
-        if roll + human_perception  > 17:
-            print("You suspect something is wrong with the phone call and your Fixer.")
-        else:
-            print("You didn't suspect anything unusual with the phone call.")
-
 class Lifepath:
     def __init__(self):
         self.tables = {

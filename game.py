@@ -8,6 +8,13 @@ import time
 from character import Character
 from sheet import characters
 import map 
+import textwrap 
+import textwrap
+
+def wprint(text, width=80):
+    wrapped_text = textwrap.wrap(text, width=width)
+    for line in wrapped_text:
+        print(line)
 
 DIFFICULTY_VALUE = {
     "Everyday": 13,
@@ -39,23 +46,19 @@ class ActionManager(cmd.Cmd):
         self.characters_list = characters_list
         self.player = None
         self.npcs = None
+        self.game_state = None
 
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
         pass
         os.system('clear')
 
-    def precmd(self, line):
-        os.system('clear')
-        #print( '\033[24;0H')
-        return super().precmd(line)
-
-    #def postcmd(self, stop, line):
-    #    # Get the number of rows in the output
-    #    rows, _ = os.popen('stty size', 'r').read().split()
-    #    # Move the cursor to the correct position
-    #    print(f'\033[{int(rows)}H')
-    #    return stop
+   # def postcmd(self, stop, line):
+   #    # Get the number of rows in the output
+   #    rows, _ = os.popen('stty size', 'r').read().split()
+   #    # Move the cursor to the correct position
+   #    print(f'\033[{int(rows)}H')
+   #    return stop
 
    # def postcmd(self, stop, line):
    #     # Get the size of the terminal window
@@ -73,9 +76,9 @@ class ActionManager(cmd.Cmd):
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
         print("""
- Catch you on the flip side, choombatta.
- Keep your chrome polished and your guns loaded,
- the neon jungle ain't no walk in the park.""")
+Catch you on the flip side, choombatta.
+Keep your chrome polished and your guns loaded,
+the neon jungle ain't no walk in the park.""")
         # Open database, create if it doesn't already exist
         with shelve.open('timestamp') as dbase:
             # Save data to the database>
@@ -184,62 +187,40 @@ before ya start runnin' with em, ya feel me?i
         print("Lovers:", self.player.lovers)
         print("Life Goals:", self.player.life_goal)
 
-    def do_start_game(self, arg):
-        """Start a new game"""
-        self.player = Character()  # Instantiate a new player character
-        self.player.lifepath.roll_all()  # Roll for all lifepath options
-        self.player.perception_check()  # Perform the Human Perception Check
-        self.do_story()  # Start the game's story
-        self.hide_commands()  # Hide unnecessary commands
-        
     def do_jack_in(self, args):
         """Yo, chummer! You wanna make some eddies and climb the ranks? You wanna be a 
-player in Night City? Type 'run_job' and let's get this show on the road. Gotta 
+player in Night City? Type 'jack_in' and let's get this show on the road. Gotta 
 choose your character first, make sure you roll 'em up tight and make the right 
 choice. Remember, in Night City, you gotta be quick on your feet and make the 
 right moves, or you'll end up as another memory on the streets. So, you in or 
 what?
 """
         self.character = self.choose_character()
-        self.do_story()  # Start the game's story
-        #self.player.perception_check()  # Perform the Human Perception Check
-        self.hide_commands(["do_perception_check", "do_run_job"]) # Hide unnecessary commands
-
-    def do_story(self):
         print("Yo, listen up. You and your crew just hit the South Night City docks and now you're chillin' with a burner phone call from Lazlo, your fixer.")
-        print("He's all like, 'Yo, we gotta change the spot for the payout. Meet me at the industrial park in Heywood.'")
+        wprint("He's all like, 'Yo, we gotta change the spot for the payout. Meet me at the industrial park in Heywood.'")
         print("But something ain't right, 'cause Lazlo ain't telling you why. He's just saying it's all good, but you can tell he's sweatin'.")
         print("You got a bad feeling about this. Like, real bad.")
-        print("You wanna roll for perception check? (y/n)")
+        self.game_state = 'before_perception_check'
+        self.prompt = "(perception_check)"
+        #print("You wanna roll for perception check? (y/n)")
+        #    print("Alright, play it cool.")
+        #print("Lazlo hangs up before you can ask any more questions.")
 
-        answer = input()
-
-        if answer == "y":
-            roll = random.randint(1, 10)
-            human_perception = self.player.skill_total("human_perception")
-            if roll + human_perception > 17:
-                print("Yo, you're suspecting something's off. You're right, Lazlo's being held at gunpoint and is being forced to lure you into a trap.")
-            else:
-                print("You didn't suspect anything unusual with the phone call.")
+    def do_perception_check(self, arg):
+        roll = random.randint(1, 10)
+        human_perception = self.player.skill_total("human_perception")
+        if roll + human_perception  > 17:
+            wprint("Yo, you're suspecting something's off. You're right, Lazlo's being held at gunpoint and is being forced to lure you into a trap.")
         else:
-            print("Alright, play it cool.")
-        print("Lazlo hangs up before you can ask any more questions.")
+            print("You didn't suspect anything unusual with the phone call.")
 
-
-def hide_commands(self, commands_list):
-    """
-    Hides the specified commands from the help menu and command prompt
-    :param commands_list: list of strings containing the names of the commands to be hidden
-    """
-    for command in commands_list:
-        if command in self.get_names():
-            self.hidden_commands.append(command)
-            self.get_names().remove(command)
-
+    def completenames(self, text, *ignored):
+        cmds = super().completenames(text, *ignored)
+        if self.game_state == 'before_perception_check':
+            cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
+        return cmds
 
 class SkillCheck:
-
-
     """
     Attacker vs Defender
     Trying Again:
