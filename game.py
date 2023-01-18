@@ -86,7 +86,9 @@ class ActionManager(cmd.Cmd):
         """
         Allows the player to choose a character role.
         """
-        self.prompt = "Choose your character role: "
+        self.prompt = "Pick yo' ride, rockerboy, solo, tech, medtech, or media:"
+        characters_list = [f"{character.handle} ({character.role})" for i, character in enumerate(self.characters_list)]
+        self.columnize(characters_list, displaywidth=80)
         valid_roles = ['rockerboy', 'solo', 'tech', 'medtech', 'media']
         if arg in valid_roles:
             self.character_role = arg
