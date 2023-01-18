@@ -281,7 +281,8 @@ as another memory on the streets. So, you in or what?
             self.beneficial_situation()
         else:
             wprint("Your approach does not lead to a beneficial situation."
-                   "At the center of some alleys is a hooded man handcuffed to"                   "  a briefcase. He offers it to you, but fumbles with the "
+                   "At the center of some alleys is a hooded man handcuffed to"
+                   " a briefcase. He offers it to you, but fumbles with the "
                    "key before handing it over.")
         choice = input("Do you take the briefcase? (yes/no) ")
         if choice == "yes":
