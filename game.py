@@ -82,9 +82,22 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
+    def do_choose_character(self, arg):
+        """
+        Allows the player to choose a character role.
+        """
+        self.prompt = "Choose your character role: "
+        valid_roles = ['rockerboy', 'solo', 'tech', 'medtech', 'media']
+        if arg in valid_roles:
+            self.character_role = arg
+            self.prompt = f"{arg} >>> "
+        else:
+            print(f"Invalid role. Valid roles: {valid_roles}")
+
+
     def choose_character(self):
         while True:
-            print("Select a character:")
+            print("Yo, roll a homie, chummer:")
             characters_list = [f"{i+1}. {character.handle}" for i, character in enumerate(self.characters_list)]
             self.columnize(characters_list, displaywidth=80)
             choice = input("Enter the number of your choice or 'q' to quit: ")
