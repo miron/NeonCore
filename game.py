@@ -9,7 +9,6 @@ from character import Character
 from sheet import characters
 import map 
 import textwrap 
-import textwrap
 
 def wprint(text, width=80):
     wrapped_text = textwrap.wrap(text, width=width)
@@ -75,10 +74,8 @@ class ActionManager(cmd.Cmd):
 
     def do_quit(self, arg):
         """Exits Cyberpunk RED"""
-        print("""
-Catch you on the flip side, choombatta.
-Keep your chrome polished and your guns loaded,
-the neon jungle ain't no walk in the park.""")
+        wprint("Catch you on the flip side, choombatta. Keep your chrome polished and your guns loaded, "
+               "the neon jungle ain't no walk in the park.")
         # Open database, create if it doesn't already exist
         with shelve.open('timestamp') as dbase:
             # Save data to the database>
@@ -145,8 +142,10 @@ the neon jungle ain't no walk in the park.""")
         skill_list += self.player.ascii_art.splitlines()
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
-        defence_list = [f"WEAPONS & ARMOR{'⌁'*19:<10} "] +  [' '.join(self.player.defence.keys())] + [' '.join([str(row) for row in self.player.defence.values()])]
-        weapons_list = [' '.join(self.player.weapons[0].keys())] + [' '.join([str(val) for val in row.values()]) for row in self.player.weapons]
+        defence_list = [f"WEAPONS & ARMOR{'⌁'*19:<10} "] +  [' '.join(self.player.defence.keys())] + [
+        ' '.join([str(row) for row in self.player.defence.values()])]
+        weapons_list = [' '.join(self.player.weapons[0].keys())] + [
+        ' '.join([str(val) for val in row.values()]) for row in self.player.weapons]
         for defence, weapon in zip(defence_list, weapons_list):
             print(defence.ljust(35) + weapon.ljust(45))
         print("ROLE ABILITY " + "⌁" * 14 + " CYBERWARE " + "⌁" * 17 + " GEAR " + "⌁" * 19 )
@@ -196,29 +195,75 @@ right moves, or you'll end up as another memory on the streets. So, you in or
 what?
 """
         self.character = self.choose_character()
-        print("Yo, listen up. You and your crew just hit the South Night City docks and now you're chillin' with a burner phone call from Lazlo, your fixer.")
-        wprint("He's all like, 'Yo, we gotta change the spot for the payout. Meet me at the industrial park in Heywood.'")
-        print("But something ain't right, 'cause Lazlo ain't telling you why. He's just saying it's all good, but you can tell he's sweatin'.")
+        wprint("Yo, listen up. You and your crew just hit the South Night City docks and now you're chillin' with a "
+              "burner phone call from Lazlo, your fixer.")
+        wprint("He's all like, 'Yo, we gotta change the spot for the payout. "
+               "Meet me at the industrial park in Heywood.'")
+        wprint("But something ain't right, 'cause Lazlo ain't telling you why. "
+               "He's just saying it's all good, but you can "
+               "tell he's sweatin'.")
         print("You got a bad feeling about this. Like, real bad.")
         self.game_state = 'before_perception_check'
-        self.prompt = "(perception_check)"
-        #print("You wanna roll for perception check? (y/n)")
-        #    print("Alright, play it cool.")
-        #print("Lazlo hangs up before you can ask any more questions.")
+        self.prompt = "ε(๏_๏)з】 "
 
-    def do_perception_check(self, arg):
-        roll = random.randint(1, 10)
-        human_perception = self.player.skill_total("human_perception")
-        if roll + human_perception  > 17:
-            wprint("Yo, you're suspecting something's off. You're right, Lazlo's being held at gunpoint and is being forced to lure you into a trap.")
+    def do_perception_check(self, args):
+        if args not in ("yes", "no"):
+            wprint("Yo, chummer, you wanna roll for perception check? Type in 'yes' or 'no' to make your choice.")
+            return
+
+        if args == "yes":
+            roll = random.randint(1, 10)
+            human_perception = self.player.skill_total("human_perception")
+            if roll + human_perception > 17:
+                wprint("Yo, you're suspecting something's off. You're right, Lazlo's "
+                       "being held at gunpoint and is being forced to lure you into a trap.")
+            else:
+                print("You didn't suspect anything unusual with the phone call.")
         else:
-            print("You didn't suspect anything unusual with the phone call.")
+            print("Alright, play it cool.")
+        print("Lazlo hangs up before you can ask any more questions.")
+        return self.do_heywood_industrial()
+
+    def complete_perception_check(self, text, line, begidx, endidx):
+        return ['yes', 'no'] if not text else [c for c in ['yes', 'no'] if c.startswith(text)]
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
         if self.game_state == 'before_perception_check':
             cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
         return cmds
+
+    def do_heywood_industrial(self):
+        """This method handles the Heywood Industrial story mode."""
+        print("You arrive at Heywood Industrial. How do you want to approach the situation?")
+        approach = input("Enter your choice: ")
+
+        # Check if the player's approach includes a skill check of 17 or higher
+        if self.character.skill_check(17):
+            print("Your approach leads to a beneficial situation!")
+            # Adjudicate the beneficial situation
+            self.beneficial_situation()
+        else:
+            print("Your approach does not lead to a beneficial situation.")
+
+        print("At the center of some alleys is a hooded man handcuffed to a briefcase.")
+        print("He offers it to you, but fumbles with the key before handing it over.")
+        choice = input("Do you take the briefcase? (yes/no) ")
+
+        if choice == "yes":
+            print("You take the briefcase.")
+            character = self.choose_character()
+            # Check if the briefcase contains counterfeit money
+            if character.forgery_check(17):
+                print("The briefcase contains 10,000eb, but it's counterfeit.")
+            else:
+                print("The briefcase contains 10,000eb.")
+            # Trigger the ambush
+            self.ambush()
+        else:
+            print("You don't take the briefcase.")
+            # Continues the story without trigger the ambush
+            self.continue_story()
 
 class SkillCheck:
     """
