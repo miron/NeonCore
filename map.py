@@ -1,7 +1,9 @@
 """Character Movement on ASCII Map"""
+
 import random
 import curses
 from game import SkillCheck
+
 def main(player, npcs):
     stdscr = curses.initscr()
     curses.noecho()
@@ -12,7 +14,6 @@ def main(player, npcs):
     curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
     player_color = curses.color_pair(1)
     npc_color = curses.color_pair(2)
-
     # Set up the map
     map_data= (
     "### ####  ######",
@@ -26,20 +27,17 @@ def main(player, npcs):
     "###       ###  #",
     "### ####  ###   ",
     "### ####  ###   ")
-
     # Spawn the player and NPCs randomly on the map
     empty_positions = []
     for y, row in enumerate(map_data):
         for x, cell in enumerate(row):
             if cell == " ":
                 empty_positions.append((x,y))
-
     random.shuffle(empty_positions)
     player_x, player_y = empty_positions.pop()
     npc_positions = empty_positions[:len(npcs)]
     for npc in npcs:
         npc.x, npc.y  = empty_positions.pop()
-
     # Wait for user input to move the player character
     try:
         while True:
@@ -66,11 +64,12 @@ def main(player, npcs):
             elif key == ord('q'):
                 break
             # Check if the new position is within the bounds of the map
-            if (new_x >= 0 and new_x < len(map_data[0]) and new_y >= 0 and new_y < len(map_data)):
+            if (new_x >= 0 and new_x < len(map_data[0]) and 
+                new_y >= 0 and new_y < len(map_data)):
                 # Check for collision with walls
                 if map_data[new_y][new_x] == ' ':
                     for npc in npcs:
-                        if (npc.x, npc.y) == (new_x, new_y): # npc encountered 
+                        if (npc.x, npc.y) == (new_x, new_y): # npc encountered
                             skill_check = SkillCheck(player)
                             curses.endwin()
                             skill_check.handle_npc_encounter(npc)

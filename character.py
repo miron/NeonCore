@@ -1,7 +1,12 @@
 """Character Creator"""
+
 import random
+
+
 class Character:
-    def __init__(self, handle, role, stats, combat, skills, defence, weapons, role_ability, cyberware, gear, ascii_art):
+    def __init__(
+            self, handle, role, stats, combat, skills, defence, weapons, 
+            role_ability, cyberware, gear, ascii_art):
         self.handle = handle
         self.role = role
         self.stats = stats
@@ -16,7 +21,6 @@ class Character:
         self.lucky_pool = self.stats["luck"]
         self.x = None
         self.y = None
-
         self.lifepath = Lifepath()
         self.cultural_region = self.lifepath.roll('cultural_regions')
         self.personality = self.lifepath.roll('personalities')
@@ -25,7 +29,8 @@ class Character:
         self.value = self.lifepath.roll('values')
         self.trait = self.lifepath.roll('traits')
         self.original_background = self.lifepath.roll('original_backgrounds')
-        self.childhood_environment = self.lifepath.roll('childhood_environments')
+        self.childhood_environment = self.lifepath.roll(
+            'childhood_environments')
         self.family_crisis = self.lifepath.roll('family_crises')
         self.friends = self.lifepath.get_friends()
         self.enemies = self.lifepath.get_enemies()
@@ -35,6 +40,7 @@ class Character:
     def skill_total(self, skill_name):
         skill_list = self.skills[skill_name]
         return sum(skill_list)
+
 
 class Lifepath:
     def __init__(self):

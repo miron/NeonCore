@@ -18,7 +18,7 @@ characters = [
             "hp": 15,
             "seriously_wounded": 10,
             "death_save": 3
-        }, 
+        },
         "skills": {
             "accounting": [5, 0],
             "acting": [7, 0],
@@ -74,38 +74,33 @@ characters = [
                 "rof": 1,
                 "notes": 16
             },
-            {   "name": "Heavy Melee Weapon",
+            {"name": "Heavy Melee Weapon",
                 "dmg": 3,
                 "ammo": None,
                 "rof": 2,
                 "notes": "sword/basball bat"
-            }, 
+             },
         ],
         "role_ability": {
             "name": "Charismatic Impact",
-            "notes": """You know when someone is a
-fan and receive a +2 to any
-EMP or COOL based Skill
-Check made against them,
-including Facedowns
-"""
+            "notes": ("You know when someone is a fan and receive a +2 to any "
+                      "EMP or COOL based Skill Check made against them, "
+                      "including Facedowns")
         },
         "cyberware": [
             {
                 "name": "Internal Agent",
-                "notes": """AI-powered Smart Phone in
-your head, voice controlled
-"""
+                "notes": ("AI-powered Smart Phone in your head, voice "
+                "controlled")
             },
-            {  
+            {
                 "name": "Pain Editor Chipware",
-                "notes": """Shut off pain receptors,
-ignore -2 Seriously Wounded
-"""
+                "notes": ("Shut off pain receptors, ignore -2 Seriously "
+                          "Wounded")
             }
         ],
         "gear": [
-            {   
+            {
                 "name": "Instrument",
                 "notes": "Choose"
             },
@@ -122,13 +117,14 @@ ignore -2 Seriously Wounded
                 "notes": "12 hours"
             }
         ],
-        "ascii_art": """ ˛⁄⁔
- \(∞l
-  `••\˛_
-   Y¸∆
- ¸⁄∫𐑘
-  / |
- ∫  l
+        "ascii_art": r"""
+˛⁄⁔ 
+\(∞l
+ `••\˛_
+  Y¸∆
+¸⁄∫𐑘
+ / |
+∫  l
  """
     },
     {
@@ -150,7 +146,7 @@ ignore -2 Seriously Wounded
             "hp": 45,
             "seriously_wounded": 23,
             "death_save": 7
-        }, 
+        },
         "skills": {
             "accounting": [7, 0],
             "acting": [7, 0],
@@ -206,12 +202,12 @@ ignore -2 Seriously Wounded
                 "rof": 1,
                 "notes": 8
             },
-            {   "name": "Assault Rifle",
+            {"name": "Assault Rifle",
                 "dmg": 5,
                 "ammo": 25,
                 "rof": 1,
                 "notes": 25
-            }, 
+             },
         ],
         "role_ability": {
             "name": "Combat Awarness",
@@ -220,30 +216,30 @@ ignore -2 Seriously Wounded
         "cyberware": [
             {
                 "name": "Image Enhance Cybereyes",
-                "notes": """Your eyes are better than human, giving you +2 to Perception and
-Conceal/Reveal Object Skills (already included above).
-"""
+                "notes": ("Your eyes are better than human, giving you +2 to "
+                          "Perception and Conceal/Reveal Object Skills "
+                          "(already included above).")
             },
-            {  
+            {
                 "name": "Teleoptic Cybereye",
                 "notes": "You can see detail up to 800 m/yds away."
             }
         ],
         "gear": [
-            {   
+            {
                 "name": "Burner Phone",
                 "notes": "A disposable phone"
             }
         ],
-        "ascii_art": """
-          …
-         (˙}
-        /(\)\
-        \ᡕᠵ᠊╦╤÷─
-         7˘ \
-         ]  ]
-         l  L
-         """
+        "ascii_art": r"""
+  …   
+ (˙} 
+/(\)╲ 
+\ᢘ╦╤═÷-
+ 7˘ 𐑘 
+ ]  ]
+ l  L
+"""
     },
     {
         "handle": "Torch",
@@ -264,7 +260,7 @@ Conceal/Reveal Object Skills (already included above).
             "hp": 35,
             "seriously_wounded": 18,
             "death_save": 6
-        }, 
+        },
         "skills": {
             "accounting": [8, 0],
             "acting": [3, 0],
@@ -320,35 +316,33 @@ Conceal/Reveal Object Skills (already included above).
                 "rof": 2,
                 "notes": 16
             },
-            {   "name": "Shotgun",
+            {"name": "Shotgun",
                 "dmg": 5,
                 "ammo": "4",
                 "rof": 1,
-                "notes": 8 
-            }, 
+                "notes": 8
+             },
         ],
         "role_ability": {
             "name": "Maker",
-            "notes": """Your Electronics/Security Tech Skill
-is boosted by +4 (already included above).
-"""
+            "notes": ("Your Electronics/Security Tech Skill is boosted by +4 "
+                      "(already included above).")
         },
         "cyberware": [
             {
                 "name": "Tool Hand",
-                "notes": """Your fingers contain a screwdriver, wrench, small drill, and any other
-tool you might need in the field.
-"""
+                "notes": ("Your fingers contain a screwdriver, wrench, small "
+                          "drill, and any other tool you might need in the "
+                          "field.")
             },
-            {  
+            {
                 "name": "Internal Agent",
-                "notes": """You have a self-adaptive AI-powered Smart Phone in your head,
-controlled entirely by voice command.
-"""
+                "notes": ("You have a self-adaptive AI-powered Smart Phone in "
+                          "your head, controlled entirely by voice command.")
             }
         ],
         "gear": [
-            {   
+            {
                 "name": "Duct Tape",
                 "notes": "Perfect for fixing anything"
             },
@@ -361,15 +355,15 @@ controlled entirely by voice command.
                 "notes": "Lights up a 100m/yd area"
             }
         ],
-        "ascii_art": """
-               ˛_    
-            ,, {˚)/ 
-             \/( ◊\  
-               ¸Ú˛
-               [ ]
-               | |
-               J[∫]
-               """
+        "ascii_art": r"""
+   ˛⁔  
+,, {˚)/
+ \/(⎔◊𐑘
+   ¸U˛ 
+   [][]
+   [ [ 
+   ɺ[ɺ]
+"""
     },
     {
         "handle": "Redtail",
@@ -390,7 +384,7 @@ controlled entirely by voice command.
             "hp": 35,
             "seriously_wounded": 18,
             "death_save": 5
-        }, 
+        },
         "skills": {
             "accounting": [8, 0],
             "acting": [5, 0],
@@ -445,35 +439,34 @@ controlled entirely by voice command.
                 "rof": 1,
                 "notes": 8
             },
-            {   "name": "Light Melee Weapon",
+            {"name": "Light Melee Weapon",
                 "dmg": 1,
                 "ammo": None,
                 "rof": 2,
                 "notes": "small knife"
-            }, 
+             },
         ],
         "role_ability": {
             "name": "Medicine",
-            "notes": """You have access to the Surgery Skill
-            (already included above).
-            """
+            "notes": ("You have access to the Surgery Skill "
+                      "(already included above).")
         },
         "cyberware": [
             {
                 "name": "Tool Hand",
-                "notes": """Your fingers contain a screwdriver, wrench, small drill, and any other
-tool you might neew in the field.
-"""
+                "notes": ("Your fingers contain a screwdriver, wrench, small "
+                          "drill, and any other tool you might neew in the "
+                          "field.")
             },
-            {  
+            {
                 "name": "Pain Editor Chipware",
-                "notes": """You can shut off your pain receptors, ignoring you to ignore the -2 to all
-Checks granted by the Seriously Wounded Wound State.
-"""
+                "notes": ("You can shut off your pain receptors, ignoring you "
+                          "to ignore the -2 to all Checks granted by the "
+                          "Seriously Wounded Wound State.")
             }
         ],
         "gear": [
-            {   
+            {
                 "name": "Agent",
                 "notes": "AI-powered smartphone"
             },
@@ -490,15 +483,15 @@ Checks granted by the Seriously Wounded Wound State.
                 "notes": "100m/yd long beam of light"
             }
         ],
-        "ascii_art": """
-            _
-          ¸{=}˛
-          (\+/)   
-           \∏ \   
-           /˘\ ˘   
-           ]  ]
-           l  L
-           """
+        "ascii_art": r"""
+  ⁔ 
+¸{=}˛
+(\+/)
+ \Ξ˛\ 
+ 7  𐑘`
+ ]  ]   
+ l  L  
+"""
     },
     {
         "handle": "24/7",
@@ -519,7 +512,7 @@ Checks granted by the Seriously Wounded Wound State.
             "hp": 40,
             "seriously_wounded": 20,
             "death_save": 5
-        }, 
+        },
         "skills": {
             "accounting": [7, 0],
             "acting": [8, 0],
@@ -575,37 +568,34 @@ Checks granted by the Seriously Wounded Wound State.
                 "rof": 2,
                 "notes": 16
             },
-            {   "name": "Heavy Melee Weapon",
+            {"name": "Heavy Melee Weapon",
                 "dmg": 3,
                 "ammo": None,
                 "rof": 2,
                 "notes": "sword/folded tripod"
-            }, 
+             },
         ],
         "role_ability": {
             "name": "Credibility",
-            "notes": """Once per hour, you may roll a 1d10.
-If you roll higher than 4, you learn a
-rumor pertinent to your current 
-situation. 
-"""
+            "notes": ("Once per hour, you may roll a 1d10. If you roll higher "
+                      "than 4, you learn a rumor pertinent to your current "
+                      "situation.")
         },
         "cyberware": [
             {
                 "name": "Internal Agent",
-                "notes": """You have a self-adaptive AI-powered Smart Phone in your head, 
-controlled entirely by voice command.
-"""
+                "notes": ("You have a self-adaptive AI-powered Smart Phone in "
+                          "your head, controlled entirely by voice command.")
             },
-            {  
+            {
                 "name": "Image Enhance Cybereyes",
-                "notes": """Your eyes are better than human, giving yu a +2 to Perception and
-Conceal/Reveal Object Skills (already included above).
-"""
+                "notes": ("Your eyes are better than human, giving yu a +2 to "
+                          "Perception and Conceal/Reveal Object Skills "
+                          "(already included above).")
             }
         ],
         "gear": [
-            {   
+            {
                 "name": "Video Camera",
                 "notes": "Records up to 12 hours"
             },
@@ -614,14 +604,14 @@ Conceal/Reveal Object Skills (already included above).
                 "notes": "Records up to 24 hours"
             }
         ],
-        "ascii_art": """
-       _  ¸¸
-      |\\(˚}
-       \∏(p)]
-        ˘¸v˛|
-         ] ]´        
-         { }
-         ∫ L
-        """
+        "ascii_art": r"""
+ _  ¸¸
+|\\(˚}
+ \∏(p)]
+  ˘¸v˛|
+   ] ]´        
+   { }
+   ∫ L
+"""
     }
 ]

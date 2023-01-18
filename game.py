@@ -26,15 +26,15 @@ DIFFICULTY_VALUE = {
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
-    intro = """     ᐸ ソ ╱> /Ξ /≥ /> // /𐑘/ /ᐸ
-                     ‾
-   …   ˛⁄⁔      ˛⁔     ⁔  _  ¸¸
-  (˙}  \(∞l   ,, {˚)/ ¸{=}˛|\\\(˚}
- /(\)╲  `••\˛_ \/(⎔◊𐑘 (\+/) \∏(p)]
- \ᢘ╦╤═÷- Y¸∆     ¸U˛   \Ξ˛\  ´¸v˛|
-  7˘ 𐑘 ¸⁄∫𐑘      [][]   7 𐑘 `  [ ]´
-  ]  ]  / |      [ [   ]  ]   { }
-  l  L ∫  l      ɺ[ɺ]  l  L   ɺ L 
+    intro = r"""     ᐸ ソ ╱> /Ξ /≥ /> // /𐑘/ /ᐸ
+                      ‾
+   …   ˛⁄⁔      ˛⁔     ⁔   _  ¸¸
+  (˙}  \(∞l   ,, {˚)/ ¸{=}˛ |\\(˚}
+ /(\)╲  `••\˛_ \/(⎔◊𐑘 (\+/)  \∏(p)]
+ \ᢘ╦╤═÷- Y¸∆     ¸U˛   \Ξ˛\   ´¸v˛|
+  7˘ 𐑘 ¸⁄∫𐑘      [][]   7 𐑘 `   [ ]´
+  ]  ]  / |      [ [   ]  ]    { }
+  l  L ∫  l      ɺ[ɺ]  l  L    ɺ L 
     ⌁help⌁   give me the 411
 """
     prompt = 'ᐸ/> '
@@ -163,22 +163,18 @@ class ActionManager(cmd.Cmd):
         skill_list += self.player.ascii_art.splitlines()
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
-        defence_list = [f"WEAPONS & ARMOR{'⌁'*19:<10} "] \
-                     + [' '.join(self.player.defence.keys())] \
-                     + [' '.join([str(row) 
-                         for row in self.player.defence.values()])]
-        weapons_list = [' '.join(self.player.weapons[0].keys())] \
-                     + [' '.join(
-                                 [str(val) for val in row.values()]
-                                 ) 
-                        for row in self.player.weapons]
+        defence_list = (
+            [f"WEAPONS & ARMOR{'⌁'*19:<10} "] 
+            + [' '.join(self.player.defence.keys())] 
+            + [' '.join([str(row) for row in 
+               self.player.defence.values()])])
+        weapons_list = (
+            [' '.join(self.player.weapons[0].keys())] 
+            + [' '.join([str(val) for val in row.values()]
+                        ) for row in self.player.weapons])
         for defence, weapon in zip(defence_list, weapons_list):
             print(defence.ljust(35) + weapon.ljust(45))
-        print("ROLE ABILITY " 
-              + "⌁"*14 
-              + " CYBERWARE " 
-              + "⌁"*17 
-              + " GEAR "
+        print("ROLE ABILITY " + "⌁"*14 + " CYBERWARE " + "⌁"*17 + " GEAR "
               + "⌁"*19)
         ability_list = list(self.player.role_ability.values())
         ability_list = [row.splitlines() for row in ability_list]
@@ -187,9 +183,9 @@ class ActionManager(cmd.Cmd):
                      row.items()]
         ware_list = [row.splitlines() for row in ware_list]
         ware_list = [item for sublist in ware_list for item in sublist]
-        gear_list = [' '.join(self.player.gear[0].keys())] \
-                  + [' '.join(row.values()) for row in self.player.gear] \
-                  + ['']
+        gear_list = ([' '.join(self.player.gear[0].keys())]
+                     + [' '.join(row.values()) for row in self.player.gear]
+                     + [''])
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
             #if ability == ability_list[0]:
             #    ability = "\033[1m" + ability + "\033[0m"
@@ -362,9 +358,8 @@ class SkillCheck:
         # Generate a random number from 1 to 10
         d10_roll = random.randint(1, 10)
         # Add d10 roll to total skill level
-        skill_check_total = self.character.skill_total(skill_name) \
-                          + d10_roll \
-                          + luck_points
+        skill_check_total = (self.character.skill_total(skill_name)
+                             + d10_roll + luck_points)
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             # Generate another random number from 1 to 10
