@@ -248,7 +248,8 @@ as another memory on the streets. So, you in or what?
             human_perception = self.player.skill_total("human_perception")
             if roll + human_perception > 17:
                 wprint("Yo, you're suspecting something's off. You're right, "
-                       "Lazlo's being held at gunpoint and is being forced to "                       "lure you into a trap.")
+                       "Lazlo's being held at gunpoint and is being forced to "
+                       "lure you into a trap.")
             else:
                 print(
                     "You didn't suspect anything unusual with the phone call."
