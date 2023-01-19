@@ -3,7 +3,6 @@
 import cmd
 import os
 import sys
-import random
 import shelve
 import time
 from character import Character
@@ -16,13 +15,6 @@ def wprint(text, width=80):
     for line in wrapped_text:
         print(line)
 
-DIFFICULTY_VALUE = {
-    "Everyday": 13,
-    "Difficult": 15,
-    "Professional": 17,
-    "Heroic": 21,
-    "Incredible": 24
-    }
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -127,23 +119,6 @@ class ActionManager(cmd.Cmd):
         """Move player in the specified direction"""
         map.main(self.player, self.npcs)
 
-    def do_encounter_npc(self, arg):
-        """Encounter an NPC and assign the selected NPC to self.current_npc"""
-        print("Select an NPC:")
-        for i, npc in enumerate(self.npcs):
-            print(f"{i+1}. {npc.handle}")
-        while True:
-            try:
-                npc_index = int(input()) - 1
-                if 0 <= npc_index < len(self.npcs):
-                    self.current_npc = self.npcs[npc_index]
-                    self.skill_check = SkillCheck(self.current_npc)
-                    return
-            except ValueError:
-                pass
-            print("Invalid choice. Please choose a number between 0 and",
-                  len(self.npcs)-1)
-    
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
         print(f"HANDLE \033[1;3;35m{self.player.handle:⌁^33}\033[0m ROLE "
@@ -238,36 +213,22 @@ as another memory on the streets. So, you in or what?
         self.game_state = 'before_perception_check'
         self.prompt = "ε(๏_๏)з】 "
 
-    def do_perception_check(self, args):
-        if args not in ("yes", "no"):
-            wprint("Yo, chummer, you wanna roll for perception check?"
-                   "Type in 'yes' or 'no' to make your choice.")
-            return
-        if args == "yes":
-            roll = random.randint(1, 10)
-            human_perception = self.player.skill_total("human_perception")
-            if roll + human_perception > 17:
-                wprint("Yo, you're suspecting something's off. You're right, "
-                       "Lazlo's being held at gunpoint and is being forced to "
-                       "lure you into a trap.")
-            else:
-                print(
-                    "You didn't suspect anything unusual with the phone call."
-                    )
-        else:
-            print("Alright, play it cool.")
-        print("Lazlo hangs up before you can ask any more questions.")
-        return self.do_heywood_industrial()
-
-    def complete_perception_check(self, text, line, begidx, endidx):
-        return ['yes', 'no'] if not text else [c for c in ['yes', 'no'] 
-                                               if c.startswith(text)]
-
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        if self.game_state == 'before_perception_check':
-            cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
+        check_cmd = self.get_check_command()
+        if check_cmd:
+            cmds = check_cmd.completenames(text)
         return cmds
+        #if self.game_state == 'before_perception_check':
+        #    cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
+        #return cmds
+
+    def get_check_command(self):
+        if self.game_state == 'before_perception_check':
+            return PerceptionCheckCommand(...)
+        elif self.game_state == 'before_ranged_combat':
+            return RangedCombatCommand(...)
+
 
     def do_heywood_industrial(self):
         """This method handles the Heywood Industrial story mode."""

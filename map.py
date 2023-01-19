@@ -2,7 +2,7 @@
 
 import random
 import curses
-from game import SkillCheck
+from skill_check import NPCEncounterCommand 
 
 def main(player, npcs):
     stdscr = curses.initscr()
@@ -70,9 +70,9 @@ def main(player, npcs):
                 if map_data[new_y][new_x] == ' ':
                     for npc in npcs:
                         if (npc.x, npc.y) == (new_x, new_y): # npc encountered
-                            skill_check = SkillCheck(player)
+                            npc_encounter = NPCEncounterCommand(player)
                             curses.endwin()
-                            skill_check.handle_npc_encounter(npc)
+                            npc_encounter.handle_npc_encounter(npc)
                     player_x = new_x
                     player_y = new_y
     except StopIteration:
