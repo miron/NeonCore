@@ -1,12 +1,13 @@
 import random
-import cmd
+from utils import wprint
 
 
-class SkillCheckCommand(cmd.Cmd):
+class SkillCheckCommand:
     """
     Attacker vs Defender
     Trying Again:
       only if chances of success have improved
+
       - you took longer
       - used better tool
       - you or friends made Complementary Skill Check
@@ -69,7 +70,20 @@ class SkillCheckCommand(cmd.Cmd):
 
 class PerceptionCheckCommand(SkillCheckCommand):
     def __init__(self, character):
+        #self.player = character
         super().__init__(character)
+
+    def get_available_commands(self):
+        return [name[3:] for name in dir(self) if name.startswith("do_")]
+
+    def register_command(self, action_manager):
+        setattr(action_manager, 'do_perception_check', 
+                self.do_perception_check)
+        setattr(action_manager, 'complete_perception_check', 
+                self.complete_perception_check)
+
+    #def completenames(self, text, *ignored):
+    #    return ['perception_check']
 
     def do_perception_check(self, args):
        if args not in ("yes", "no"):
@@ -78,7 +92,7 @@ class PerceptionCheckCommand(SkillCheckCommand):
            return
        if args == "yes":
            roll = random.randint(1, 10)
-           human_perception = self.player.skill_total("human_perception")
+           human_perception = self.character.skill_total("human_perception")
            if roll + human_perception > 17:
                wprint("Yo, you're suspecting something's off. You're right, "
                       "Lazlo's being held at gunpoint and is being forced to "
@@ -90,11 +104,13 @@ class PerceptionCheckCommand(SkillCheckCommand):
        else:
            print("Alright, play it cool.")
        print("Lazlo hangs up before you can ask any more questions.")
-       return self.do_heywood_industrial()
+       #return self.do_heywood_industrial()
 
     def complete_perception_check(self, text, line, begidx, endidx):
         return ['yes', 'no'] if not text else [c for c in ['yes', 'no']
                                                if c.startswith(text)] 
+
+
 
 class NPCEncounterCommand(SkillCheckCommand):
     """
@@ -193,7 +209,7 @@ class NPCEncounterCommand(SkillCheckCommand):
 
 
 
-class RangedCombatCommand(cmd.Cmd):
+class RangedCombatCommand:
     def __init__(self, character):
         self.character = character
         self.DVs = {

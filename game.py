@@ -8,12 +8,7 @@ from character import Character
 from sheet import characters
 from skill_check import PerceptionCheckCommand, RangedCombatCommand
 import map 
-import textwrap 
-
-def wprint(text, width=80):
-    wrapped_text = textwrap.wrap(text, width=width)
-    for line in wrapped_text:
-        print(line)
+from utils import wprint
 
 
 class ActionManager(cmd.Cmd):
@@ -211,22 +206,21 @@ as another memory on the streets. So, you in or what?
                "he's sweatin'.")
         print("You got a bad feeling about this. Like, real bad.")
         self.game_state = 'before_perception_check'
-        self.prompt = "ε(๏_๏)з】 "
+        self.prompt = "(pc) "
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        #check_cmd = self.get_check_command()
+        check_cmd = self.get_check_command()
         if check_cmd:
-            cmds = check_cmd.completenames(text)
-        self.complete_perception_check(text, line, begidx, endidx)
+            cmds += [c for c in check_cmd.get_available_commands() if 
+                     c.startswith(text)]
         return cmds
-        #if self.game_state == 'before_perception_check':
-        #    cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
-        #return cmds
 
     def get_check_command(self):
         if self.game_state == 'before_perception_check':
-            return PerceptionCheckCommand(self.player)
+            perception_check = PerceptionCheckCommand(self.player)
+            perception_check.register_command(ActionManager)
+            return perception_check
         elif self.game_state == 'before_ranged_combat':
             return RangedCombatCommand(self.player, self.npcs)
 
