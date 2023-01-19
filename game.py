@@ -1,5 +1,4 @@
 """A Role Playing Game in the Cyberpunk RED Universe"""
-
 import cmd
 import os
 import sys
@@ -7,6 +6,7 @@ import shelve
 import time
 from character import Character
 from sheet import characters
+from skill_check import PerceptionCheckCommand, RangedCombatCommand
 import map 
 import textwrap 
 
@@ -215,6 +215,7 @@ as another memory on the streets. So, you in or what?
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
+        self.complete_perception_check(text, line, begidx, endidx)
         check_cmd = self.get_check_command()
         if check_cmd:
             cmds = check_cmd.completenames(text)
@@ -223,11 +224,12 @@ as another memory on the streets. So, you in or what?
         #    cmds = [cmd for cmd in cmds if cmd in ['perception_check']]
         #return cmds
 
+
     def get_check_command(self):
         if self.game_state == 'before_perception_check':
-            return PerceptionCheckCommand(...)
+            return PerceptionCheckCommand(self.player)
         elif self.game_state == 'before_ranged_combat':
-            return RangedCombatCommand(...)
+            return RangedCombatCommand(self.player, self.npcs)
 
 
     def do_heywood_industrial(self):

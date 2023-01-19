@@ -2,7 +2,7 @@ import random
 import cmd
 
 
-class SkillCheckCommand:
+class SkillCheckCommand(cmd.Cmd):
     """
     Attacker vs Defender
     Trying Again:
@@ -67,6 +67,35 @@ class SkillCheckCommand:
             print("Attacker loses.")
 
 
+class PerceptionCheckCommand(SkillCheckCommand):
+    def __init__(self, character):
+        super().__init__(character)
+
+    def do_perception_check(self, args):
+       if args not in ("yes", "no"):
+           wprint("Yo, chummer, you wanna roll for perception check?"
+                  "Type in 'yes' or 'no' to make your choice.")
+           return
+       if args == "yes":
+           roll = random.randint(1, 10)
+           human_perception = self.player.skill_total("human_perception")
+           if roll + human_perception > 17:
+               wprint("Yo, you're suspecting something's off. You're right, "
+                      "Lazlo's being held at gunpoint and is being forced to "
+                      "lure you into a trap.")
+           else:
+               print(
+                   "You didn't suspect anything unusual with the phone call."
+                   )
+       else:
+           print("Alright, play it cool.")
+       print("Lazlo hangs up before you can ask any more questions.")
+       return self.do_heywood_industrial()
+
+    def complete_perception_check(self, text, line, begidx, endidx):
+        return ['yes', 'no'] if not text else [c for c in ['yes', 'no']
+                                               if c.startswith(text)] 
+
 class NPCEncounterCommand(SkillCheckCommand):
     """
     Class for handling NPC encounters. Inherits from SkillCheckCommand
@@ -74,7 +103,6 @@ class NPCEncounterCommand(SkillCheckCommand):
     def __init__(self, character):
         super().__init__(character)
         self.npc = None
-
 
     def handle_npc_encounter(self, npc):
         """
@@ -248,31 +276,3 @@ class RangedCombatCommand(cmd.Cmd):
             skill_check_total += random.randint
 
 
-class PerceptionCheckCommand(SkillCheckCommand):
-    def __init__(self, character):
-        super().__init__(character)
-
-    def do_perception_check(self, args):
-       if args not in ("yes", "no"):
-           wprint("Yo, chummer, you wanna roll for perception check?"
-                  "Type in 'yes' or 'no' to make your choice.")
-           return
-       if args == "yes":
-           roll = random.randint(1, 10)
-           human_perception = self.player.skill_total("human_perception")
-           if roll + human_perception > 17:
-               wprint("Yo, you're suspecting something's off. You're right, "
-                      "Lazlo's being held at gunpoint and is being forced to "
-                      "lure you into a trap.")
-           else:
-               print(
-                   "You didn't suspect anything unusual with the phone call."
-                   )
-       else:
-           print("Alright, play it cool.")
-       print("Lazlo hangs up before you can ask any more questions.")
-       return self.do_heywood_industrial()
-
-    def complete_perception_check(self, text, line, begidx, endidx):
-        return ['yes', 'no'] if not text else [c for c in ['yes', 'no']
-                                               if c.startswith(text)] 
