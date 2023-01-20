@@ -69,46 +69,30 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
+    def roles(self, text=''):
+        return [
+            c.role.lower() for c in self.characters_list] if not text else [
+                c.role.lower() for c in self.characters_list if 
+                c.role.lower().startswith(text)]
+
     def do_choose_character(self, arg):
         """Allows the player to choose a character role."""
-        self.prompt = ("Pick yo' ride, rockerboy, solo, tech, medtech, "
-                       "or media:")
-        characters_list = [
-            f"{character.handle} ({character.role})" 
-            for i, character in enumerate(self.characters_list)
-            ]
-        self.columnize(characters_list, displaywidth=80)
-        valid_roles = ['rockerboy', 'solo', 'tech', 'medtech', 'media']
-        if arg in valid_roles:
-            self.character_role = arg
-            self.prompt = f"{arg} >>> "
-        else:
-            print(f"Invalid role. Valid roles: {valid_roles}")
-
-    def choose_character(self):
-        while True:
-            print("Yo, roll a homie, chummer:")
+        if arg not in self.roles():
             characters_list = [
-                f"{i+1}. {character.handle}"
+                f"{character.handle} ({character.role})" 
                 for i, character in enumerate(self.characters_list)
                 ]
             self.columnize(characters_list, displaywidth=80)
-            choice = input("Enter the number of your choice or 'q' to quit: ")
-            if choice.lower() == 'q':
-                break
-            try:
-                choice = int(choice) - 1
-                if 0 <= choice < len(characters_list):
-                    self.player = self.characters_list.pop(choice)
-                    #character_summary(self.player)
-                    self.npcs = self.characters_list
-                    confirm = input("Confirm? y/n: ")
-                    if confirm.lower() == 'y':
-                        break
-            except ValueError:
-                pass
-            print("Invalid choice. Please choose a number between 1 and",
-                  len(characters_list))
+            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
+            return
+        self.prompt = f"{arg} >>> "
+        self.player = [
+            c for c in self.characters_list if c.role.lower() == arg][0]
+        self.npcs = [
+            c for c in self.characters_list if c.role.lower() != arg]
+
+    def complete_choose_character(self, text, line, begidx, endidx):
+        return self.roles(text)
 
     def do_move(self, args):
         """Move player in the specified direction"""
@@ -195,7 +179,6 @@ show on the road. Gotta choose your character first, make sure you roll
 gotta be quick on your feet and make the right moves, or you'll end up 
 as another memory on the streets. So, you in or what?
 """
-        self.character = self.choose_character()
         wprint("Yo, listen up. You and your crew just hit the South Night City"
                " docks and now you're chillin' with a burner phone call from "
                "Lazlo, your fixer.")
@@ -230,7 +213,7 @@ as another memory on the streets. So, you in or what?
                "How do you want to approach the situation?")
         approach = input("Enter your choice: ")
         # Check if the player's approach includes a skill check of 17 or higher
-        if self.character.skill_check(17):
+        if self.player.skill_check(17):
             print("Your approach leads to a beneficial situation!")
             # Adjudicate the beneficial situation
             self.beneficial_situation()
