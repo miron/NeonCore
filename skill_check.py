@@ -82,9 +82,6 @@ class PerceptionCheckCommand(SkillCheckCommand):
         setattr(action_manager, 'complete_perception_check', 
                 self.complete_perception_check)
 
-    #def completenames(self, text, *ignored):
-    #    return ['perception_check']
-
     def do_perception_check(self, args):
        if args not in ("yes", "no"):
            wprint("Yo, chummer, you wanna roll for perception check?"
