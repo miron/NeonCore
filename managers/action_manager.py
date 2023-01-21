@@ -4,7 +4,7 @@ import os
 import sys
 import shelve
 import time
-from skill_check import PerceptionCheckCommand, RangedCombatCommand
+from skill_check import SkillCheckCommand
 import map 
 from utils import wprint
 from managers.cyberpunk_manager  import CyberpunkManager
@@ -37,7 +37,6 @@ class ActionManager(cmd.Cmd):
     def start_game(self):
          os.system('clear')
          self.cmdloop()
-
 
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
@@ -208,9 +207,9 @@ as another memory on the streets. So, you in or what?
 
     def get_check_command(self):
         if self.game_state == 'before_perception_check':
-            perception_check = PerceptionCheckCommand(self.player)
-            perception_check.register_command(ActionManager)
-            return perception_check
+            use_skill = SkillCheckCommand(self.player)
+            use_skill.register_command(ActionManager)
+            return use_skill 
         elif self.game_state == 'before_ranged_combat':
             return RangedCombatCommand(self.player, self.npcs)
 
