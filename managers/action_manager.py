@@ -4,8 +4,6 @@ import os
 import sys
 import shelve
 import time
-from character import Character
-from sheet import characters
 from skill_check import PerceptionCheckCommand, RangedCombatCommand
 import map 
 from utils import wprint
@@ -34,6 +32,12 @@ class ActionManager(cmd.Cmd):
         self.player = None
         self.npcs = None
         self.game_state = None
+
+    def start_game(self):
+         os.system('clear')
+         story_manager = StoryManager(self.characters_list)
+         story_manager.start()
+
 
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
@@ -246,11 +250,3 @@ as another memory on the streets. So, you in or what?
 #print(timestamp)
 
 
-if __name__ == "__main__":
-    characters_list = [Character(**char) for char in characters]
-    os.system('clear')
-    ActionManager(characters_list).cmdloop()
-   # instances = locals().copy()
-   # for name, value in instances.items():
-   #     if isinstance(value, Character):
-   #         print(name)
