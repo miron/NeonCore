@@ -1,5 +1,6 @@
 class HeywoodIndustrial:
-    def __init__(self):
+    def __init__(self, characters_manager):
+        self.characters_manager = characters_manager
         self.hooded_man = HoodedMan()
         self.cop_friends = CopFriends()
 
@@ -18,14 +19,15 @@ class HeywoodIndustrial:
         # Use the appropriate method to check the skill of the player's approach
         pass
 
-    def give_briefcase(self, character: Character):
+    def give_briefcase(self, character_id: int):
+        character = self.characters_manager.get_character_by_id(character_id)
         briefcase = Briefcase()
         self.hooded_man.hand_off(briefcase)
         character.pick_up(briefcase)
         if self.cop_friends.is_signal(briefcase):
             self.cop_friends.ambush()
 
-    def open_briefcase(self, character: Character):
+    def open_briefcase(self, character_id: int):
         briefcase = character.get_briefcase()
         if briefcase.is_counterfeit():
             character.forgery_check()

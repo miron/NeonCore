@@ -7,6 +7,7 @@ import time
 from skill_check import PerceptionCheckCommand, RangedCombatCommand
 import map 
 from utils import wprint
+from managers.cyberpunk_manager  import CyberpunkManager
 
 
 class ActionManager(cmd.Cmd):
@@ -26,17 +27,16 @@ class ActionManager(cmd.Cmd):
     ruler = '⌁'
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, characters_list):
+    def __init__(self, characters_manager):
         super().__init__()
-        self.characters_list = characters_list
+        self.characters_manager = characters_manager
         self.player = None
         self.npcs = None
         self.game_state = None
 
     def start_game(self):
          os.system('clear')
-         story_manager = StoryManager(self.characters_list)
-         story_manager.start()
+         self.cmdloop()
 
 
     def do_shell(self, arg):
@@ -75,25 +75,28 @@ class ActionManager(cmd.Cmd):
 
     def roles(self, text=''):
         return [
-            c.role.lower() for c in self.characters_list] if not text else [
-                c.role.lower() for c in self.characters_list if 
+            c.role.lower() for c in 
+            self.characters_manager.characters.values()] if not text else [
+                c.role.lower() for c in 
+                self.characters_manager.characters.values()  if 
                 c.role.lower().startswith(text)]
 
     def do_choose_character(self, arg):
         """Allows the player to choose a character role."""
         if arg not in self.roles():
             characters_list = [
-                f"{character.handle} ({character.role})" 
-                for i, character in enumerate(self.characters_list)
-                ]
+                f"{character.handle} ({character.role})" for  character in 
+                self.characters_manager.characters.values()]
             self.columnize(characters_list, displaywidth=80)
             wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
         self.prompt = f"{arg} >>> "
-        self.player = [
-            c for c in self.characters_list if c.role.lower() == arg][0]
+        self.player = next(
+            c for c in self.characters_manager.characters.values()  if 
+            c.role.lower() == arg)
         self.npcs = [
-            c for c in self.characters_list if c.role.lower() != arg]
+            c for c in self.characters_manager.characters.values() if 
+            c.role.lower() != arg]
 
     def complete_choose_character(self, text, line, begidx, endidx):
         return self.roles(text)

@@ -5,8 +5,9 @@ import random
 
 class Character:
     def __init__(
-            self, handle, role, stats, combat, skills, defence, weapons, 
-            role_ability, cyberware, gear, ascii_art):
+            self, char_id, handle, role, stats, combat, skills, defence,
+            weapons, role_ability, cyberware, gear, ascii_art):
+        self.char_id = char_id
         self.handle = handle
         self.role = role
         self.stats = stats

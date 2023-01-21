@@ -1,5 +1,4 @@
 import abc
-from character import Character
 
 class StoryManager(metaclass=abc.ABCMeta):
     """
@@ -9,17 +8,9 @@ class StoryManager(metaclass=abc.ABCMeta):
     _instance = None
 
     def __init__(self):
-        from sheets import characters
-        self.characters = characters
-        self.characters_list = []
-        self.load_characters() 
+        self.characters_manager  = CharactersManager() 
+        self.characters_list = self.characters_manager.load_characters()
         
-    def load_characters(self):
-        #with open("characters.json") as f:
-        #    characters_data - json.load(f)
-        characters_data = self.characters 
-        for char in characters_data:
-            self.characters_list.append(Character(**char))
 
     def start_game(self):
         ActionManager(self.characters_list).cmdloop()
