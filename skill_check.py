@@ -23,7 +23,6 @@ class SkillCheckCommand(Command):
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    
     def __init__(self, character):
         self.character = character
     
@@ -114,8 +113,8 @@ class SkillCheckCommand(Command):
         return [name[3:] for name in dir(self) if name.startswith("do_")]
 
     def complete_use_skill(self, text, line, begidx, endidx):
-        return ['yes', 'no'] if not text else [c for c in ['yes', 'no']
-                                               if c.startswith(text)] 
+        skills = self.character.get_skills()
+        return [s for s in skills if s.startswith(text)]
 
 
 class HumanPerceptionCheckCommand(SkillCheckCommand):

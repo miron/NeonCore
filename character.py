@@ -41,6 +41,9 @@ class Character:
     def skill_total(self, skill_name):
         skill_list = self.skills[skill_name]
         return sum(skill_list)
+    
+    def get_skills(self):
+        return list(self.skills.keys())
 
 
 class Lifepath:
