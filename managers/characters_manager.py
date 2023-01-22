@@ -34,8 +34,42 @@ class CharactersManager:
         for char in characters_data:
             self.characters_list.append(Character(**char))
 
+    def roles(self, text=''):
+        return [
+            c.role.lower() for c in 
+            self.characters.values()] if not text else [
+                c.role.lower() for c in 
+                self.characters.values()  if 
+                c.role.lower().startswith(text)]
+
+    def register_command(self, action_manager):
+        setattr(action_manager, 'do_choose_character', 
+                self.do_choose_character)
+        setattr(action_manager, 'complete_choose_character', 
+                self.complete_choose_character)
+        setattr(action_manager, 'roles', self.roles)
 
 
+    def get_available_commands(self):
+        return [name[3:] for name in dir(self) if name.startswith("do_")]
 
-   
+    def do_choose_character(self, arg):
+        """Allows the player to choose a character role."""
+        if arg not in self.roles():
+            characters_list = [
+                f"{character.handle} ({character.role})" for  character in 
+                self.characters.values()]
+            self.columnize(characters_list, displaywidth=80)
+            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
+            return
+        self.prompt = f"{arg} >>> "
+        self.player = next(
+            c for c in self.characters.values()  if 
+            c.role.lower() == arg)
+        self.npcs = [
+            c for c in self.characters.values() if 
+            c.role.lower() != arg]
+
+    def complete_choose_character(self, text, line, begidx, endidx):
+        return self.roles(text)
 

@@ -35,8 +35,31 @@ class ActionManager(cmd.Cmd):
         self.game_state = None
 
     def start_game(self):
-         os.system('clear')
-         self.cmdloop()
+        os.system('clear')
+        self.characters_manager.register_command(self)
+        self.prompt = '(choose_character) '
+        self.cmdloop()
+
+    def completenames(self, text, *ignored):
+        cmds = super().completenames(text, *ignored)
+        check_cmd = self.get_check_command()
+        if check_cmd:
+            cmds += [c for c in check_cmd.get_available_commands() if 
+                     c.startswith(text)]
+        return cmds
+
+    def get_check_command(self):
+        if self.game_state == 'before_perception_check':
+            use_skill = SkillCheckCommand(self.player)
+            use_skill.register_command(self)
+            return use_skill 
+        elif self.game_state == 'heywood_industrial':
+            pass
+        elif self.game_state == 'before_ranged_combat':
+            return RangedCombatCommand(self.player, self.npcs)
+        else:
+            #self.characters_manager.register_command(self)
+            return self.characters_manager
 
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
@@ -71,34 +94,6 @@ class ActionManager(cmd.Cmd):
             # Save data to the database>
             dbase['timestamp'] = time.time()
         sys.exit()
-
-    def roles(self, text=''):
-        return [
-            c.role.lower() for c in 
-            self.characters_manager.characters.values()] if not text else [
-                c.role.lower() for c in 
-                self.characters_manager.characters.values()  if 
-                c.role.lower().startswith(text)]
-
-    def do_choose_character(self, arg):
-        """Allows the player to choose a character role."""
-        if arg not in self.roles():
-            characters_list = [
-                f"{character.handle} ({character.role})" for  character in 
-                self.characters_manager.characters.values()]
-            self.columnize(characters_list, displaywidth=80)
-            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
-            return
-        self.prompt = f"{arg} >>> "
-        self.player = next(
-            c for c in self.characters_manager.characters.values()  if 
-            c.role.lower() == arg)
-        self.npcs = [
-            c for c in self.characters_manager.characters.values() if 
-            c.role.lower() != arg]
-
-    def complete_choose_character(self, text, line, begidx, endidx):
-        return self.roles(text)
 
     def do_move(self, args):
         """Move player in the specified direction"""
@@ -176,42 +171,6 @@ homies before ya start runnin' with em, ya feel me?
         print("Enemies:", self.player.enemies)
         print("Lovers:", self.player.lovers)
         print("Life Goals:", self.player.life_goal)
-
-    def do_jack_in(self, args):
-        """Yo, chummer! You wanna make some eddies and climb the ranks? 
-You wanna be a player in Night City? Type 'jack_in' and let's get this 
-show on the road. Gotta choose your character first, make sure you roll 
-'em up tight and make the right choice. Remember, in Night City, you 
-gotta be quick on your feet and make the right moves, or you'll end up 
-as another memory on the streets. So, you in or what?
-"""
-        wprint("Yo, listen up. You and your crew just hit the South Night City"
-               " docks and now you're chillin' with a burner phone call from "
-               "Lazlo, your fixer.")
-        wprint("He's all like, 'Yo, we gotta change the spot for the payout. "
-               "Meet me at the industrial park in Heywood.")
-        wprint("But something ain't right, 'cause Lazlo ain't telling you why."
-               " He's just saying it's all good, but you can tell "
-               "he's sweatin'.")
-        print("You got a bad feeling about this. Like, real bad.")
-        self.game_state = 'before_perception_check'
-        self.prompt = "(pc) "
-
-    def completenames(self, text, *ignored):
-        cmds = super().completenames(text, *ignored)
-        check_cmd = self.get_check_command()
-        if check_cmd:
-            cmds += [c for c in check_cmd.get_available_commands() if 
-                     c.startswith(text)]
-        return cmds
-
-    def get_check_command(self):
-        if self.game_state == 'before_perception_check':
-            use_skill = SkillCheckCommand(self.player)
-            use_skill.register_command(ActionManager)
-            return use_skill 
-        elif self.game_state == 'before_ranged_combat':
-            return RangedCombatCommand(self.player, self.npcs)
 
     def do_heywood_industrial(self):
         """This method handles the Heywood Industrial story mode."""

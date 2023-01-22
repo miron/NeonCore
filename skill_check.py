@@ -44,7 +44,7 @@ class SkillCheckCommand(Command):
             return 15
         elif difficulty_level == 'Professional':
             return 17
-        elif dificulty_level == 'Heroic':
+        elif difficulty_level == 'Heroic':
             return 21
         elif difficulty_level == 'Incredible':
             return 24
@@ -101,7 +101,7 @@ class SkillCheckCommand(Command):
                 self.complete_use_skill)
  
     def do_use_skill(self, skill_name):
-        if skill_name not in self.get_available_skills():
+        if skill_name not in self.character.get_skills():
             wprint("invalid skill name.")
             return
         difficulty_value = self.set_difficulty(skill_name)
@@ -219,7 +219,7 @@ class NPCEncounterCommand(SkillCheckCommand):
                 npc_index = int(input()) - 1
                 if 0 <= npc_index < len(self.npcs):
                     self.current_npc = self.npcs[npc_index]
-                    self.skill_check = SkillCheck(self.current_npc)
+                    self.skill_check = SkillCheckCommand(self.current_npc)
                     return
             except ValueError:
                 pass
@@ -309,5 +309,4 @@ class RangedCombatCommand:
             print("Critical Success! Rolling another one")
             # generate another random number from 1 to 10
             skill_check_total += random.randint
-
 
