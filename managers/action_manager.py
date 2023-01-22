@@ -98,62 +98,9 @@ class ActionManager(cmd.Cmd):
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        my_map = Map(self.characters_manager.player, self.characters_manager.npcs)
+        my_map = Map(self.characters_manager.player, 
+                     self.characters_manager.npcs)
         my_map.move()
-
-    def do_rap_sheet(self, arg):
-        """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on
-ya character's backstory, where they came from, who they know, and what
-they're all about.
-It's like peepin' into they mind, know what I'm sayin'? Gotta know ya 
-homies before ya start runnin' with em, ya feel me?
-"""
-        print("Lifepath:")
-        print("Cultural Region:", self.player.cultural_region)
-        print("Personality:", self.player.personality)
-        print("Clothing Style:", self.player.clothing_style)
-        print("Hairstyle:", self.player.hairstyle)
-        print("Value:", self.player.value)
-        print("Trait:", self.player.trait)
-        print("Original Background:", self.player.original_background)
-        print("Childhood Environment:", self.player.childhood_environment)
-        print("Family Crisis:", self.player.family_crisis)
-        print("Friends:", self.player.friends)
-        print("Enemies:", self.player.enemies)
-        print("Lovers:", self.player.lovers)
-        print("Life Goals:", self.player.life_goal)
-
-    def do_heywood_industrial(self):
-        """This method handles the Heywood Industrial story mode."""
-        wprint("You arrive at Heywood Industrial. "
-               "How do you want to approach the situation?")
-        approach = input("Enter your choice: ")
-        # Check if the player's approach includes a skill check of 17 or higher
-        if self.player.skill_check(17):
-            print("Your approach leads to a beneficial situation!")
-            # Adjudicate the beneficial situation
-            self.beneficial_situation()
-        else:
-            wprint("Your approach does not lead to a beneficial situation."
-                   "At the center of some alleys is a hooded man handcuffed to"
-                   " a briefcase. He offers it to you, but fumbles with the "
-                   "key before handing it over.")
-        choice = input("Do you take the briefcase? (yes/no) ")
-        if choice == "yes":
-            print("You take the briefcase.")
-            character = self.choose_character()
-            # Check if the briefcase contains counterfeit money
-            if character.forgery_check(17):
-                print("The briefcase contains 10,000eb, but it's counterfeit.")
-            else:
-                print("The briefcase contains 10,000eb.")
-            # Trigger the ambush
-            self.ambush()
-        else:
-            print("You don't take the briefcase.")
-            # Continues the story without trigger the ambush
-            self.continue_story()
-
 
 # Open a shelve in read mode
 #with shelve.open('timestamp', 'r') as db:

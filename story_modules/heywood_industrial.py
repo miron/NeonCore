@@ -34,6 +34,37 @@ class HeywoodIndustrial:
         else:
             character.get_money(briefcase.get_money())
 
+    def do_heywood_industrial(self):
+        """This method handles the Heywood Industrial story mode."""
+        wprint("You arrive at Heywood Industrial. "
+               "How do you want to approach the situation?")
+        approach = input("Enter your choice: ")
+        # Check if the player's approach includes a skill check of 17 or higher
+        if self.player.skill_check(17):
+            print("Your approach leads to a beneficial situation!")
+            # Adjudicate the beneficial situation
+            self.beneficial_situation()
+        else:
+            wprint("Your approach does not lead to a beneficial situation."
+                   "At the center of some alleys is a hooded man handcuffed to"
+                   " a briefcase. He offers it to you, but fumbles with the "
+                   "key before handing it over.")
+        choice = input("Do you take the briefcase? (yes/no) ")
+        if choice == "yes":
+            print("You take the briefcase.")
+            character = self.choose_character()
+            # Check if the briefcase contains counterfeit money
+            if character.forgery_check(17):
+                print("The briefcase contains 10,000eb, but it's counterfeit.")
+            else:
+                print("The briefcase contains 10,000eb.")
+            # Trigger the ambush
+            self.ambush()
+        else:
+            print("You don't take the briefcase.")
+            # Continues the story without trigger the ambush
+            self.continue_story()
+
 
 class HoodedMan:
     def __init__(self):

@@ -124,3 +124,27 @@ class CharactersManager:
             #if gear == gear_list[0]:
             #    gear = "\033[1m" + gear + "\033[0m"
 
+    def do_rap_sheet(self, arg):
+        """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on
+ya character's backstory, where they came from, who they know, and what
+they're all about.
+It's like peepin' into they mind, know what I'm sayin'? Gotta know ya 
+homies before ya start runnin' with em, ya feel me?
+"""
+        print("Lifepath:")
+        print("Cultural Region:", self.player.cultural_region)
+        print("Personality:", self.player.personality)
+        print("Clothing Style:", self.player.clothing_style)
+        print("Hairstyle:", self.player.hairstyle)
+        print("Value:", self.player.value)
+        print("Trait:", self.player.trait)
+        print("Original Background:", self.player.original_background)
+        print("Childhood Environment:", self.player.childhood_environment)
+        print("Family Crisis:", self.player.family_crisis)
+        print("Friends:", self.player.friends)
+        print("Enemies:", self.player.enemies)
+        print("Lovers:", self.player.lovers)
+        print("Life Goals:", self.player.life_goal)
+
+
+
