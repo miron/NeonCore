@@ -8,6 +8,7 @@ from skill_check import SkillCheckCommand
 import map 
 from utils import wprint
 from managers.cyberpunk_manager  import CyberpunkManager
+from map import Map
 
 
 class ActionManager(cmd.Cmd):
@@ -36,7 +37,7 @@ class ActionManager(cmd.Cmd):
 
     def start_game(self):
         os.system('clear')
-        self.characters_manager.register_command(self)
+        #self.characters_manager.register_command(self)
         self.prompt = '(choose_character) '
         self.cmdloop()
 
@@ -58,7 +59,7 @@ class ActionManager(cmd.Cmd):
         elif self.game_state == 'before_ranged_combat':
             return RangedCombatCommand(self.player, self.npcs)
         else:
-            #self.characters_manager.register_command(self)
+            self.characters_manager.register_command(self)
             return self.characters_manager
 
     def do_shell(self, arg):
@@ -97,58 +98,8 @@ class ActionManager(cmd.Cmd):
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        map.main(self.player, self.npcs)
-
-    def do_player_sheet(self, arg):
-        """Displays the character sheet"""
-        print(f"HANDLE \033[1;3;35m{self.player.handle:⌁^33}\033[0m ROLE "
-              f"\033[1;3;35m{self.player.role:⌁^33}\033[0m")
-        stat_list = [(f'{key:⌁<12}{self.player.lucky_pool}/{value}' 
-                      if key == 'luck' else f'{key:⌁<12}{value:>2}')
-                     for key, value in self.player.stats.items()]
-        self.columnize(stat_list, displaywidth=80)
-        combat_list = [(f'{key:⌁<23}{value:>2}')
-                        for key, value in self.player.combat.items()]
-        self.columnize(combat_list, displaywidth=80)
-        skill_keys = list(self.player.skills.keys())
-        skill_values = list(self.player.skills.values())
-        skill_list = [(f'{key:⌁<30}{value[0]:>2}')
-                      for key, value in zip(skill_keys,skill_values)
-                      if value[1!=0]]
-        skill_list += self.player.ascii_art.splitlines()
-        self.columnize(skill_list, displaywidth=80)
-        # Display armor & weapons
-        defence_list = (
-            [f"WEAPONS & ARMOR{'⌁'*19:<10} "] 
-            + [' '.join(self.player.defence.keys())] 
-            + [' '.join([str(row) for row in 
-               self.player.defence.values()])])
-        weapons_list = (
-            [' '.join(self.player.weapons[0].keys())] 
-            + [' '.join([str(val) for val in row.values()]
-                        ) for row in self.player.weapons])
-        for defence, weapon in zip(defence_list, weapons_list):
-            print(defence.ljust(35) + weapon.ljust(45))
-        print("ROLE ABILITY " + "⌁"*14 + " CYBERWARE " + "⌁"*17 + " GEAR "
-              + "⌁"*19)
-        ability_list = list(self.player.role_ability.values())
-        ability_list = [row.splitlines() for row in ability_list]
-        ability_list = [item for sublist in ability_list for item in sublist]
-        ware_list = [value for row in self.player.cyberware for key, value in 
-                     row.items()]
-        ware_list = [row.splitlines() for row in ware_list]
-        ware_list = [item for sublist in ware_list for item in sublist]
-        gear_list = ([' '.join(self.player.gear[0].keys())]
-                     + [' '.join(row.values()) for row in self.player.gear]
-                     + [''])
-        for ability, ware, gear in zip(ability_list, ware_list, gear_list):
-            #if ability == ability_list[0]:
-            #    ability = "\033[1m" + ability + "\033[0m"
-            #if ware == ware_list[0]:
-            #    ware = "\033[1m" + ware + "\033[0m"
-            #if gear == gear_list[0]:
-            #    gear = "\033[1m" + gear + "\033[0m"
-            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
+        my_map = Map(self.characters_manager.player, self.characters_manager.npcs)
+        my_map.move()
 
     def do_rap_sheet(self, arg):
         """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on
@@ -209,5 +160,4 @@ homies before ya start runnin' with em, ya feel me?
     # Load the timestamp
     #timestamp = dbase['timestamp']
 #print(timestamp)
-
 
