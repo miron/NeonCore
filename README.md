@@ -1,6 +1,6 @@
 ![image](https://user-images.githubusercontent.com/109377/211684849-7c9ffe0a-898c-4f84-bb96-642e179b29b2.jpeg)
 
-Welcome to the NeonCore Framework, the ultimate modular toolkit for building immersive role-playing experiences. Developed by the team at street.yoga, we've taken our dedication to creating a framework that is not only easy to use, but also easy to expand upon for future projects.
+Welcome to the NeonCore Framework, the ultimate modular toolkit for building immersive role-playing experiences. Developed by the team at street.yoga in their free time, we've taken our dedication to creating a framework that is not only easy to use, but also easy to expand upon for future projects.
 
 Whether you're building a game set in the gritty world of Night City, or creating an entirely new world of your own, the NeonCore Framework has everything you need to bring your vision to life. From our story manager with modular story elements, to our map class and skill check commander, every aspect of the framework has been designed with ease of use and expansion in mind.
 
