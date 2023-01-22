@@ -5,8 +5,9 @@ import random
 
 class Character:
     def __init__(
-            self, handle, role, stats, combat, skills, defence, weapons, 
-            role_ability, cyberware, gear, ascii_art):
+            self, char_id, handle, role, stats, combat, skills, defence,
+            weapons, role_ability, cyberware, gear, ascii_art):
+        self.char_id = char_id
         self.handle = handle
         self.role = role
         self.stats = stats
@@ -40,6 +41,9 @@ class Character:
     def skill_total(self, skill_name):
         skill_list = self.skills[skill_name]
         return sum(skill_list)
+    
+    def get_skills(self):
+        return list(self.skills.keys())
 
 
 class Lifepath:

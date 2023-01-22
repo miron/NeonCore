@@ -1,8 +1,15 @@
 import random
 from utils import wprint
+from abc import ABC, abstractmethod
 
 
-class SkillCheckCommand:
+class Command(ABC):
+    @abstractmethod
+    def execute(self):
+        pass
+
+
+class SkillCheckCommand(Command):
     """
     Attacker vs Defender
     Trying Again:
@@ -16,18 +23,33 @@ class SkillCheckCommand:
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    DIFFICULTY_VALUE = {
-        "Everyday": 13,
-        "Difficult": 15,
-        "Professional": 17,
-        "Heroic": 21,
-        "Incredible": 24
-        }
-    
     def __init__(self, character):
         self.character = character
+    
+    def set_difficulty(self, difficulty_level):
+        """
+        Returns the difficulty value for the specified difficulty level.
 
-    def perform_check(self, skill_name, difficulty_value, luck_points):
+        Args:
+        difficulty_level (str): The difficulty level of the check.
+
+        Returns:
+        int: The difficulty value for the specified difficulty level.
+        """
+        # Determine the difficulty value according to the task at hand
+        # and return the value
+        if difficulty_level == 'Everyday':
+            return 13
+        elif difficulty_level == 'Diffucult':
+            return 15
+        elif difficulty_level == 'Professional':
+            return 17
+        elif difficulty_level == 'Heroic':
+            return 21
+        elif difficulty_level == 'Incredible':
+            return 24
+
+    def execute(self, skill_name, difficulty_level):
         """
         Perform a skill check using a specified skill and difficulty
         level.
@@ -37,25 +59,30 @@ class SkillCheckCommand:
         difficulty_value (str): The difficulty level of the check.
         luck_points (int): The number of luck points to use for the
         check.
-
-        Returns:
-        None
         """
-        # Generate a random number from 1 to 10
+        while True:
+            luck_points = int(
+                input(
+                      f'Use LUCK {self.character.lucky_pool}'
+                      f'/{self.character.stats["luck"]} '
+                      )
+            )
+            if luck_points > self.character.lucky_pool:
+                print("Not enough luck points!")
+            else:
+                self.character.lucky_pool -= luck_points
+                print(f"Lucky Pool: {self.character.lucky_pool}")
+                break
         d10_roll = random.randint(1, 10)
-        # Add d10 roll to total skill level
         skill_check_total = (self.character.skill_total(skill_name)
                              + d10_roll + luck_points)
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
-            # Generate another random number from 1 to 10
             skill_check_total += random.randint(1,10)
         elif d10_roll == 1:
             print("Critical Failure! Rolling another one")
-            # Generate another random number from 1 to 10
             skill_check_total -= random.randint(1,10)
-        # Get the DV for the specified difficulty level
-        difficulty_value = self.DIFFICULTY_VALUE[difficulty_value]
+        difficulty_value = self.set_difficulty(difficulty_level)
         if skill_check_total > difficulty_value:
             print(f"Success! Attacker roll: {skill_check_total}, "
                   f"Defender DV: {difficulty_value}")
@@ -67,46 +94,56 @@ class SkillCheckCommand:
                    f"Defender DV: {difficulty_value}")
             print("Attacker loses.")
 
-
-class PerceptionCheckCommand(SkillCheckCommand):
-    def __init__(self, character):
-        #self.player = character
-        super().__init__(character)
-
+    def register_command(self, action_manager):
+        setattr(action_manager, 'do_use_skill', 
+                self.do_use_skill)
+        setattr(action_manager, 'complete_use_skill', 
+                self.complete_use_skill)
+ 
+    def do_use_skill(self, skill_name):
+        if skill_name not in self.character.get_skills():
+            wprint("invalid skill name.")
+            return
+        difficulty_value = self.set_difficulty(skill_name)
+        luck_points = self.get_luck_points() 
+        skill_command = self.get_skill_command(skill_name)
+        skill_command.execute(difficulty_value, luck_points)
+        
     def get_available_commands(self):
         return [name[3:] for name in dir(self) if name.startswith("do_")]
 
-    def register_command(self, action_manager):
-        setattr(action_manager, 'do_perception_check', 
-                self.do_perception_check)
-        setattr(action_manager, 'complete_perception_check', 
-                self.complete_perception_check)
+    def complete_use_skill(self, text, line, begidx, endidx):
+        skills = self.character.get_skills()
+        return [s for s in skills if s.startswith(text)]
 
-    def do_perception_check(self, args):
-       if args not in ("yes", "no"):
-           wprint("Yo, chummer, you wanna roll for perception check?"
-                  "Type in 'yes' or 'no' to make your choice.")
-           return
-       if args == "yes":
-           roll = random.randint(1, 10)
-           human_perception = self.character.skill_total("human_perception")
-           if roll + human_perception > 17:
-               wprint("Yo, you're suspecting something's off. You're right, "
-                      "Lazlo's being held at gunpoint and is being forced to "
-                      "lure you into a trap.")
-           else:
-               print(
-                   "You didn't suspect anything unusual with the phone call."
-                   )
-       else:
-           print("Alright, play it cool.")
-       print("Lazlo hangs up before you can ask any more questions.")
-       #return self.do_heywood_industrial()
 
-    def complete_perception_check(self, text, line, begidx, endidx):
-        return ['yes', 'no'] if not text else [c for c in ['yes', 'no']
-                                               if c.startswith(text)] 
+class HumanPerceptionCheckCommand(SkillCheckCommand):
+    def __init__(self, character):
+        super().__init__(character)
 
+    def set_difficulty(self, task):
+        if task == "lazlo":
+            self.difficulty_level = "Professional"
+        elif task == "spotting a hidden object":
+            self.difficulty_level = "Difficult"
+        elif task == "detecting a lie":
+            self.difficulty_level = "Professional"
+
+    def execute(self):
+        wprint("Yo chummer, you wanna roll for human perception check? ")
+        roll = random.randint(1, 10)
+        human_perception = self.characters_manager.get_character_by_id(
+            self.character.char_id).skill_total("human_perception")
+        difficulty_value = self.set_difficulty("lazlo")
+        if roll + human_perception > difficulty_value:
+            wprint("Yo, you're suspecting something's off. You're right, "
+                   "Lazlo's being held at gunpoint and is being forced to "
+                   "lure you into a trap.")
+        else:
+            print(
+                    "You didn't suspect anything unusual with the phone call.")
+        print("Alright, play it cool.")
+        print("Lazlo hangs up before you can ask any more questions.")
 
 
 class NPCEncounterCommand(SkillCheckCommand):
@@ -125,22 +162,7 @@ class NPCEncounterCommand(SkillCheckCommand):
         luck_points (int): 
         The number of luck points to spend on the skill check.
         """
-        while True:
-            luck_points = int(
-                input(
-                      f'Use LUCK {self.character.lucky_pool}'
-                      f'/{self.character.stats["luck"]} '
-                      )
-            )
-            if luck_points > self.character.lucky_pool:
-                print("Not enough luck points!")
-            else:
-                self.perform_check('brawling', 'Professional', luck_points)
-                # subtract the luck points from the lucky pool
-                self.character.lucky_pool -= luck_points
-                print(f"Lucky Pool: {self.character.lucky_pool}")
-                break
-        raise StopIteration
+        self.execute('brawling', 'Professional')
 
     def do_encounter(self, arg):
         """
@@ -197,7 +219,7 @@ class NPCEncounterCommand(SkillCheckCommand):
                 npc_index = int(input()) - 1
                 if 0 <= npc_index < len(self.npcs):
                     self.current_npc = self.npcs[npc_index]
-                    self.skill_check = SkillCheck(self.current_npc)
+                    self.skill_check = SkillCheckCommand(self.current_npc)
                     return
             except ValueError:
                 pass
@@ -287,5 +309,4 @@ class RangedCombatCommand:
             print("Critical Success! Rolling another one")
             # generate another random number from 1 to 10
             skill_check_total += random.randint
-
 

@@ -1,80 +1,84 @@
 """Character Movement on ASCII Map"""
-
 import random
 import curses
 from skill_check import NPCEncounterCommand 
+   
 
-def main(player, npcs):
-    stdscr = curses.initscr()
-    curses.noecho()
-    curses.start_color()
-    curses.curs_set(False)  # hide the cursor
-    curses.init_color(0, 0, 0, 0)
-    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
-    player_color = curses.color_pair(1)
-    npc_color = curses.color_pair(2)
-    # Set up the map
-    map_data= (
-    "### ####  ######",
-    "###   ##  ######",
-    "                ",
-    " ##            #",
-    " ## ###        #",
-    " ## ###   ###  #",
-    "    ###   ###  #",
-    "          ###  #",
-    "###       ###  #",
-    "### ####  ###   ",
-    "### ####  ###   ")
-    # Spawn the player and NPCs randomly on the map
-    empty_positions = []
-    for y, row in enumerate(map_data):
-        for x, cell in enumerate(row):
-            if cell == " ":
-                empty_positions.append((x,y))
-    random.shuffle(empty_positions)
-    player_x, player_y = empty_positions.pop()
-    npc_positions = empty_positions[:len(npcs)]
-    for npc in npcs:
-        npc.x, npc.y  = empty_positions.pop()
-    # Wait for user input to move the player character
-    try:
-        while True:
-            # Redraw the map and update the player position
-            for y_axis, row in enumerate(map_data):
-                for x_axis, cell in enumerate(row):
-                    stdscr.addch(y_axis, x_axis, cell)
-            stdscr.addch(player_y, player_x, '@', player_color)
-            for npc in npcs:
-            # Draw the NPCs on the map
-                stdscr.addch(npc.y, npc.x, 'N', npc_color)
+class Map:
+    def __init__(self, player, npcs):
+        self.player = player
+        self.npcs = npcs
+        self.map_data = (
+        "### ####  ######",
+        "###   ##  ######",
+        "                ",
+        " ##            #",
+        " ## ###        #",
+        " ## ###   ###  #",
+        "    ###   ###  #",
+        "          ###  #",
+        "###       ###  #",
+        "### ####  ###   ",
+        "### ####  ###   ")
+        self.stdscr = curses.initscr()
+        curses.noecho()
+        curses.start_color()
+        curses.curs_set(False)  # hide the cursor
+        curses.init_color(0, 0, 0, 0)
+        curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
+        self.player_color = curses.color_pair(1)
+        self.npc_color = curses.color_pair(2)
+        # Spawn the player and NPCs randomly on the map
+        self.empty_positions = []
+        for y, row in enumerate(self.map_data):
+            for x, cell in enumerate(row):
+                if cell == " ":
+                    self.empty_positions.append((x,y))
+        random.shuffle(self.empty_positions)
+        self.player_x, self.player_y = self.empty_positions.pop()
+        self.npc_positions = self.empty_positions[:len(self.npcs)]
+        for npc in self.npcs:
+            npc.x, npc.y  = self.empty_positions.pop()
 
-            key = stdscr.getch()
-            new_x = player_x
-            new_y = player_y
-            if key == ord('w'):
-                new_y -= 1
-            elif key == ord('s'):
-                new_y += 1
-            elif key == ord('a'):
-                new_x -= 1
-            elif key == ord('d'):
-                new_x += 1
-            elif key == ord('q'):
-                break
-            # Check if the new position is within the bounds of the map
-            if (new_x >= 0 and new_x < len(map_data[0]) and 
-                new_y >= 0 and new_y < len(map_data)):
-                # Check for collision with walls
-                if map_data[new_y][new_x] == ' ':
-                    for npc in npcs:
-                        if (npc.x, npc.y) == (new_x, new_y): # npc encountered
-                            npc_encounter = NPCEncounterCommand(player)
-                            curses.endwin()
-                            npc_encounter.handle_npc_encounter(npc)
-                    player_x = new_x
-                    player_y = new_y
-    except StopIteration:
-        pass
-    curses.endwin()
+    def move(self):
+        try:
+            while True:
+                # Redraw the map and update the player position
+                for y_axis, row in enumerate(self.map_data):
+                    for x_axis, cell in enumerate(row):
+                        self.stdscr.addch(y_axis, x_axis, cell)
+                self.stdscr.addch(self.player_y, self.player_x, '@', self.player_color)
+                for npc in self.npcs:
+                # Draw the NPCs on the map
+                    self.stdscr.addch(npc.y, npc.x, 'N', self.npc_color)
+
+                key = self.stdscr.getch()
+                new_x = self.player_x
+                new_y = self.player_y
+                if key == ord('w'):
+                    new_y -= 1
+                elif key == ord('s'):
+                    new_y += 1
+                elif key == ord('a'):
+                    new_x -= 1
+                elif key == ord('d'):
+                    new_x += 1
+                elif key == ord('q'):
+                    break
+                # Check if the new position is within the bounds of the map
+                if (new_x >= 0 and new_x < len(self.map_data[0]) and 
+                    new_y >= 0 and new_y < len(self.map_data)):
+                    # Check for collision with walls
+                    if self.map_data[new_y][new_x] == ' ':
+                        for npc in self.npcs:
+                            if (npc.x, npc.y) == (new_x, new_y): # npc encountered
+                                npc_encounter = NPCEncounterCommand(self.player)
+                                curses.endwin()
+                                npc_encounter.handle_npc_encounter(npc)
+                        self.player_x = new_x
+                        self.player_y = new_y
+        except StopIteration:
+            pass
+        curses.endwin()
+
