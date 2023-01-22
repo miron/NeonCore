@@ -22,5 +22,6 @@ class CommandRegistrar:
         """ Register commands in the appropriate class"""
         for command, value in self.check_state().items():
             for method in value['commands']:
-                setattr(value['class'], method, getattr(value['class'], method))
+                setattr(value['class'], method, 
+                getattr(value['class'], method))
 
