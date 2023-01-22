@@ -50,6 +50,8 @@ class ActionManager(cmd.Cmd):
         return cmds
 
     def get_check_command(self):
+        if self.game_state == 'character_chosen'
+            
         if self.game_state == 'before_perception_check':
             use_skill = SkillCheckCommand(self.player)
             use_skill.register_command(self)

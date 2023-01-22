@@ -69,6 +69,8 @@ class CharactersManager:
         self.npcs = [
             c for c in self.characters.values() if 
             c.role.lower() != arg]
+        self.gamestat = 'character_chosen'
+
 
     def complete_choose_character(self, text, line, begidx, endidx):
         return self.roles(text)
