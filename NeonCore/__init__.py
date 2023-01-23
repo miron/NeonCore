@@ -1,10 +1,5 @@
-from .managers import ActionManager
+
+from .managers.action_manager import ActionManager
 #from managers import CyberpunkManager
-from .managers import CharacterManager
-from .managers import CommandManager
-from .game_maps import Map
-from .character import Character
-from .utils import wprint
-__all__ = ['NeonCore']
-
-
+from .managers.character_manager  import CharacterManager
+from .managers.command_manager import CommandManager

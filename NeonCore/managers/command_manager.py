@@ -1,16 +1,16 @@
+from managers import CharacterManager
+from game_maps import Map
 class CommandManager:
-    def __init__(self, game_map, character_manager):
-        self.game_map = game_map
-        self.character_manager = character_manager
+    def __init__(self, action_manager):
         self.commands = {
             'choose_character': {
-                'class': character_manager, 
+                'class': CharacterManager, 
                 'commands': ['do_choose_character']},
             'player_sheet': {
-                'class': character_manager, 
+                'class': CharacterManager, 
                 'commands': ['do_player_sheet']},
             'move': {
-                'class': game_map, 
+                'class': Map, 
                 'commands': ['do_move']}
             }
 

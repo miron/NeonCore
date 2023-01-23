@@ -4,6 +4,7 @@ import os
 import sys
 import shelve
 import time
+from game_maps import Map
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -22,11 +23,10 @@ class ActionManager(cmd.Cmd):
     ruler = '⌁'
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, character_manager, command_manager, game_map):
+    def __init__(self, character_manager):
         super().__init__()
-        self.game_map = game_map
         self.character_manager = character_manager
-        self.command_manager = command_manager
+        self.game_map = None 
         self.game_state = None
 
     def start_game(self):
@@ -37,7 +37,6 @@ class ActionManager(cmd.Cmd):
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        a = 4
     #    check_cmd = self.command_manager.get_check_command()
     #    if check_cmd:
     #        cmds += [c for c in check_cmd.get_available_commands() if 

@@ -2,11 +2,10 @@
 import uuid 
 from typing import List, Dict, Any
 import json
-from character import Character
-
+from .character import Character
 
 class CharacterManager:
-    def __init__(self, characters_list: List[Dict[str, Any]]):
+    def __init__(self):
         self.characters = {}
         self.load_characters()
         #for character in characters_list:
@@ -34,6 +33,7 @@ class CharacterManager:
         with open("character_assets/characters.json") as f:
             characters_data = json.load(f)
         for char in characters_data:
+            char["char_id"] = uuid.uuid4()
             self.characters[char["char_id"]] = Character(**char)
 
     def roles(self, text=''):
