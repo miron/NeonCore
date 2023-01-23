@@ -1,7 +1,6 @@
 """Character Movement on ASCII Map"""
 import random
 import curses
-from skill_check import NPCEncounterCommand 
    
 
 class Map:

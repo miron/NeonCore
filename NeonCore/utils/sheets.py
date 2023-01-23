@@ -615,3 +615,6 @@ characters = [
 """
     }
 ]
+import json
+with open('characters.json', 'w', encoding='utf-8') as f:
+    json.dump(characters, f, ensure_ascii=False, indent=4)

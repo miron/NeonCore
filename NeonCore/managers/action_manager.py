@@ -4,12 +4,6 @@ import os
 import sys
 import shelve
 import time
-from skill_check import SkillCheckCommand
-import map 
-from utils import wprint
-from managers.cyberpunk_manager  import CyberpunkManager
-from map import Map
-
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -28,54 +22,46 @@ class ActionManager(cmd.Cmd):
     ruler = '⌁'
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, characters_manager):
+    def __init__(self, character_manager, command_manager, game_map):
         super().__init__()
-        self.characters_manager = characters_manager
-        self.player = None
-        self.npcs = None
+        self.game_map = game_map
+        self.character_manager = character_manager
+        self.command_manager = command_manager
         self.game_state = None
 
     def start_game(self):
         os.system('clear')
-        #self.characters_manager.register_command(self)
+        #self.character_manager.register_command(self)
         self.prompt = '(choose_character) '
         self.cmdloop()
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        check_cmd = self.get_check_command()
-        if check_cmd:
-            cmds += [c for c in check_cmd.get_available_commands() if 
-                     c.startswith(text)]
+        a = 4
+    #    check_cmd = self.command_manager.get_check_command()
+    #    if check_cmd:
+    #        cmds += [c for c in check_cmd.get_available_commands() if 
+    #                 c.startswith(text)]
+#        if check_cmd:
+#            print(f"check_cmd is assigned: {check_cmd}")
+#        else:
+#            print("check_cmd is not assigned")
+#
         return cmds
 
-    def get_check_command(self):
-        if self.game_state == 'character_chosen':
-           pass
-        if self.game_state == 'before_perception_check':
-            use_skill = SkillCheckCommand(self.player)
-            use_skill.register_command(self)
-            return use_skill 
-        elif self.game_state == 'heywood_industrial':
-            pass
-        elif self.game_state == 'before_ranged_combat':
-            return RangedCombatCommand(self.player, self.npcs)
-        else:
-            self.characters_manager.register_command(self)
-            return self.characters_manager
+    def get_available_commands(self):
+        return [name[3:] for name in dir(self) if name.startswith("do_")]
 
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
         os.system('clear')
 
    # def postcmd(self, stop, line):
-   #    # Get the number of rows in the output
-   #    rows, _ = os.popen('stty size', 'r').read().split()
-   #    # Move the cursor to the correct position
-   #    print(f'\033[{int(rows)}H')
-   #    return stop
-
-   # def postcmd(self, stop, line):
+   #     # Get the number of rows in the output
+   #     rows, _ = os.popen('stty size', 'r').read().split()
+   #     # Move the cursor to the correct position
+   #     print(f'\033[{int(rows)}H')
+   #     return stop
    #     # Get the size of the terminal window
    #     rows, cols = self.stdscr.getmaxyx()
    #     # Move the cursor to the 24th row (0-indexed)
@@ -100,13 +86,13 @@ class ActionManager(cmd.Cmd):
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        my_map = Map(self.characters_manager.player, 
-                     self.characters_manager.npcs)
+        my_map = Map(self.character_manager.player, 
+                     self.character_manager.npcs)
         my_map.move()
 
-# Open a shelve in read mode
+## Open a shelve in read mode
 #with shelve.open('timestamp', 'r') as db:
-    # Load the timestamp
-    #timestamp = dbase['timestamp']
+#    # Load the timestamp
+#    timestamp = dbase['timestamp']
 #print(timestamp)
 

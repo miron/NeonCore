@@ -1,0 +1,2 @@
+[tool.setuptools]
+packages = ["NeonCore", "NeonCore.managers", "NeonCore.game_maps", "NeonCore.npc_behavior", "NeonCore.story_modules", "NeonCore.utils"]

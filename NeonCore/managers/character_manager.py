@@ -1,15 +1,18 @@
 # Change to singleton
 import uuid 
 from typing import List, Dict, Any
+import json
 from character import Character
 
 
-class CharactersManager:
+class CharacterManager:
     def __init__(self, characters_list: List[Dict[str, Any]]):
-        for character in characters_list:
-            character["char_id"] = uuid.uuid4()
-        self.characters = {char["char_id"]: Character(**char) for char in 
-                  characters_list}
+        self.characters = {}
+        self.load_characters()
+        #for character in characters_list:
+        #    character["char_id"] = uuid.uuid4()
+        #self.characters = {char["char_id"]: Character(**char) for char in 
+        #          characters_list}
     def get_character_by_id(self, character_id: int) -> Character:
         return self.characters.get(character_id)
         
@@ -28,11 +31,10 @@ class CharactersManager:
             character.is_player)
 
     def load_characters(self):
-        #with open("characters.json") as f:
-        #    characters_data - json.load(f)
-        characters_data = self.characters 
+        with open("character_assets/characters.json") as f:
+            characters_data = json.load(f)
         for char in characters_data:
-            self.characters_list.append(Character(**char))
+            self.characters[char["char_id"]] = Character(**char)
 
     def roles(self, text=''):
         return [
@@ -42,12 +44,6 @@ class CharactersManager:
                 self.characters.values()  if 
                 c.role.lower().startswith(text)]
 
-    def register_command(self, action_manager):
-        setattr(action_manager, 'do_choose_character', 
-                self.do_choose_character)
-        setattr(action_manager, 'complete_choose_character', 
-                self.complete_choose_character)
-        setattr(action_manager, 'roles', self.roles)
 
 
     def get_available_commands(self):

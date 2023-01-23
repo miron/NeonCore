@@ -1,10 +1,6 @@
-from managers import StoryManager
-from managers.characters_manager import CharactersManager
-from story_modules.heywood_industrial import HeywoodIndustrial
-
 class CyberpunkManager(StoryManager):
-    def __init__(self, characters_manager: CharactersManager):
-        self.characters_manager = characters_manager
+    def __init__(self, character_manager: CharacterManager):
+        self.character_manager = character_manager
         self.heywood_industrial = HeywoodIndustrial(self.characters_manager)
         self.story_modules = {
             'heywood_industrial': self.heywood_industrial,
