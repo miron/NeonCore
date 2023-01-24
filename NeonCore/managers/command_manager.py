@@ -1,7 +1,7 @@
-from managers import CharacterManager
-from game_maps import Map
+from NeonCore.managers.character_manager import CharacterManager
+from NeonCore.game_maps.game_map import Map
 class CommandManager:
-    def __init__(self, action_manager):
+    def __init__(self):
         self.commands = {
             'choose_character': {
                 'class': CharacterManager, 
@@ -13,6 +13,7 @@ class CommandManager:
                 'class': Map, 
                 'commands': ['do_move']}
             }
+
 
     def check_state(self):
         """Check current game state and return commands that should be 
@@ -34,12 +35,10 @@ class CommandManager:
                 self.complete_choose_character)
         setattr(action_manager, 'roles', self.roles)
 
-    def get_available_commands(self):
-        return [name[3:] for name in dir(self) if name.startswith("do_")]
-
     def get_check_command(self):
-        #if self.game_state == 'character_chosen':
-        #   pass
+        if self.game_state == 'choose_character':
+            return ['_choose_character']
+
         #if self.game_state == 'before_perception_check':
         #    use_skill = SkillCheckCommand(self.player)
         #    use_skill.register_command(self)
@@ -49,3 +48,21 @@ class CommandManager:
         #elif self.game_state == 'before_ranged_combat':
         #    return RangedCombatCommand(self.player, self.npcs)
         return 
+
+    def do_choose_character(self, arg):
+        """Allows the player to choose a character role."""
+        if arg not in self.roles():
+            characters_list = [
+                f"{character.handle} ({character.role})" for  character in 
+                self.characters.values()]
+            self.columnize(characters_list, displaywidth=80)
+            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
+            return
+        self.prompt = f"{arg} >>> "
+        self.player = next(
+            c for c in self.characters.values()  if 
+            c.role.lower() == arg)
+        self.npcs = [
+            c for c in self.characters.values() if 
+            c.role.lower() != arg]
+        self.gamestat = 'character_chosen'

@@ -3,6 +3,7 @@ import uuid
 from typing import List, Dict, Any
 import json
 from .character import Character
+from pathlib import Path
 
 class CharacterManager:
     def __init__(self):
@@ -30,7 +31,8 @@ class CharacterManager:
             character.is_player)
 
     def load_characters(self):
-        with open("character_assets/characters.json") as f:
+        file_path = Path(__file__).parent.parent /  'character_assets/characters.json'
+        with open(file_path) as f:
             characters_data = json.load(f)
         for char in characters_data:
             char["char_id"] = uuid.uuid4()
@@ -49,23 +51,6 @@ class CharacterManager:
     def get_available_commands(self):
         return [name[3:] for name in dir(self) if name.startswith("do_")]
 
-    def do_choose_character(self, arg):
-        """Allows the player to choose a character role."""
-        if arg not in self.roles():
-            characters_list = [
-                f"{character.handle} ({character.role})" for  character in 
-                self.characters.values()]
-            self.columnize(characters_list, displaywidth=80)
-            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
-            return
-        self.prompt = f"{arg} >>> "
-        self.player = next(
-            c for c in self.characters.values()  if 
-            c.role.lower() == arg)
-        self.npcs = [
-            c for c in self.characters.values() if 
-            c.role.lower() != arg]
-        self.gamestat = 'character_chosen'
 
 
     def complete_choose_character(self, text, line, begidx, endidx):

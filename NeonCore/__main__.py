@@ -1,12 +1,12 @@
-from managers import CommandManager
-from managers import CharacterManager
-from managers import ActionManager
+from NeonCore.managers.action_manager import ActionManager
+from NeonCore.managers.character_manager import CharacterManager
+from NeonCore.managers.command_manager import CommandManager
 
 if __name__ == "__main__":
-    character_manager = CharacterManager()
+    char_mngr = CharacterManager()
+    cmd_mngr = CommandManager
    #cyberpunk_manager = CyberpunkManager(character_manager)
-    action_manager = ActionManager(character_manager)
-    command_manager = CommandManager(action_manager)
-    action_manager.start_game()
+    act_mngr = ActionManager(char_mngr, cmd_mngr)
+    act_mngr.start_game()
     
 

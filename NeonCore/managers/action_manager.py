@@ -4,7 +4,8 @@ import os
 import sys
 import shelve
 import time
-from game_maps import Map
+from NeonCore.game_maps import Map
+from NeonCore.managers.command_manager import CommandManager
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -23,29 +24,27 @@ class ActionManager(cmd.Cmd):
     ruler = '⌁'
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, character_manager):
+    def __init__(self, char_mngr, cmd_mngr):
         super().__init__()
-        self.character_manager = character_manager
+        self.character_manager = char_mngr
+        self.command_manager = cmd_mngr
         self.game_map = None 
-        self.game_state = None
+        self.game_state = 'choose_character'
 
     def start_game(self):
         os.system('clear')
         #self.character_manager.register_command(self)
         self.prompt = '(choose_character) '
+        #print(self.command_manager.get_check_command(s
         self.cmdloop()
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-    #    check_cmd = self.command_manager.get_check_command()
-    #    if check_cmd:
-    #        cmds += [c for c in check_cmd.get_available_commands() if 
-    #                 c.startswith(text)]
-#        if check_cmd:
-#            print(f"check_cmd is assigned: {check_cmd}")
-#        else:
-#            print("check_cmd is not assigned")
-#
+        check_cmd = self.command_manager.get_check_command(self)
+        if check_cmd:
+            cmds += check_cmd
+            #[c for c in check_cmd.get_available_commands() if 
+            #         c.startswith(text)]
         return cmds
 
     def get_available_commands(self):
