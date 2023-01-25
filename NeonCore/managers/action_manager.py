@@ -5,7 +5,6 @@ import sys
 import shelve
 import time
 from NeonCore.game_maps import Map
-from NeonCore.managers.command_manager import CommandManager
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -26,23 +25,24 @@ class ActionManager(cmd.Cmd):
 
     def __init__(self, char_mngr, cmd_mngr):
         super().__init__()
-        self.character_manager = char_mngr
-        self.command_manager = cmd_mngr
+        self.char_mngr = char_mngr
+        self.cmd_mngr = cmd_mngr
         self.game_map = None 
         self.game_state = 'choose_character'
 
     def start_game(self):
         os.system('clear')
-        #self.character_manager.register_command(self)
         self.prompt = '(choose_character) '
-        #print(self.command_manager.get_check_command(s
+        #print(self.cmd_mngr.commands)
+        print(self.cmd_mngr.do_choose_character)
         self.cmdloop()
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        check_cmd = self.command_manager.get_check_command(self)
+        check_cmd = self.cmd_mngr.get_check_command(self)
         if check_cmd:
-            cmds += check_cmd
+            cmds += [c for c in check_cmd if c.startswith(text)]
+            #print(cmds)
             #[c for c in check_cmd.get_available_commands() if 
             #         c.startswith(text)]
         return cmds
@@ -84,8 +84,8 @@ class ActionManager(cmd.Cmd):
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        my_map = Map(self.character_manager.player, 
-                     self.character_manager.npcs)
+        my_map = Map(self.char_mngr.player, 
+                     self.char_mngr.npcs)
         my_map.move()
 
 ## Open a shelve in read mode

@@ -31,30 +31,13 @@ class CharacterManager:
             character.is_player)
 
     def load_characters(self):
-        file_path = Path(__file__).parent.parent /  'character_assets/characters.json'
+        file_path = Path(
+            __file__).parent.parent /  'character_assets/characters.json'
         with open(file_path) as f:
             characters_data = json.load(f)
         for char in characters_data:
             char["char_id"] = uuid.uuid4()
             self.characters[char["char_id"]] = Character(**char)
-
-    def roles(self, text=''):
-        return [
-            c.role.lower() for c in 
-            self.characters.values()] if not text else [
-                c.role.lower() for c in 
-                self.characters.values()  if 
-                c.role.lower().startswith(text)]
-
-
-
-    def get_available_commands(self):
-        return [name[3:] for name in dir(self) if name.startswith("do_")]
-
-
-
-    def complete_choose_character(self, text, line, begidx, endidx):
-        return self.roles(text)
 
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
