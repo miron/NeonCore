@@ -26,15 +26,9 @@ class SkillCheckCommand(Command):
     def __init__(self, character):
         self.character = character
     
-    def set_difficulty(self, difficulty_level):
+    def set_difficulty(self, difficulty_level: str) -> int:
         """
         Returns the difficulty value for the specified difficulty level.
-
-        Args:
-        difficulty_level (str): The difficulty level of the check.
-
-        Returns:
-        int: The difficulty value for the specified difficulty level.
         """
         # Determine the difficulty value according to the task at hand
         # and return the value
@@ -49,14 +43,12 @@ class SkillCheckCommand(Command):
         elif difficulty_level == 'Incredible':
             return 24
 
-    def execute(self, skill_name, difficulty_level):
+    def execute(self, skill_name: str, difficulty_level: str) -> None:
         """
         Perform a skill check using a specified skill and difficulty
         level.
 
         Args:
-        skill_name (str): The name of the skill to use for the check.
-        difficulty_value (str): The difficulty level of the check.
         luck_points (int): The number of luck points to use for the
         check.
         """

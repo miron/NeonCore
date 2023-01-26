@@ -1,6 +1,6 @@
-from .character_manager import CharacterManager
+from .character_manager  import CharacterManager
+from .action_manager  import ActionManager
 from ..game_maps.game_map import Map
-from .action_manager import ActionManager
 from ..utils.utils import wprint
 
 

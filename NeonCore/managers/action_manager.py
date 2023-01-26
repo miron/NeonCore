@@ -4,7 +4,8 @@ import os
 import sys
 import shelve
 import time
-from NeonCore.game_maps import Map
+from ..game_maps.game_map import Map
+from ..utils.utils import wprint
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""

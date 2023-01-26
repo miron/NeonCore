@@ -1,6 +1,6 @@
-from NeonCore.managers.action_manager import ActionManager
-from NeonCore.managers.character_manager import CharacterManager
-from NeonCore.managers.command_manager import CommandManager
+from .managers import ActionManager
+from .managers import CharacterManager
+from .managers import CommandManager
 
 if __name__ == "__main__":
     char_mngr = CharacterManager()
