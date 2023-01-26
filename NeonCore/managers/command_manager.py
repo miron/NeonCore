@@ -1,12 +1,15 @@
 from NeonCore.managers.character_manager import CharacterManager
 from NeonCore.game_maps.game_map import Map
+from NeonCore.managers.action_manager import ActionManager
+from NeonCore.utils.utils import wprint
 
 
 class CommandManager:
+    #test instance variable vs class
     commands = {
-            'choose_character': ['do_choose_character',
-                                 'complete_choose_character',
-                                 'roles']}
+        'choose_character': ['do_choose_character',
+                             'complete_choose_character',
+                             'roles']}
 
     def check_state(self):
         """Check current game state and return commands that should be 
@@ -29,9 +32,9 @@ class CommandManager:
             for command in commands:
                 command_method = getattr(self.cmd_mngr, command)
                 #print(command)
-                setattr(self, command, command_method) 
+                setattr(ActionManager, command, command_method) 
             #print((commands[0][3:]))
-            return commands[0][3:]
+            return [commands[0][3:]]
 
         #if self.game_state == 'before_perception_check':
         #    use_skill = SkillCheckCommand(self.player)
@@ -46,31 +49,32 @@ class CommandManager:
     def roles(self, text=''):
         return [
             c.role.lower() for c in 
-            self.characters.values()] if not text else [
+            self.char_mngr.characters.values()] if not text else [
                 c.role.lower() for c in 
-                self.characters.values()  if 
+                self.char_mngr.characters.values()  if 
                 c.role.lower().startswith(text)]
 
-    def do_choose_character(self, arg):
+    def do_choose_character(self, arg=None):
         """Allows the player to choose a character role."""
+        #print(arg)
+        #breakpoint()
         if arg not in self.roles():
             characters_list = [
                 f"{character.handle} ({character.role})" for  character in 
-                self.characters.values()]
+                self.char_mngr.characters.values()]
             self.columnize(characters_list, displaywidth=80)
             wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
         self.prompt = f"{arg} >>> "
         self.player = next(
-            c for c in self.characters.values()  if 
+            c for c in self.char_mngr.characters.values()  if 
             c.role.lower() == arg)
         self.npcs = [
-            c for c in self.characters.values() if 
+            c for c in self.char_mngr.characters.values() if 
             c.role.lower() != arg]
         self.gamestat = 'character_chosen'
 
     def complete_choose_character(self, text, line, begidx, endidx):
-        breakpoint()
         return self.roles(text)
 
 

@@ -34,12 +34,18 @@ class ActionManager(cmd.Cmd):
         os.system('clear')
         self.prompt = '(choose_character) '
         #print(self.cmd_mngr.commands)
-        print(self.cmd_mngr.do_choose_character)
+        #print(self.cmd_mngr.do_choose_character)
         self.cmdloop()
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
         check_cmd = self.cmd_mngr.get_check_command(self)
+        #print(self.__class__.__dict__)
+        #if hasattr(self, 'complete_choose_character'):
+        #    print('do_choose_character method is registered')
+        #else:
+        #    print('do_chose_character method is not registered')
+        #print(type(check_cmd))
         if check_cmd:
             cmds += [c for c in check_cmd if c.startswith(text)]
             #print(cmds)
