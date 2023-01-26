@@ -53,9 +53,6 @@ class ActionManager(cmd.Cmd):
             #         c.startswith(text)]
         return cmds
 
-    def get_available_commands(self):
-        return [name[3:] for name in dir(self) if name.startswith("do_")]
-
     def do_shell(self, arg):
         """ Shell commands can be added here prefixed with !"""
         os.system('clear')

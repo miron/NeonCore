@@ -1,7 +1,7 @@
-from NeonCore.managers.character_manager import CharacterManager
-from NeonCore.game_maps.game_map import Map
-from NeonCore.managers.action_manager import ActionManager
-from NeonCore.utils.utils import wprint
+from .character_manager import CharacterManager
+from ..game_maps.game_map import Map
+from .action_manager import ActionManager
+from ..utils.utils import wprint
 
 
 class CommandManager:
@@ -9,7 +9,8 @@ class CommandManager:
     commands = {
         'choose_character': ['do_choose_character',
                              'complete_choose_character',
-                             'roles']}
+                             'roles'],
+        'character_chosen': ['']}
 
     def check_state(self):
         """Check current game state and return commands that should be 
@@ -35,6 +36,7 @@ class CommandManager:
                 setattr(ActionManager, command, command_method) 
             #print((commands[0][3:]))
             return [commands[0][3:]]
+       
 
         #if self.game_state == 'before_perception_check':
         #    use_skill = SkillCheckCommand(self.player)
@@ -72,7 +74,7 @@ class CommandManager:
         self.npcs = [
             c for c in self.char_mngr.characters.values() if 
             c.role.lower() != arg]
-        self.gamestat = 'character_chosen'
+        self.game_state = 'character_chosen'
 
     def complete_choose_character(self, text, line, begidx, endidx):
         return self.roles(text)
