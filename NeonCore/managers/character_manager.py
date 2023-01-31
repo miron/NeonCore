@@ -37,5 +37,10 @@ class CharacterManager:
             characters_data = json.load(f)
         for char in characters_data:
             char["char_id"] = uuid.uuid4()
+            ascii_art_path = (
+                Path(__file__).parent.parent / 
+                f'character_assets/{char["ascii_art"]}')
+            with open(ascii_art_path, 'r') as f:
+                char['ascii_art'] = f.read()
             self.characters[char["char_id"]] = Character(**char)
 
