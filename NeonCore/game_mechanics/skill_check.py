@@ -1,5 +1,5 @@
 import random
-from utils import wprint
+from ..utils.utils import wprint
 from abc import ABC, abstractmethod
 
 
@@ -86,12 +86,6 @@ class SkillCheckCommand(Command):
                    f"Defender DV: {difficulty_value}")
             print("Attacker loses.")
 
-    def register_command(self, action_manager):
-        setattr(action_manager, 'do_use_skill', 
-                self.do_use_skill)
-        setattr(action_manager, 'complete_use_skill', 
-                self.complete_use_skill)
- 
     def do_use_skill(self, skill_name):
         if skill_name not in self.character.get_skills():
             wprint("invalid skill name.")
@@ -101,12 +95,16 @@ class SkillCheckCommand(Command):
         skill_command = self.get_skill_command(skill_name)
         skill_command.execute(difficulty_value, luck_points)
         
-    def get_available_commands(self):
-        return [name[3:] for name in dir(self) if name.startswith("do_")]
-
+    #def complete_use_skill(self, text, line, begidx, endidx):
+    #    skills = self.character.get_skills()
+    #    return [s for s in skills if s.startswith(text)]
+    
     def complete_use_skill(self, text, line, begidx, endidx):
-        skills = self.character.get_skills()
-        return [s for s in skills if s.startswith(text)]
+        skills = self.player.get_skills()
+        return [
+                skill for skill in 
+                skills if 
+                skill.startswith(text)]
 
 
 class HumanPerceptionCheckCommand(SkillCheckCommand):
@@ -163,7 +161,8 @@ class NPCEncounterCommand(SkillCheckCommand):
         self.npc = self.get_random_npc()
         print(f"You have encountered an NPC: {self.npc.name}")
         while True:
-            action = input("What would you like to do? (attack/negotiate/run): ")
+            action = input(
+                "What would you like to do? (attack/negotiate/run): ")
             if action == "attack":
                 self.handle_npc_attack()
                 break
@@ -174,7 +173,8 @@ class NPCEncounterCommand(SkillCheckCommand):
                 self.handle_npc_escape()
                 break
             else:
-                print("Invalid action. Please choose 'attack', 'negotiate', or 'run'.")
+                wprint("Invalid action. Please choose 'attack', 'negotiate', "
+                       "or 'run'.")
 
     def handle_npc_attack(self):
         """

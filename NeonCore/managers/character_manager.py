@@ -4,14 +4,16 @@ from typing import List, Dict, Any
 import json
 from .character import Character
 from pathlib import Path
-from ..utils.utils import wprint
+
 
 class CharacterManager:
     commands = {
-        'choose_character': ['do_choose_character',
-                             'complete_choose_character',
-                             'roles'],
-        'character_chosen': ['do_player_sheet', 'do_rap_sheet']}
+        'choose_character': ['CharacterManager.do_choose_character',
+                             'CharacterManager.complete_choose_character',
+                             'CharacterManager.roles'],
+        'character_chosen': ['CharacterManager.do_player_sheet',
+                             'CharacterManager.do_rap_sheet',
+                             'PhoneCall.do_phone_call']}
 
     def __init__(self):
         self.characters = {}
@@ -48,13 +50,11 @@ class CharacterManager:
                 char['ascii_art'] = f.read()
             self.characters[char["char_id"]] = Character(**char)
 
-    def roles(self, text=''):
+    def roles(self, text=''): 
         return [
             c.role.lower() for c in 
-            self.char_mngr.characters.values()] if not text else [
-                c.role.lower() for c in 
-                self.char_mngr.characters.values()  if 
-                c.role.lower().startswith(text)]
+            self.char_mngr.characters.values() if 
+            c.role.lower().startswith(text)]
 
     def do_choose_character(self, arg=None):
         """Allows the player to choose a character role."""
@@ -63,7 +63,7 @@ class CharacterManager:
                 f"{character.handle} ({character.role})" for  character in 
                 self.char_mngr.characters.values()]
             self.columnize(characters_list, displaywidth=80)
-            wprint(f"To pick yo' ride chummer, type in {self.roles()}.")
+            print(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
         self.prompt = f"{arg} >>> "
         self.player = next(
