@@ -2,7 +2,7 @@
 import uuid 
 from typing import List, Dict, Any
 import json
-from .character import Character
+from .character import Character 
 from pathlib import Path
 
 

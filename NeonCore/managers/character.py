@@ -1,5 +1,4 @@
 """Character Creator"""
-
 import random
 
 

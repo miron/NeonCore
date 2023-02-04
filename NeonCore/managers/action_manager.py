@@ -5,8 +5,8 @@ import sys
 import shelve
 import time
 
-from ..game_maps.game_map import Map
-from ..utils.utils import wprint
+from ..game_maps import Map
+from ..utils import wprint
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""

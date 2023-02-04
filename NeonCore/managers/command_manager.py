@@ -1,9 +1,7 @@
-from .character_manager  import CharacterManager
-from ..game_mechanics.skill_check import SkillCheckCommand
-from ..story_modules.phone_call import PhoneCall
-from .action_manager  import ActionManager
-#from ..game_maps.game_map import Map
-#from ..utils.utils import wprint
+from . import CharacterManager
+from . import ActionManager
+from ..game_mechanics import SkillCheckCommand
+from ..story_modules import PhoneCall
 
 
 class CommandManager:

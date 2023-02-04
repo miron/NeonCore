@@ -1,5 +1,5 @@
 import random
-from ..utils.utils import wprint
+from ..utils import wprint
 from abc import ABC, abstractmethod
 
 

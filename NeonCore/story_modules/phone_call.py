@@ -1,4 +1,4 @@
-from ..utils.utils import wprint
+from ..utils import wprint
 
 
 class PhoneCall():
