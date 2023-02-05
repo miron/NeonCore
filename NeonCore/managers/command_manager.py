@@ -22,7 +22,6 @@ class CommandManager:
             method = getattr(class_, method_name)
             setattr(ActionManager, method_name, method) 
         return method_name[0][3:]
-
         #if self.game_state == 'before_perception_check':
         #    use_skill = SkillCheckCommand(self.player)
         #    use_skill.register_command(self)

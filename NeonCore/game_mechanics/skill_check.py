@@ -87,7 +87,7 @@ class SkillCheckCommand(Command):
             print("Attacker loses.")
 
     def do_use_skill(self, skill_name):
-        if skill_name not in self.character.get_skills():
+        if skill_name not in self.player.get_skills():
             wprint("invalid skill name.")
             return
         difficulty_value = self.set_difficulty(skill_name)
@@ -95,10 +95,6 @@ class SkillCheckCommand(Command):
         skill_command = self.get_skill_command(skill_name)
         skill_command.execute(difficulty_value, luck_points)
         
-    #def complete_use_skill(self, text, line, begidx, endidx):
-    #    skills = self.character.get_skills()
-    #    return [s for s in skills if s.startswith(text)]
-    
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.player.get_skills()
         return [
