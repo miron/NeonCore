@@ -1,3 +1,4 @@
+from __future__ import annotations
 import random
 from ..utils import wprint
 from abc import ABC, abstractmethod
@@ -23,9 +24,19 @@ class SkillCheckCommand(Command):
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    def __init__(self, character):
-        self.character = character
+    def __init__(
+        self, 
+        char_mngr: AbstractCharacterManager, 
+    ):
+        self.char_mngr = char_mngr
+        self._skillchecks = []
+
+    def register(self, skillcheck): 
+        self._skillchecks.append(skillcheck)
     
+    def execute(self, skillcheck):
+        pass
+
     def set_difficulty(self, difficulty_level: str) -> int:
         """
         Returns the difficulty value for the specified difficulty level.
@@ -43,7 +54,7 @@ class SkillCheckCommand(Command):
         elif difficulty_level == 'Incredible':
             return 24
 
-    def execute(self, skill_name: str, difficulty_level: str) -> None:
+    def check_skill(self, skill_name: str, difficulty_level: str) -> None:
         """
         Perform a skill check using a specified skill and difficulty
         level.
@@ -52,6 +63,7 @@ class SkillCheckCommand(Command):
         luck_points (int): The number of luck points to use for the
         check.
         """
+        skill_name = self.skill_name()
         while True:
             luck_points = int(
                 input(
@@ -90,10 +102,15 @@ class SkillCheckCommand(Command):
         if skill_name not in self.player.get_skills():
             wprint("invalid skill name.")
             return
-        difficulty_value = self.set_difficulty(skill_name)
-        luck_points = self.get_luck_points() 
-        skill_command = self.get_skill_command(skill_name)
-        skill_command.execute(difficulty_value, luck_points)
+        if (
+            self.game_state == 'before_perception_check' and 
+            skill_name == 'human_perception'):
+               self.skcc.register(HumanPerceptionCheckCommand(self.char_mngr)) 
+
+        #difficulty_value = self.set_difficulty(skill_name)
+        #luck_points = self.get_luck_points() 
+        #skill_command = self.get_skill_command(skill_name)
+        #skill_command.execute(difficulty_value, luck_points)
         
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.player.get_skills()
@@ -104,8 +121,11 @@ class SkillCheckCommand(Command):
 
 
 class HumanPerceptionCheckCommand(SkillCheckCommand):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(
+        self, 
+        char_mngr: AbstractCharacterManager, 
+    ):
+        super().__init__(char_mngr)
 
     def set_difficulty(self, task):
         if task == "lazlo":
@@ -115,12 +135,24 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
         elif task == "detecting a lie":
             self.difficulty_level = "Professional"
 
-    def execute(self):
+    def do_perception_check(self, args):
+           human_perception = self.player.skill_total("human_perception")
+           if roll + human_perception > 17:
+               wprint("Yo, you're suspecting something's off. You're right, "
+                      "Lazlo's being held at gunpoint and is being forced to "
+                      "lure you into a trap.")
+           else:
+               print(
+                   "You didn't suspect anything unusual with the phone call."
+                   )
+    
+    def check_skill(self):
         wprint("Yo chummer, you wanna roll for human perception check? ")
         roll = random.randint(1, 10)
-        human_perception = self.characters_manager.get_character_by_id(
-            self.character.char_id).skill_total("human_perception")
-        difficulty_value = self.set_difficulty("lazlo")
+        human_perception = self.char_mngr.get_character_by_id(
+            self.act_mngr.player.char_id).skill_total("human_perception")
+        #difficulty_value = self.set_difficulty("lazlo")
+        difficulty_value = self.human_perception_check_command.set_difficulty("lazlo")
         if roll + human_perception > difficulty_value:
             wprint("Yo, you're suspecting something's off. You're right, "
                    "Lazlo's being held at gunpoint and is being forced to "
@@ -128,7 +160,6 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
         else:
             print(
                     "You didn't suspect anything unusual with the phone call.")
-        print("Alright, play it cool.")
         print("Lazlo hangs up before you can ask any more questions.")
 
 

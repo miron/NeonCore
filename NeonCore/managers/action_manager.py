@@ -25,10 +25,11 @@ class ActionManager(cmd.Cmd):
     ruler = '⌁'
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, char_mngr, cmd_mngr):
+    def __init__(self, char_mngr, cmd_mngr, skcc):
         super().__init__()
         self.char_mngr = char_mngr
         self.cmd_mngr = cmd_mngr
+        self.skcc = skcc
         self.game_map = None 
         self.game_state = 'choose_character'
 

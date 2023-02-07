@@ -1,12 +1,9 @@
-from .managers import ActionManager
-from .managers import CharacterManager
-from .managers import CommandManager
+from .bootstrapper import Bootstrapper
 
 if __name__ == "__main__":
-    char_mngr = CharacterManager()
-    cmd_mngr = CommandManager
-    #cyberpunk_manager = CyberpunkManager(character_manager)
-    act_mngr = ActionManager(char_mngr, cmd_mngr)
+    bootstrapper = Bootstrapper()
+    act_mngr = bootstrapper.create_action_manager()
     act_mngr.start_game()
-    
+
+
 
