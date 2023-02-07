@@ -66,7 +66,7 @@ class CharacterManager:
             print(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
         self.prompt = f"{arg} >>> "
-        self.player = next(
+        self.char_mngr.player = next(
             c for c in self.char_mngr.characters.values()  if 
             c.role.lower() == arg)
         self.npcs = [
@@ -77,48 +77,47 @@ class CharacterManager:
     def complete_choose_character(self, text, line, begidx, endidx):
         return self.roles(text)
 
-
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
-        print(f"HANDLE \033[1;3;35m{self.player.handle:⌁^33}\033[0m ROLE "
-              f"\033[1;3;35m{self.player.role:⌁^33}\033[0m")
-        stat_list = [(f'{key:⌁<12}{self.player.lucky_pool}/{value}' 
+        print(f"HANDLE \033[1;3;35m{self.char_mngr.player.handle:⌁^33}\033[0m ROLE "
+              f"\033[1;3;35m{self.char_mngr.player.role:⌁^33}\033[0m")
+        stat_list = [(f'{key:⌁<12}{self.char_mngr.player.lucky_pool}/{value}' 
                       if key == 'luck' else f'{key:⌁<12}{value:>2}')
-                     for key, value in self.player.stats.items()]
+                     for key, value in self.char_mngr.player.stats.items()]
         self.columnize(stat_list, displaywidth=80)
         combat_list = [(f'{key:⌁<23}{value:>2}')
-                        for key, value in self.player.combat.items()]
+                        for key, value in self.char_mngr.player.combat.items()]
         self.columnize(combat_list, displaywidth=80)
-        skill_keys = list(self.player.skills.keys())
-        skill_values = list(self.player.skills.values())
+        skill_keys = list(self.char_mngr.player.skills.keys())
+        skill_values = list(self.char_mngr.player.skills.values())
         skill_list = [(f'{key:⌁<30}{value[0]:>2}')
                       for key, value in zip(skill_keys,skill_values)
                       if value[1!=0]]
-        skill_list += self.player.ascii_art.splitlines()
+        skill_list += self.char_mngr.player.ascii_art.splitlines()
         self.columnize(skill_list, displaywidth=80)
         # Display armor & weapons
         defence_list = (
             [f"WEAPONS & ARMOR{'⌁'*19:<10} "] 
-            + [' '.join(self.player.defence.keys())] 
+            + [' '.join(self.char_mngr.player.defence.keys())] 
             + [' '.join([str(row) for row in 
-               self.player.defence.values()])])
+               self.char_mngr.player.defence.values()])])
         weapons_list = (
-            [' '.join(self.player.weapons[0].keys())] 
+            [' '.join(self.char_mngr.player.weapons[0].keys())] 
             + [' '.join([str(val) for val in row.values()]
-                        ) for row in self.player.weapons])
+                        ) for row in self.char_mngr.player.weapons])
         for defence, weapon in zip(defence_list, weapons_list):
             print(defence.ljust(35) + weapon.ljust(45))
         print("ROLE ABILITY " + "⌁"*14 + " CYBERWARE " + "⌁"*17 + " GEAR "
               + "⌁"*19)
-        ability_list = list(self.player.role_ability.values())
+        ability_list = list(self.char_mngr.player.role_ability.values())
         ability_list = [row.splitlines() for row in ability_list]
         ability_list = [item for sublist in ability_list for item in sublist]
-        ware_list = [value for row in self.player.cyberware for key, value in 
+        ware_list = [value for row in self.char_mngr.player.cyberware for key, value in 
                      row.items()]
         ware_list = [row.splitlines() for row in ware_list]
         ware_list = [item for sublist in ware_list for item in sublist]
-        gear_list = ([' '.join(self.player.gear[0].keys())]
-                     + [' '.join(row.values()) for row in self.player.gear]
+        gear_list = ([' '.join(self.char_mngr.player.gear[0].keys())]
+                     + [' '.join(row.values()) for row in self.char_mngr.player.gear]
                      + [''])
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
             print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
@@ -138,16 +137,18 @@ It's like peepin' into they mind, know what I'm sayin'? Gotta know ya
 homies before ya start runnin' with em, ya feel me?
 """
         print("Lifepath:")
-        print("Cultural Region:", self.player.cultural_region)
-        print("Personality:", self.player.personality)
-        print("Clothing Style:", self.player.clothing_style)
-        print("Hairstyle:", self.player.hairstyle)
-        print("Value:", self.player.value)
-        print("Trait:", self.player.trait)
-        print("Original Background:", self.player.original_background)
-        print("Childhood Environment:", self.player.childhood_environment)
-        print("Family Crisis:", self.player.family_crisis)
-        print("Friends:", self.player.friends)
-        print("Enemies:", self.player.enemies)
-        print("Lovers:", self.player.lovers)
-        print("Life Goals:", self.player.life_goal)
+        print("Cultural Region:", self.char_mngr.player.cultural_region)
+        print("Personality:", self.char_mngr.player.personality)
+        print("Clothing Style:", self.char_mngr.player.clothing_style)
+        print("Hairstyle:", self.char_mngr.player.hairstyle)
+        print("Value:", self.char_mngr.player.value)
+        print("Trait:", self.char_mngr.player.trait)
+        print("Original Background:",
+            self.char_mngr.player.original_background)
+        print("Childhood Environment:",
+            self.char_mngr.player.childhood_environment)
+        print("Family Crisis:", self.char_mngr.player.family_crisis)
+        print("Friends:", self.char_mngr.player.friends)
+        print("Enemies:", self.char_mngr.player.enemies)
+        print("Lovers:", self.char_mngr.player.lovers)
+        print("Life Goals:", self.char_mngr.player.life_goal)

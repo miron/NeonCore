@@ -22,5 +22,6 @@ you in or what?
                " He's just saying it's all good, but you can tell "
                "he's sweatin'.")
         print("You got a bad feeling about this. Like, real bad.")
+        print("Yo chummer, you wanna roll for human perception check? ")
         self.game_state = 'before_perception_check'
         self.prompt = "(pc) "

@@ -35,14 +35,13 @@ class SkillCheckCommand(Command):
         self._skillchecks.append(skillcheck)
     
     def execute(self, skillcheck):
-        pass
+        [s.check_skill() for s in self._skillchecks if 
+            isinstance(skillcheck, HumanPerceptionCheckCommand)]
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
         Returns the difficulty value for the specified difficulty level.
         """
-        # Determine the difficulty value according to the task at hand
-        # and return the value
         if difficulty_level == 'Everyday':
             return 13
         elif difficulty_level == 'Diffucult':
@@ -99,13 +98,14 @@ class SkillCheckCommand(Command):
             print("Attacker loses.")
 
     def do_use_skill(self, skill_name):
-        if skill_name not in self.player.get_skills():
+        if skill_name not in self.char_mngr.player.get_skills():
             wprint("invalid skill name.")
             return
         if (
             self.game_state == 'before_perception_check' and 
             skill_name == 'human_perception'):
                self.skcc.register(HumanPerceptionCheckCommand(self.char_mngr)) 
+               self.skcc.execute(HumanPerceptionCheckCommand(self.char_mngr))
 
         #difficulty_value = self.set_difficulty(skill_name)
         #luck_points = self.get_luck_points() 
@@ -113,7 +113,7 @@ class SkillCheckCommand(Command):
         #skill_command.execute(difficulty_value, luck_points)
         
     def complete_use_skill(self, text, line, begidx, endidx):
-        skills = self.player.get_skills()
+        skills = self.char_mngr.player.get_skills()
         return [
                 skill for skill in 
                 skills if 
@@ -127,32 +127,19 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
     ):
         super().__init__(char_mngr)
 
-    def set_difficulty(self, task):
+    def check_difficulty(self, task):
         if task == "lazlo":
-            self.difficulty_level = "Professional"
+            return self.set_difficulty("Professional")
         elif task == "spotting a hidden object":
-            self.difficulty_level = "Difficult"
+            return self.set_difficulty("Difficult")
         elif task == "detecting a lie":
-            self.difficulty_level = "Professional"
-
-    def do_perception_check(self, args):
-           human_perception = self.player.skill_total("human_perception")
-           if roll + human_perception > 17:
-               wprint("Yo, you're suspecting something's off. You're right, "
-                      "Lazlo's being held at gunpoint and is being forced to "
-                      "lure you into a trap.")
-           else:
-               print(
-                   "You didn't suspect anything unusual with the phone call."
-                   )
+            return self.set_difficulty("Professional")
     
     def check_skill(self):
-        wprint("Yo chummer, you wanna roll for human perception check? ")
         roll = random.randint(1, 10)
         human_perception = self.char_mngr.get_character_by_id(
-            self.act_mngr.player.char_id).skill_total("human_perception")
-        #difficulty_value = self.set_difficulty("lazlo")
-        difficulty_value = self.human_perception_check_command.set_difficulty("lazlo")
+            self.char_mngr.player.char_id).skill_total("human_perception")
+        difficulty_value = self.check_difficulty("lazlo")
         if roll + human_perception > difficulty_value:
             wprint("Yo, you're suspecting something's off. You're right, "
                    "Lazlo's being held at gunpoint and is being forced to "
@@ -244,7 +231,6 @@ class NPCEncounterCommand(SkillCheckCommand):
                 pass
             print("Invalid choice. Please choose a number between 0 and",
                   len(self.npcs)-1)
-
 
 
 class RangedCombatCommand:
