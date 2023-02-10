@@ -62,7 +62,6 @@ class SkillCheckCommand(Command):
         luck_points (int): The number of luck points to use for the
         check.
         """
-        #skill_name = self.skill_name()
         while True:
             luck_points = int(
                 input(
@@ -156,17 +155,11 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
     def __init__(self, character):
-        super().__init__(character)
+        super().__init__(char_mngr=None)
+        self.character = character
         self.npc = None
 
     def handle_npc_encounter(self, npc):
-        """
-        Spends a specified number of luck points on a skill check.
-
-        Parameters:
-        luck_points (int): 
-        The number of luck points to spend on the skill check.
-        """
         self.check_skill('brawling', 'Professional')
 
     def do_encounter(self, arg):
