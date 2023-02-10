@@ -77,12 +77,6 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
-    def do_move(self, args):
-        """Move player in the specified direction"""
-        my_map = Map(self.char_mngr.player, 
-                     self.char_mngr.npcs)
-        my_map.move()
-
 ## Open a shelve in read mode
 #with shelve.open('timestamp', 'r') as db:
 #    # Load the timestamp

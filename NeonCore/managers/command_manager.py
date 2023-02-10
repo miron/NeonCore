@@ -2,6 +2,7 @@ from . import CharacterManager
 from . import ActionManager
 from ..game_mechanics import SkillCheckCommand
 from ..story_modules import PhoneCall
+from ..game_maps import  Map
 
 
 class CommandManager:

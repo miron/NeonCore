@@ -69,7 +69,7 @@ class CharacterManager:
         self.char_mngr.player = next(
             c for c in self.char_mngr.characters.values()  if 
             c.role.lower() == arg)
-        self.npcs = [
+        self.char_mngr.npcs = [
             c for c in self.char_mngr.characters.values() if 
             c.role.lower() != arg]
         self.game_state = 'character_chosen'

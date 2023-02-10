@@ -10,10 +10,6 @@ class StoryManager(metaclass=abc.ABCMeta):
     def __init__(self):
         self.characters_manager  = CharactersManager() 
         self.characters_list = self.characters_manager.load_characters()
-        
-
-    def start_game(self):
-        ActionManager(self.characters_list).cmdloop()
 
    # instances = locals().copy()
    # for name, value in instances.items():
@@ -36,10 +32,10 @@ class StoryManager(metaclass=abc.ABCMeta):
         """
         Starts the specified story.
         """
-        if story_name == "heywood_industrial":
-            self.current_story = HeywoodIndustrialStory()
-        elif story_name == "phone_call":
+        if story_name == "phone_call":
             self.current_story = PhoneCall()
+        elif story_name == "heywood_industrial":
+            self.current_story = HeywoodIndustrialStory()
         else:
             raise ValueError(f"Invalid story name: {story_name}")
 

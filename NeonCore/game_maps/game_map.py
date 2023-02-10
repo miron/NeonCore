@@ -40,6 +40,12 @@ class Map:
         for npc in self.npcs:
             npc.x, npc.y  = self.empty_positions.pop()
 
+    def do_move(self, args):
+        """Move player in the specified direction"""
+        my_map = Map(self.char_mngr.player, 
+                     self.char_mngr.npcs)
+        my_map.move()
+
     def move(self):
         try:
             while True:
@@ -47,7 +53,8 @@ class Map:
                 for y_axis, row in enumerate(self.map_data):
                     for x_axis, cell in enumerate(row):
                         self.stdscr.addch(y_axis, x_axis, cell)
-                self.stdscr.addch(self.player_y, self.player_x, '@', self.player_color)
+                self.stdscr.addch(
+                    self.player_y, self.player_x, '@', self.player_color)
                 for npc in self.npcs:
                 # Draw the NPCs on the map
                     self.stdscr.addch(npc.y, npc.x, 'N', self.npc_color)
