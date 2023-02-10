@@ -62,7 +62,7 @@ class SkillCheckCommand(Command):
         luck_points (int): The number of luck points to use for the
         check.
         """
-        skill_name = self.skill_name()
+        #skill_name = self.skill_name()
         while True:
             luck_points = int(
                 input(
@@ -106,6 +106,9 @@ class SkillCheckCommand(Command):
             skill_name == 'human_perception'):
                self.skcc.register(HumanPerceptionCheckCommand(self.char_mngr)) 
                self.skcc.execute(HumanPerceptionCheckCommand(self.char_mngr))
+        elif skill_name == 'brawling':
+            self.skcc.register(NPCEncounterCommand(self.char_mngr))
+            self.skcc.execute(NPCEncounterCommand(self.char_mngr))
 
         #difficulty_value = self.set_difficulty(skill_name)
         #luck_points = self.get_luck_points() 
@@ -151,9 +154,7 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
 
 class NPCEncounterCommand(SkillCheckCommand):
-    """
-    Class for handling NPC encounters. Inherits from SkillCheckCommand
-    """
+    """Class for handling NPC encounters."""
     def __init__(self, character):
         super().__init__(character)
         self.npc = None
@@ -166,7 +167,7 @@ class NPCEncounterCommand(SkillCheckCommand):
         luck_points (int): 
         The number of luck points to spend on the skill check.
         """
-        self.execute('brawling', 'Professional')
+        self.check_skill('brawling', 'Professional')
 
     def do_encounter(self, arg):
         """

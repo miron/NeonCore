@@ -5,7 +5,6 @@ import sys
 import shelve
 import time
 
-from ..game_maps import Map
 from ..utils import wprint
 
 class ActionManager(cmd.Cmd):

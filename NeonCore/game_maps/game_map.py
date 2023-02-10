@@ -1,6 +1,7 @@
 """Character Movement on ASCII Map"""
 import random
 import curses
+from ..game_mechanics import NPCEncounterCommand
    
 
 class Map:
@@ -78,8 +79,10 @@ class Map:
                     # Check for collision with walls
                     if self.map_data[new_y][new_x] == ' ':
                         for npc in self.npcs:
-                            if (npc.x, npc.y) == (new_x, new_y): # npc encountered
-                                npc_encounter = NPCEncounterCommand(self.player)
+                            # npc encountered
+                            if (npc.x, npc.y) == (new_x, new_y): 
+                                npc_encounter = NPCEncounterCommand(
+                                    self.player)
                                 curses.endwin()
                                 npc_encounter.handle_npc_encounter(npc)
                         self.player_x = new_x
