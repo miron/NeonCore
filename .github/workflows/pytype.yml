@@ -1,0 +1,30 @@
+name: Run Pytype
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        pip install pytype
+
+    - name: Run Pytype
+      run: |
+        pytype .
+
+    - name: Report results
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytype-report
+        path: docs/pytype-report
