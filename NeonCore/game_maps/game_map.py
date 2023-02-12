@@ -84,8 +84,7 @@ class Map:
                                 # TODO: set game_state to 'npc_encountered'
                                 # show ascii art, drop to cmd
                                 # pass npc object
-                                npc_encounter = NPCEncounterCommand(
-                                    self.player)
+                                npc_encounter = NPCEncounterCommand(self.player)
                                 curses.endwin()
                                 npc_encounter.handle_npc_encounter(npc)
                         self.player_x = new_x

@@ -35,13 +35,7 @@ class SkillCheckCommand(Command):
     Taking Extra Time
       Single +1 bonus when taking four times longer
     """
-    def __init__(
-        self, 
-        char_mngr: AbstractCharacterManager, 
-        character: Optional[Character] = None
-    ):
-        self.char_mngr = char_mngr
-        self.character = character
+    def __init__(self):
         self._skillchecks = []
 
     def register(self, skillcheck): 
@@ -73,7 +67,8 @@ class SkillCheckCommand(Command):
 
     def check_skill(self, 
                     skill_name: str, 
-                    skill_or_difficulty_value: int) -> None:
+                    skill_or_difficulty_value: int,
+                    player: Character) -> None:
         """
         Perform a skill check using a specified skill and difficulty
         level.
@@ -85,18 +80,18 @@ class SkillCheckCommand(Command):
         while True:
             luck_points = int(
                 input(
-                      f'Use LUCK {self.character.lucky_pool}'
-                      f'/{self.character.stats["luck"]} '
+                      f'Use LUCK {player.lucky_pool}'
+                      f'/{player.stats["luck"]} '
                       )
             )
-            if luck_points > self.character.lucky_pool:
+            if luck_points > player.lucky_pool:
                 print("Not enough luck points!")
             else:
-                self.character.lucky_pool -= luck_points
-                print(f"Lucky Pool: {self.character.lucky_pool}")
+                player.lucky_pool -= luck_points
+                print(f"Lucky Pool: {player.lucky_pool}")
                 break
         d10_roll = DiceRoller.d10()
-        skill_check_total = (self.character.skill_total(skill_name)
+        skill_check_total = (player.skill_total(skill_name)
                              + d10_roll + luck_points)
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
@@ -142,7 +137,8 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
         self, 
         char_mngr: AbstractCharacterManager, 
     ):
-        super().__init__(char_mngr)
+        self.char_mngr = char_mngr
+        #super().__init__()
 
     def check_difficulty(self, task):
         if task == "lazlo":
@@ -169,8 +165,8 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
-    def __init__(self, character):
-        super().__init__(char_mngr=None, character=character)
+    def __init__(self, player):
+        self.player = player
         self.npc = None
 
     def handle_npc_encounter(self, npc):
@@ -178,7 +174,7 @@ class NPCEncounterCommand(SkillCheckCommand):
         skill_value = (npc.skills['brawling'][0] 
                        + npc.skills['brawling'][1] 
                        + DiceRoller.d6(npc.skills['brawling'][2]))
-        self.check_skill('brawling', skill_value)
+        self.check_skill('brawling', skill_value, self.player)
 
     def do_encounter(self, arg):
         """
