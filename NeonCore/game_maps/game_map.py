@@ -43,8 +43,8 @@ class Map:
 
     def do_move(self, args):
         """Move player in the specified direction"""
-        my_map = Map(self.char_mngr.player, 
-                     self.char_mngr.npcs)
+        my_map = Map(self.char_mngr.get_player(), 
+                     self.char_mngr.get_npcs())
         my_map.move()
 
     def move(self):

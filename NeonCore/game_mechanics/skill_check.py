@@ -4,6 +4,17 @@ from ..utils import wprint
 from abc import ABC, abstractmethod
 
 
+class DiceRoller:
+    @staticmethod 
+    def d6(num_of_dice: int) -> int:
+        """Return the sum of rolls of specified number of d6 dice."""
+        return sum(random.randint(1, 6) for _ in range(num_of_dice))
+
+    @staticmethod
+    def d10() -> int:
+        """Return the sum of rolls of specified number of d6 dice."""
+        return random.randint(1, 10)
+
 class Command(ABC):
     @abstractmethod
     def execute(self):
@@ -27,8 +38,10 @@ class SkillCheckCommand(Command):
     def __init__(
         self, 
         char_mngr: AbstractCharacterManager, 
+        character: Optional[Character] = None
     ):
         self.char_mngr = char_mngr
+        self.character = character
         self._skillchecks = []
 
     def register(self, skillcheck): 
@@ -53,7 +66,9 @@ class SkillCheckCommand(Command):
         elif difficulty_level == 'Incredible':
             return 24
 
-    def check_skill(self, skill_name: str, difficulty_level: str) -> None:
+    def check_skill(self, 
+                    skill_name: str, 
+                    skill_or_difficulty_value: int) -> None:
         """
         Perform a skill check using a specified skill and difficulty
         level.
@@ -75,25 +90,24 @@ class SkillCheckCommand(Command):
                 self.character.lucky_pool -= luck_points
                 print(f"Lucky Pool: {self.character.lucky_pool}")
                 break
-        d10_roll = random.randint(1, 10)
+        d10_roll = DiceRoller.d10()
         skill_check_total = (self.character.skill_total(skill_name)
                              + d10_roll + luck_points)
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
-            skill_check_total += random.randint(1,10)
+            skill_check_total += DiceRoller.d10()
         elif d10_roll == 1:
             print("Critical Failure! Rolling another one")
-            skill_check_total -= random.randint(1,10)
-        difficulty_value = self.set_difficulty(difficulty_level)
-        if skill_check_total > difficulty_value:
+            skill_check_total -= DiceRoller.d10() 
+        if skill_check_total > skill_or_difficulty_value:
             print(f"Success! Attacker roll: {skill_check_total}, "
-                  f"Defender DV: {difficulty_value}")
-        elif skill_check_total < difficulty_value:
+                  f"Defender DV: {skill_or_difficulty_value}")
+        elif skill_check_total < skill_or_difficulty_value:
             print(f"Failure! Attacker roll: {skill_check_total}, "
-                  f"Defender DV: {difficulty_value}")
+                  f"Defender DV: {skill_or_difficulty_value}")
         else:
             wprint(f"Tie! Attacker roll: {skill_check_total}, "
-                   f"Defender DV: {difficulty_value}")
+                   f"Defender DV: {skill_or_difficulty_value}")
             print("Attacker loses.")
 
     def do_use_skill(self, skill_name):
@@ -138,7 +152,7 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
             return self.set_difficulty("Professional")
     
     def check_skill(self):
-        roll = random.randint(1, 10)
+        roll = DiceRoller.d10()
         human_perception = self.char_mngr.get_character_by_id(
             self.char_mngr.player.char_id).skill_total("human_perception")
         difficulty_value = self.check_difficulty("lazlo")
@@ -155,12 +169,16 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
     def __init__(self, character):
-        super().__init__(char_mngr=None)
-        self.character = character
+        super().__init__(char_mngr=None, character=character)
         self.npc = None
 
     def handle_npc_encounter(self, npc):
-        self.check_skill('brawling', 'Professional')
+        # TODO: Implement skill choice instead of hardcoding brawling
+        print(npc.skills['brawling'][2])
+        skill_value = (npc.skills['brawling'][0] 
+                       + npc.skills['brawling'][1] 
+                       + DiceRoller.d6(npc.skills['brawling'][2]))
+        self.check_skill('brawling', skill_value)
 
     def do_encounter(self, arg):
         """
@@ -300,12 +318,12 @@ class RangedCombatCommand:
             print(f"Invalid distance for {weapon}")
             return
         # generate a random number from 1 to 10
-        d10_roll = random.randint(1, 10)
+        d10_roll = DiceRoller.d10()
         # add the roll to the total skill level and luck points
         skill_check_total = (self.character.skill_total("ranged_combat")
                              + d10_roll + luck_points)
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             # generate another random number from 1 to 10
-            skill_check_total += random.randint
+            skill_check_total += DiceRoller.d10()
 

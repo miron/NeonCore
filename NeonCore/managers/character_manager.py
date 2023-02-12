@@ -18,23 +18,24 @@ class CharacterManager:
     def __init__(self):
         self.characters = {}
         self.load_characters()
+        self.player = None
+        self.npcs = []
 
     def get_character_by_id(self, character_id: int) -> Character:
         return self.characters.get(character_id)
-        
-    def add_character(self, character: dict):
-        self.characters_list.append(Character(**character))
+    
+    def set_player(self, character: Character):
+        self.player = character
 
-    def get_characters_list(self):
-        return self.characters_list
+    def set_npcs(self, characters: List[Character]):
+        self.npcs = characters
+        
+    def get_player(self):
+        return self.player
     
-    def get_npc_characters(self):
-        return [character for character in self.characters_list if not 
-            character.is_player]
+    def get_npcs(self):
+        return self.npcs
     
-    def get_player_character(self):
-        return next(character for character in self.characters_list if 
-            character.is_player)
 
     def load_characters(self):
         file_path = Path(
@@ -66,12 +67,12 @@ class CharacterManager:
             print(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
         self.prompt = f"{arg} >>> "
-        self.char_mngr.player = next(
-            c for c in self.char_mngr.characters.values()  if 
-            c.role.lower() == arg)
-        self.char_mngr.npcs = [
-            c for c in self.char_mngr.characters.values() if 
-            c.role.lower() != arg]
+        self.char_mngr.set_player(
+            next(c for c in self.char_mngr.characters.values() if 
+                 c.role.lower() == arg))
+        self.char_mngr.set_npcs(
+            [c for c in self.char_mngr.characters.values() if 
+             c.role.lower() != arg])
         self.game_state = 'character_chosen'
 
     def complete_choose_character(self, text, line, begidx, endidx):
