@@ -32,7 +32,3 @@ class CommandManager:
         #elif self.game_state == 'before_ranged_combat':
         #    return RangedCombatCommand(self.player, self.npcs)
 
-
-if __name__ == '__main__':
-    cmd_manager = CommandManager()
-    print(cmd_manager.commands)
