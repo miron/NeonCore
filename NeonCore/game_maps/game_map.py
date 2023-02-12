@@ -81,6 +81,9 @@ class Map:
                         for npc in self.npcs:
                             # npc encountered
                             if (npc.x, npc.y) == (new_x, new_y): 
+                                # TODO: set game_state to 'npc_encountered'
+                                # show ascii art, drop to cmd
+                                # pass npc object
                                 npc_encounter = NPCEncounterCommand(
                                     self.player)
                                 curses.endwin()

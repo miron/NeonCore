@@ -50,6 +50,9 @@ class SkillCheckCommand(Command):
     def execute(self, skillcheck):
         [s.check_skill() for s in self._skillchecks if 
             isinstance(skillcheck, HumanPerceptionCheckCommand)]
+        # TODO: Needs npc object
+        [s.handle_npc_encounter() for s in self._skillchecks if 
+            isinstance(skillcheck, NPCEncounterCommand)]
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
@@ -65,6 +68,8 @@ class SkillCheckCommand(Command):
             return 21
         elif difficulty_level == 'Incredible':
             return 24
+        else:
+            raise ValueError(f"Unknown difficulty level: {difficulty_level}")
 
     def check_skill(self, 
                     skill_name: str, 
@@ -119,14 +124,10 @@ class SkillCheckCommand(Command):
             skill_name == 'human_perception'):
                self.skcc.register(HumanPerceptionCheckCommand(self.char_mngr)) 
                self.skcc.execute(HumanPerceptionCheckCommand(self.char_mngr))
+        # TODO: Needs game_state
         elif skill_name == 'brawling':
             self.skcc.register(NPCEncounterCommand(self.char_mngr))
             self.skcc.execute(NPCEncounterCommand(self.char_mngr))
-
-        #difficulty_value = self.set_difficulty(skill_name)
-        #luck_points = self.get_luck_points() 
-        #skill_command = self.get_skill_command(skill_name)
-        #skill_command.execute(difficulty_value, luck_points)
         
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.char_mngr.player.get_skills()
@@ -174,7 +175,6 @@ class NPCEncounterCommand(SkillCheckCommand):
 
     def handle_npc_encounter(self, npc):
         # TODO: Implement skill choice instead of hardcoding brawling
-        print(npc.skills['brawling'][2])
         skill_value = (npc.skills['brawling'][0] 
                        + npc.skills['brawling'][1] 
                        + DiceRoller.d6(npc.skills['brawling'][2]))
