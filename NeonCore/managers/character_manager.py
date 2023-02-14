@@ -80,7 +80,8 @@ class CharacterManager:
 
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
-        print(f"HANDLE \033[1;3;35m{self.char_mngr.player.handle:⌁^33}\033[0m ROLE "
+        print(f"HANDLE \033[1;3;35m{self.char_mngr.player.handle:⌁^33}"
+              "\033[0m ROLE "
               f"\033[1;3;35m{self.char_mngr.player.role:⌁^33}\033[0m")
         stat_list = [(f'{key:⌁<12}{self.char_mngr.player.lucky_pool}/{value}' 
                       if key == 'luck' else f'{key:⌁<12}{value:>2}')
@@ -113,13 +114,15 @@ class CharacterManager:
         ability_list = list(self.char_mngr.player.role_ability.values())
         ability_list = [row.splitlines() for row in ability_list]
         ability_list = [item for sublist in ability_list for item in sublist]
-        ware_list = [value for row in self.char_mngr.player.cyberware for key, value in 
-                     row.items()]
+        ware_list = [
+            value for row in self.char_mngr.player.cyberware for key, value in 
+            row.items()]
         ware_list = [row.splitlines() for row in ware_list]
         ware_list = [item for sublist in ware_list for item in sublist]
-        gear_list = ([' '.join(self.char_mngr.player.gear[0].keys())]
-                     + [' '.join(row.values()) for row in self.char_mngr.player.gear]
-                     + [''])
+        gear_list = (
+            [' '.join(self.char_mngr.player.gear[0].keys())]
+            + [' '.join(row.values()) for row in self.char_mngr.player.gear]
+            + [''])
         for ability, ware, gear in zip(ability_list, ware_list, gear_list):
             print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
             #if ability == ability_list[0]:

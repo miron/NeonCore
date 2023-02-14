@@ -158,8 +158,7 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
                    "Lazlo's being held at gunpoint and is being forced to "
                    "lure you into a trap.")
         else:
-            print(
-                    "You didn't suspect anything unusual with the phone call.")
+            print("You didn't suspect anything unusual with the phone call.")
         print("Lazlo hangs up before you can ask any more questions.")
 
 

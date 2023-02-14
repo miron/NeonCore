@@ -10,6 +10,7 @@ class AbstractCommandManager(ABC):
     def get_check_command(self):
         pass
 
+
 class CommandManager(AbstractCommandManager):
     def check_state(self):
         """Check current game state and return commands that should be 
@@ -28,11 +29,7 @@ class CommandManager(AbstractCommandManager):
             method = getattr(class_, method_name)
             setattr(ActionManager, method_name, method) 
         return method_name[0][3:]
-        #if self.game_state == 'before_perception_check':
-        #    use_skill = SkillCheckCommand(self.player)
-        #    use_skill.register_command(self)
-        #    return use_skill 
-        #elif self.game_state == 'heywood_industrial':
+        #if self.game_state == 'heywood_industrial':
         #    pass
         #elif self.game_state == 'before_ranged_combat':
         #    return RangedCombatCommand(self.player, self.npcs)
