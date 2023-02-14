@@ -1,11 +1,16 @@
+from abc import ABC, abstractmethod
 from . import CharacterManager
 from . import ActionManager
 from ..game_mechanics import SkillCheckCommand
 from ..story_modules import PhoneCall
 from ..game_maps import  Map
 
+class AbstractCommandManager(ABC):
+    @abstractmethod
+    def get_check_command(self):
+        pass
 
-class CommandManager:
+class CommandManager(AbstractCommandManager):
     def check_state(self):
         """Check current game state and return commands that should be 
         registered"""
@@ -31,4 +36,14 @@ class CommandManager:
         #    pass
         #elif self.game_state == 'before_ranged_combat':
         #    return RangedCombatCommand(self.player, self.npcs)
+
+
+class CombatCommandManager(AbstractCommandManager):
+    def get_check_command(self):
+        pass
+
+
+class ItemCommandManager(AbstractCommandManager):
+    def get_check_command(self):
+        pass
 
