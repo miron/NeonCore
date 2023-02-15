@@ -1,4 +1,4 @@
-from __future__ import annotations
+#from __future__ import annotations
 import random
 from ..utils import wprint
 from abc import ABC, abstractmethod
@@ -135,7 +135,7 @@ class SkillCheckCommand(Command):
 class HumanPerceptionCheckCommand(SkillCheckCommand):
     def __init__(
         self, 
-        char_mngr: AbstractCharacterManager, 
+        char_mngr: 'AbstractCharacterManager', 
     ):
         self.char_mngr = char_mngr
         #super().__init__()
