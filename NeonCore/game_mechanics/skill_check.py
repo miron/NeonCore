@@ -135,7 +135,7 @@ class SkillCheckCommand(Command):
 class HumanPerceptionCheckCommand(SkillCheckCommand):
     def __init__(
         self, 
-        char_mngr: AbstractCharacterManager, 
+        char_mngr: CharacterManager, 
     ):
         self.char_mngr = char_mngr
         #super().__init__()
