@@ -1,6 +1,6 @@
-import abc
+from abc import ABCMeta, abstractmethod
 
-class StoryManager(metaclass=abc.ABCMeta):
+class StoryManager(metaclass=ABCMeta):
     """
     Singleton class that manages the different story modules in the game.
     """
@@ -8,8 +8,7 @@ class StoryManager(metaclass=abc.ABCMeta):
     _instance = None
 
     def __init__(self):
-        self.characters_manager  = CharactersManager() 
-        self.characters_list = self.characters_manager.load_characters()
+        self.current_story = None
 
    # instances = locals().copy()
    # for name, value in instances.items():
@@ -24,9 +23,6 @@ class StoryManager(metaclass=abc.ABCMeta):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
-
-    def __init__(self):
-        self.current_story = None
 
     def start_story(self, story_name: str):
         """
@@ -45,7 +41,7 @@ class StoryManager(metaclass=abc.ABCMeta):
         """
         self.current_story = None
 
-    @abc.abstractmethod
+    @abstractmethod
     def update(self):
         """
         Updates the current story.
