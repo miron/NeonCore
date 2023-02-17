@@ -76,6 +76,7 @@ class ActionManager(cmd.Cmd):
             dbase['timestamp'] = time.time()
         sys.exit()
 
+
 ## Open a shelve in read mode
 #with shelve.open('timestamp', 'r') as db:
 #    # Load the timestamp

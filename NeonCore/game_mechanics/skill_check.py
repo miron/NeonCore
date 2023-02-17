@@ -110,26 +110,25 @@ class SkillCheckCommand(Command):
                    f"Defender DV: {skill_or_difficulty_value}")
             print("Attacker loses.")
 
+
+
     def do_use_skill(self, skill_name):
+        skill_commands = {
+            "human_perception": HumanPerceptionCheckCommand,
+            "brawling": NPCEncounterCommand,
+        }
         if skill_name not in self.char_mngr.player.get_skills():
             wprint("invalid skill name.")
             return
-        if (
-            self.game_state == 'before_perception_check' and 
-            skill_name == 'human_perception'):
-               self.skcc.register(HumanPerceptionCheckCommand(self.char_mngr)) 
-               self.skcc.execute(HumanPerceptionCheckCommand(self.char_mngr))
-        # TODO: Needs game_state
-        elif skill_name == 'brawling':
-            self.skcc.register(NPCEncounterCommand(self.char_mngr))
-            self.skcc.execute(NPCEncounterCommand(self.char_mngr))
+        command_class = skill_commands.get(skill_name)
+        if command_class is not None:
+            command = command_class(self.char_mngr)
+            self.skcc.register(command) 
+            self.skcc.execute(command)
         
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.char_mngr.player.get_skills()
-        return [
-                skill for skill in 
-                skills if 
-                skill.startswith(text)]
+        return [skill for skill in skills if skill.startswith(text)]
 
 
 class HumanPerceptionCheckCommand(SkillCheckCommand):
