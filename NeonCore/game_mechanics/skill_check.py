@@ -147,6 +147,8 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
         elif task == "detecting a lie":
             return self.set_difficulty("Professional")
     
+
+    # TODO: Move prints to story, use superclass template where applicable
     def check_skill(self):
         roll = DiceRoller.d10()
         human_perception = self.char_mngr.get_character_by_id(
