@@ -294,7 +294,7 @@ class Lifepath:
         }
 
         num_friends = max(0, random.randint(1, 10) - 7)
-        for _ in range(num_friends):
+        for i in range(num_friends):
             friend_type = random.randint(1, 10)
             self.friends[f"Friend {i+1}"] = friend_types[friend_type]
         return self.friends

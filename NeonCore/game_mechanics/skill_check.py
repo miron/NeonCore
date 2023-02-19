@@ -2,6 +2,7 @@ from __future__ import annotations
 import random
 from ..utils import wprint
 from abc import ABC, abstractmethod
+from typing import List, Type
 
 
 class DiceRoller:
@@ -15,9 +16,10 @@ class DiceRoller:
         """Return the sum of rolls of specified number of d6 dice."""
         return random.randint(1, 10)
 
+
 class Command(ABC):
     @abstractmethod
-    def execute(self):
+    def execute(self) -> None:
         pass
 
 
@@ -36,7 +38,7 @@ class SkillCheckCommand(Command):
       Single +1 bonus when taking four times longer
     """
     def __init__(self):
-        self._skillchecks = []
+        self._skillchecks: List[SkillCheckCommand] = []
 
     def register(self, skillcheck): 
         self._skillchecks.append(skillcheck)
@@ -52,16 +54,15 @@ class SkillCheckCommand(Command):
         """
         Returns the difficulty value for the specified difficulty level.
         """
-        if difficulty_level == 'Everyday':
-            return 13
-        elif difficulty_level == 'Diffucult':
-            return 15
-        elif difficulty_level == 'Professional':
-            return 17
-        elif difficulty_level == 'Heroic':
-            return 21
-        elif difficulty_level == 'Incredible':
-            return 24
+        difficulties = {
+                'Everyday': 13,
+                'Difficult': 15,
+                'Professional': 17,
+                'Heroic': 21,
+                'Incredible': 24,
+        }
+        if difficulty_level in difficulties:
+            return difficulties[difficulty_level]
         else:
             raise ValueError(f"Unknown difficulty level: {difficulty_level}")
 
@@ -110,10 +111,8 @@ class SkillCheckCommand(Command):
                    f"Defender DV: {skill_or_difficulty_value}")
             print("Attacker loses.")
 
-
-
-    def do_use_skill(self, skill_name):
-        skill_commands = {
+    def do_use_skill(self, skill_name: str) -> None:
+        skill_commands: dict[str, Type[Command]] = {
             "human_perception": HumanPerceptionCheckCommand,
             "brawling": NPCEncounterCommand,
         }
@@ -137,7 +136,6 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
         char_mngr: CharacterManager, 
     ):
         self.char_mngr = char_mngr
-        #super().__init__()
 
     def check_difficulty(self, task):
         if task == "lazlo":
@@ -146,7 +144,6 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
             return self.set_difficulty("Difficult")
         elif task == "detecting a lie":
             return self.set_difficulty("Professional")
-    
 
     # TODO: Move prints to story, use superclass template where applicable
     def check_skill(self):

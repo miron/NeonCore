@@ -35,6 +35,7 @@ class CommandManager(AbstractCommandManager):
         #    return RangedCombatCommand(self.player, self.npcs)
 
 
+# future expansion following
 class CombatCommandManager(AbstractCommandManager):
     def get_check_command(self):
         pass
