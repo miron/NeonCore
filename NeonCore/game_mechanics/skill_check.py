@@ -117,7 +117,7 @@ class SkillCheckCommand(Command):
             "brawling": NPCEncounterCommand,
         }
         if skill_name not in self.char_mngr.player.get_skills():
-            wprint("invalid skill name.")
+            print("invalid skill name.")
             return
         command_class = skill_commands.get(skill_name)
         if command_class is not None:

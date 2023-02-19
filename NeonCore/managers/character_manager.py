@@ -109,8 +109,7 @@ class CharacterManager:
                         ) for row in self.char_mngr.player.weapons])
         for defence, weapon in zip(defence_list, weapons_list):
             print(defence.ljust(35) + weapon.ljust(45))
-        print("ROLE ABILITY " + "⌁"*14 + " CYBERWARE " + "⌁"*17 + " GEAR "
-              + "⌁"*19)
+        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
         ability_list = list(self.char_mngr.player.role_ability.values())
         ability_list = [row.splitlines() for row in ability_list]
         ability_list = [item for sublist in ability_list for item in sublist]
