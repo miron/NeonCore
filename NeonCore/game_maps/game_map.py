@@ -8,6 +8,7 @@ class Map:
     def __init__(self, player, npcs):
         self.player = player
         self.npcs = npcs
+        self.encountered_npc = False
         self.map_data = (
         "### ####  ######",
         "###   ##  ######",
@@ -81,14 +82,19 @@ class Map:
                         for npc in self.npcs:
                             # npc encountered
                             if (npc.x, npc.y) == (new_x, new_y): 
+                                self.encountered_npc = True
+                                npc_encounter = NPCEncounterCommand(
+                                    self.player)
                                 # TODO: set game_state to 'npc_encountered'
-                                # show ascii art, drop to cmd
-                                # pass npc object
-                                npc_encounter = NPCEncounterCommand(self.player)
+                                # show ascii art, instance should be created 
+                                # in do_use_skill, only pass npc
                                 curses.endwin()
                                 npc_encounter.handle_npc_encounter(npc)
+                                break
                         self.player_x = new_x
                         self.player_y = new_y
+                    if self.encountered_npc:
+                        break
         except StopIteration:
             pass
         curses.endwin()

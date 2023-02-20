@@ -45,10 +45,13 @@ class SkillCheckCommand(Command):
     
     def execute(self, skillcheck):
         [s.check_skill() for s in self._skillchecks if 
-            isinstance(skillcheck, HumanPerceptionCheckCommand)]
+            isinstance(s, HumanPerceptionCheckCommand)]
         # TODO: Needs npc object
-        [s.handle_npc_encounter() for s in self._skillchecks if 
-            isinstance(skillcheck, NPCEncounterCommand)]
+        [s.check_skill(
+            "brawling", 
+            s.skill_value, 
+            s.char_mngr.player) for s in self._skillchecks if 
+                isinstance(s, NPCEncounterCommand)]
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
@@ -162,16 +165,20 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
-    def __init__(self, player):
-        self.player = player
+    def __init__(
+            self, 
+            char_mngr: CharacterManager,
+    ):
+        self.char_mngr = char_mngr
         self.npc = None
+        self.skill_value = 0
 
     def handle_npc_encounter(self, npc):
         # TODO: Implement skill choice instead of hardcoding brawling
-        skill_value = (npc.skills['brawling'][0] 
+        self.skill_value = (npc.skills['brawling'][0] 
                        + npc.skills['brawling'][1] 
                        + DiceRoller.d6(npc.skills['brawling'][2]))
-        self.check_skill('brawling', skill_value, self.player)
+        #self.check_skill('brawling', skill_value, self.player)
 
     def do_encounter(self, arg):
         """
