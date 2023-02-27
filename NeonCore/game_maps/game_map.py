@@ -49,53 +49,60 @@ class Map:
         my_map.move()
 
     def move(self):
-        try:
-            while True:
-                # Redraw the map and update the player position
-                for y_axis, row in enumerate(self.map_data):
-                    for x_axis, cell in enumerate(row):
-                        self.stdscr.addch(y_axis, x_axis, cell)
-                self.stdscr.addch(
-                    self.player_y, self.player_x, '@', self.player_color)
+        while True:
+            self.draw_map()
+            self.draw_player()
+            self.draw_npcs()
+            key = self.stdscr.getch()
+            if key == ord('q'):
+                break
+            new_x, new_y = self.get_new_player_position(key)
+            if (self.is_within_map_bounds(new_x, new_y) and 
+                self.is_valid_move(new_x, new_y)):
+                self.player_x, self.player_y = new_x, new_y
+                # Check for collision with NPCs
                 for npc in self.npcs:
-                # Draw the NPCs on the map
-                    self.stdscr.addch(npc.y, npc.x, 'N', self.npc_color)
-
-                key = self.stdscr.getch()
-                new_x = self.player_x
-                new_y = self.player_y
-                if key == ord('w'):
-                    new_y -= 1
-                elif key == ord('s'):
-                    new_y += 1
-                elif key == ord('a'):
-                    new_x -= 1
-                elif key == ord('d'):
-                    new_x += 1
-                elif key == ord('q'):
-                    break
-                # Check if the new position is within the bounds of the map
-                if (new_x >= 0 and new_x < len(self.map_data[0]) and 
-                    new_y >= 0 and new_y < len(self.map_data)):
-                    # Check for collision with walls
-                    if self.map_data[new_y][new_x] == ' ':
-                        for npc in self.npcs:
-                            # npc encountered
-                            if (npc.x, npc.y) == (new_x, new_y): 
-                                self.encountered_npc = True
-                                npc_encounter = NPCEncounterCommand(
-                                    self.player)
-                                # TODO: set game_state to 'npc_encountered'
-                                # show ascii art, instance should be created 
-                                # in do_use_skill, only pass npc
-                                curses.endwin()
-                                npc_encounter.handle_npc_encounter(npc)
-                                break
-                        self.player_x = new_x
-                        self.player_y = new_y
-                    if self.encountered_npc:
+                    if (npc.x, npc.y) == (new_x, new_y):
+                        self.encountered_npc = True
+                        npc_encounter = NPCEncounterCommand(self.player)
+                        # TODO: set game_state to 'npc_encountered'
+                        # show ascii art, instance should be created 
+                        # in do_use_skill, only pass npc
+                        curses.endwin()
+                        npc_encounter.handle_npc_encounter(npc)
                         break
-        except StopIteration:
-            pass
+
+                if self.encountered_npc:
+                    break
         curses.endwin()
 
+    def draw_map(self):
+        for y, row in enumerate(self.map_data):
+            for x, cell in enumerate(row):
+                self.stdscr.addch(y, x, cell)
+
+    def draw_player(self):
+        self.stdscr.addch(self.player_y, self.player_x, '@', self.player_color)
+
+    def draw_npcs(self):
+        for npc in self.npcs:
+            self.stdscr.addch(npc.y, npc.x, 'N', self.npc_color)
+
+    def get_new_player_position(self, key):
+        new_x, new_y = self.player_x, self.player_y
+        if key == ord('w'):
+            new_y -= 1
+        elif key == ord('s'):
+            new_y += 1
+        elif key == ord('a'):
+            new_x -= 1
+        elif key == ord('d'):
+            new_x += 1
+        return new_x, new_y
+
+    def is_within_map_bounds(self, x, y):
+        return (x >= 0 and x < len(self.map_data[0]) and 
+                y >= 0 and y < len(self.map_data))
+
+    def is_valid_move(self, x, y):
+        return self.map_data[y][x] == ' '
