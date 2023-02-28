@@ -24,18 +24,16 @@ class Command(ABC):
 
 
 class SkillCheckCommand(Command):
-    """
-    Attacker vs Defender
-    Trying Again:
-      only if chances of success have improved
-
-      - you took longer
-      - used better tool
-      - you or friends made Complementary Skill Check
-    Complementary Skill Check
-      Single +1 bonus for subsequent similar skill
-    Taking Extra Time
-      Single +1 bonus when taking four times longer
+    """Attacker vs Defender
+       Trying Again:
+         only if chances of success have improved
+         - you took longer
+         - used better tool
+         - you or friends made Complementary Skill Check
+       Complementary Skill Check
+         Single +1 bonus for subsequent similar skill
+       Taking Extra Time
+         Single +1 bonus when taking four times longer
     """
     def __init__(self):
         self._skillchecks: List[SkillCheckCommand] = []
@@ -73,13 +71,12 @@ class SkillCheckCommand(Command):
                     skill_name: str, 
                     skill_or_difficulty_value: int,
                     player: Character) -> None:
-        """
-        Perform a skill check using a specified skill and difficulty
-        level.
+        """Perform a skill check using a specified skill and difficulty
+           level.
 
-        Args:
-        luck_points (int): The number of luck points to use for the
-        check.
+           Args:
+           luck_points (int): The number of luck points to use for the
+           check.
         """
         while True:
             luck_points = int(
@@ -181,9 +178,7 @@ class NPCEncounterCommand(SkillCheckCommand):
         #self.check_skill('brawling', skill_value, self.player)
 
     def do_encounter(self, arg):
-        """
-        Handles the NPC encounter.
-        """
+        """Handles the NPC encounter"""
         self.npc = self.get_random_npc()
         print(f"You have encountered an NPC: {self.npc.name}")
         while True:
@@ -203,32 +198,26 @@ class NPCEncounterCommand(SkillCheckCommand):
                        "or 'run'.")
 
     def handle_npc_attack(self):
-        """
-        Handles an NPC attack.
-        """
+        """Handles an NPC attack."""
         self.perform_check('brawling', 'Professional', 0)
 
     def handle_npc_negotiation(self):
-        """
-        Handles negotiating with an NPC.
-        """
+        """Handles negotiating with an NPC."""
         self.perform_check('negotiation', 'Average', 0)
 
     def handle_npc_escape(self):
-        """
-        Handles escaping from an NPC.
-        """
+        """Handles escaping from an NPC."""
         self.perform_check('athletics', 'Easy', 0)
 
     def get_random_npc(self):
-        """
-        Returns a random NPC.
-        """
+        """Returns a random NPC."""
         # Code for getting a random NPC goes here
         pass
 
     def do_encounter_npc(self, arg):
-        """Encounter an NPC and assign the selected NPC to self.current_npc"""
+        """Encounter an NPC and assign the selected NPC
+           to self.current_npc
+        """
         print("Select an NPC:")
         for i, npc in enumerate(self.npcs):
             print(f"{i+1}. {npc.handle}")

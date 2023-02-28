@@ -38,10 +38,9 @@ class CommandManager(AbstractCommandManager):
 # future expansion following
 class CombatCommandManager(AbstractCommandManager):
     def get_check_command(self):
-        pass
+        """Combat related commands"""
 
 
 class ItemCommandManager(AbstractCommandManager):
     def get_check_command(self):
-        pass
-
+        """Item related commands """
