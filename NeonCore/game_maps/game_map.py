@@ -24,18 +24,16 @@ class Map:
         self.stdscr = curses.initscr()
         curses.noecho()
         curses.start_color()
-        curses.curs_set(False)  # hide the cursor
+        curses.curs_set(False) # hide the cursor
         curses.init_color(0, 0, 0, 0)
         curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
         self.player_color = curses.color_pair(1)
         self.npc_color = curses.color_pair(2)
         # Spawn the player and NPCs randomly on the map
-        self.empty_positions = []
-        for y, row in enumerate(self.map_data):
-            for x, cell in enumerate(row):
-                if cell == " ":
-                    self.empty_positions.append((x,y))
+        self.empty_positions = [
+            (x,y) for y, row in enumerate(self.map_data) for 
+            x, cell in enumerate(row) if cell == " "]
         random.shuffle(self.empty_positions)
         self.player_x, self.player_y = self.empty_positions.pop()
         self.npc_positions = self.empty_positions[:len(self.npcs)]
@@ -57,23 +55,23 @@ class Map:
             if key == ord('q'):
                 break
             new_x, new_y = self.get_new_player_position(key)
-            if (self.is_within_map_bounds(new_x, new_y) and 
-                self.is_valid_move(new_x, new_y)):
-                self.player_x, self.player_y = new_x, new_y
-                # Check for collision with NPCs
-                for npc in self.npcs:
-                    if (npc.x, npc.y) == (new_x, new_y):
-                        self.encountered_npc = True
-                        npc_encounter = NPCEncounterCommand(self.player)
-                        # TODO: set game_state to 'npc_encountered'
-                        # show ascii art, instance should be created 
-                        # in do_use_skill, only pass npc
-                        curses.endwin()
-                        npc_encounter.handle_npc_encounter(npc)
-                        break
-
-                if self.encountered_npc:
+            if not (self.is_within_map_bounds(new_x, new_y) and 
+                    self.is_valid_move(new_x, new_y)):
+                continue
+            self.player_x, self.player_y = new_x, new_y
+            # Check for collision with NPCs
+            for npc in self.npcs:
+                if (npc.x, npc.y) == (new_x, new_y):
+                    self.encountered_npc = True
+                    npc_encounter = NPCEncounterCommand(self.player)
+                    # TODO: set game_state to 'npc_encountered'
+                    # show ascii art, instance should be created 
+                    # in do_use_skill, only pass npc
+                    curses.endwin()
+                    npc_encounter.handle_npc_encounter(npc)
                     break
+            if self.encountered_npc:
+                break
         curses.endwin()
 
     def draw_map(self):
