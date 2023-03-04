@@ -168,7 +168,7 @@ class NPCEncounterCommand(SkillCheckCommand):
     ):
         self.char_mngr = char_mngr
         self.npc = None
-        self.skill_value = 0
+        #self.skill_value = 0
 
     def handle_npc_encounter(self, npc):
         # TODO: Implement skill choice instead of hardcoding brawling

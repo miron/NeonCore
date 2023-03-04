@@ -69,16 +69,4 @@ class ActionManager(cmd.Cmd):
         wprint("Catch you on the flip side, choombatta. Keep your chrome "
                "polished and your guns loaded, "
                "the neon jungle ain't no walk in the park.")
-        # Open database, create if it doesn't already exist
-        with shelve.open('timestamp') as dbase:
-            # Save data to the database>
-            dbase['timestamp'] = time.time()
         sys.exit()
-
-
-## Open a shelve in read mode
-#with shelve.open('timestamp', 'r') as db:
-#    # Load the timestamp
-#    timestamp = dbase['timestamp']
-#print(timestamp)
-
