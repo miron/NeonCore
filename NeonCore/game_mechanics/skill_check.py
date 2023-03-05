@@ -56,11 +56,13 @@ class SkillCheckCommand(Command):
         Returns the difficulty value for the specified difficulty level.
         """
         difficulties = {
+                'Simple': 9,
                 'Everyday': 13,
                 'Difficult': 15,
                 'Professional': 17,
                 'Heroic': 21,
                 'Incredible': 24,
+                'Legendary': 29
         }
         if difficulty_level in difficulties:
             return difficulties[difficulty_level]
