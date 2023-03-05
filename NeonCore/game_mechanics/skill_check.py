@@ -176,9 +176,7 @@ class NPCEncounterCommand(SkillCheckCommand):
 
     def handle_npc_encounter(self, npc):
         # TODO: Implement skill choice instead of hardcoding brawling
-        self.skill_value = (npc.skills['brawling'][0] 
-                       + npc.skills['brawling'][1] 
-                       + DiceRoller.d6(npc.skills['brawling'][2]))
+        self.skill_value = npc.skill_total('brawling')
         #self.check_skill('brawling', skill_value, self.player)
 
     def do_encounter(self, arg):
