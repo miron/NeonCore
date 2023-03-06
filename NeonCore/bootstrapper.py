@@ -9,9 +9,8 @@ class Bootstrapper:
         self.char_mngr = CharacterManager()
         # TODO: Make completion work with instance of CommandManager, not class
         self.cmd_mngr = CommandManager
-        self.skcc = SkillCheckCommand()
 
     def create_action_manager(self):
-        act_mngr = ActionManager(self.char_mngr, self.cmd_mngr, self.skcc)
+        act_mngr = ActionManager(self.char_mngr, self.cmd_mngr)
         return act_mngr
 

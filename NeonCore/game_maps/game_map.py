@@ -1,7 +1,7 @@
 """Character Movement on ASCII Map"""
 import random
 import curses
-from ..game_mechanics import NPCEncounterCommand
+from ..game_mechanics import SkillCheckCommand
    
 
 class Map:
@@ -63,12 +63,11 @@ class Map:
             for npc in self.npcs:
                 if (npc.x, npc.y) == (new_x, new_y):
                     self.encountered_npc = True
-                    npc_encounter = NPCEncounterCommand(self.player)
+                    SkillCheckCommand(self.player, npc=npc)
                     # TODO: set game_state to 'npc_encountered'
                     # show ascii art, instance should be created 
                     # in do_use_skill, only pass npc
                     curses.endwin()
-                    npc_encounter.handle_npc_encounter(npc)
                     break
             if self.encountered_npc:
                 break

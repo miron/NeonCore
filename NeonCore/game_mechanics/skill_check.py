@@ -1,7 +1,6 @@
 from __future__ import annotations
 import random
 from ..utils import wprint
-from abc import ABC, abstractmethod
 from typing import List, Type
 
 
@@ -17,13 +16,16 @@ class DiceRoller:
         return random.randint(1, 10)
 
 
-class Command(ABC):
-    @abstractmethod
-    def execute(self) -> None:
-        pass
+class Singleton:
+    _singletons = {}
+    def __new__(cls, *args, **kwds):
+        if cls not in cls._singletons:
+            cls._singletons[cls] = obj = super().__new__(cls)
+            obj._initialized = False
+        return cls._singletons[cls]
 
 
-class SkillCheckCommand(Command):
+class SkillCheckCommand(Singleton):
     """Attacker vs Defender
        Trying Again:
          only if chances of success have improved
@@ -35,8 +37,16 @@ class SkillCheckCommand(Command):
        Taking Extra Time
          Single +1 bonus when taking four times longer
     """
-    def __init__(self):
-        self._skillchecks: List[SkillCheckCommand] = []
+    def __init__(
+        self,
+        player: Character=None,
+        npc=None
+    ):
+        if not self._initialized:
+            self.player = player
+            self.npc = npc
+            self._skillchecks: List[SkillCheckCommand] = []
+            self._initialized = True
 
     def register(self, skillcheck): 
         self._skillchecks.append(skillcheck)
@@ -44,12 +54,11 @@ class SkillCheckCommand(Command):
     def execute(self, skillcheck):
         [s.check_skill() for s in self._skillchecks if 
             isinstance(s, HumanPerceptionCheckCommand)]
-        # TODO: Needs npc object
         [s.check_skill(
             "brawling", 
-            s.skill_value, 
-            s.char_mngr.player) for s in self._skillchecks if 
-                isinstance(s, NPCEncounterCommand)]
+            self.npc.skill_total('brawling'), 
+            self.player) for s in self._skillchecks if 
+                isinstance(s, SkillCheckCommand)]
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
@@ -116,16 +125,17 @@ class SkillCheckCommand(Command):
     def do_use_skill(self, skill_name: str) -> None:
         skill_commands: dict[str, Type[Command]] = {
             "human_perception": HumanPerceptionCheckCommand,
-            "brawling": NPCEncounterCommand,
+            "brawling": SkillCheckCommand,
         }
         if skill_name not in self.char_mngr.player.get_skills():
             print("invalid skill name.")
             return
         command_class = skill_commands.get(skill_name)
         if command_class is not None:
+            skcc = SkillCheckCommand()
             command = command_class(self.char_mngr)
-            self.skcc.register(command) 
-            self.skcc.execute(command)
+            skcc.register(command) 
+            skcc.execute(command)
         
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.char_mngr.player.get_skills()
@@ -133,13 +143,6 @@ class SkillCheckCommand(Command):
 
 
 class HumanPerceptionCheckCommand(SkillCheckCommand):
-    def __init__(
-        self, 
-        char_mngr: CharacterManager, 
-    ):
-        super().__init__()
-        self.char_mngr = char_mngr
-
     def check_difficulty(self, task):
         if task == "lazlo":
             return self.set_difficulty("Professional")
@@ -165,20 +168,6 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
-    def __init__(
-            self, 
-            char_mngr: CharacterManager,
-    ):
-        super().__init__()
-        self.char_mngr = char_mngr
-        self.npc = None
-        self.skill_value = 0
-
-    def handle_npc_encounter(self, npc):
-        # TODO: Implement skill choice instead of hardcoding brawling
-        self.skill_value = npc.skill_total('brawling')
-        #self.check_skill('brawling', skill_value, self.player)
-
     def do_encounter(self, arg):
         """Handles the NPC encounter"""
         self.npc = self.get_random_npc()
@@ -213,8 +202,6 @@ class NPCEncounterCommand(SkillCheckCommand):
 
     def get_random_npc(self):
         """Returns a random NPC."""
-        # Code for getting a random NPC goes here
-        pass
 
     def do_encounter_npc(self, arg):
         """Encounter an NPC and assign the selected NPC

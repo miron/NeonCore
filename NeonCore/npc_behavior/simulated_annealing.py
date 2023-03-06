@@ -9,7 +9,6 @@ class SimulatedAnnealing:
     
     def _transition(self):
         """Generate a new state by modifying the current state"""
-        pass
     
     def _acceptance_probability(self, new_state, old_state):
         """Calculate the probability of accepting a new state"""
@@ -18,7 +17,6 @@ class SimulatedAnnealing:
     
     def _energy(self, state):
         """Calculate the energy or cost of a given state"""
-        pass
     
     def optimize(self):
         while self.temperature > 1:
