@@ -2,7 +2,6 @@
 import cmd
 import os
 import sys
-import shelve
 import time
 from ..utils import wprint
 
