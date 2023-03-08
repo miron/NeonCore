@@ -149,6 +149,8 @@ homies before ya start runnin' with em, ya feel me?
         print("Trait:", self.char_mngr.player.trait)
         print('Most Valued Person in Your Life:', 
               self.char_mngr.player.valued_person)
+        print('Most Valued Possession You Own:', 
+              self.char_mngr.player.valued_possession)
         print("Original Background:",
             self.char_mngr.player.original_background)
         print("Childhood Environment:",

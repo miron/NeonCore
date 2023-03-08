@@ -30,6 +30,7 @@ class Character:
         self.value = self.lifepath.roll('value')
         self.trait = self.lifepath.roll('trait')
         self.valued_person = self.lifepath.roll('valued_person')
+        self.valued_possession = self.lifepath.roll('valued_possession')
         self.original_background = self.lifepath.roll('original_backgrounds')
         self.childhood_environment = self.lifepath.roll(
             'childhood_environments')
@@ -165,10 +166,22 @@ class Lifepath:
                 4: 'A friend',
                 5: 'Yourself',
                 6: 'A pet',
-                7: 'A teacher or mentro',
+                7: 'A teacher or mentor',
                 8: 'A public figure',
                 9: 'A personal hero',
                 10: 'No one'
+            },
+            'valued_possession': {
+                1: 'A weapon',
+                2: 'A tool',
+                3: 'A piece of clothing',
+                4: 'A photograph',
+                5: 'A book or diary',
+                6: 'A recording',
+                7: 'A musical instrument',
+                8: 'A piece of jewelry',
+                9: 'A toy',
+                10: 'A letter'
             },
             'original_backgrounds': {
                 1: {'name': 'Corporate Execs',
