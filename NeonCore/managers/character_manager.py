@@ -144,6 +144,7 @@ homies before ya start runnin' with em, ya feel me?
         print("Personality:", self.char_mngr.player.personality)
         print("Clothing Style:", self.char_mngr.player.clothing_style)
         print("Hairstyle:", self.char_mngr.player.hairstyle)
+        print('Affectation:', self.char_mngr.player.affectation)
         print("Value:", self.char_mngr.player.value)
         print("Trait:", self.char_mngr.player.trait)
         print("Original Background:",

@@ -22,10 +22,11 @@ class Character:
         self.x = None
         self.y = None
         self.lifepath = Lifepath()
-        self.cultural_region = self.lifepath.roll('cultural_regions')
-        self.personality = self.lifepath.roll('personalities')
-        self.clothing_style = self.lifepath.roll('clothing_styles')
-        self.hairstyle = self.lifepath.roll('hairstyles')
+        self.cultural_region = self.lifepath.roll('cultural_region')
+        self.personality = self.lifepath.roll('personality')
+        self.clothing_style = self.lifepath.roll('clothing_style')
+        self.hairstyle = self.lifepath.roll('hairstyle')
+        self.affectation = self.lifepath.roll('affectation')
         self.value = self.lifepath.roll('values')
         self.trait = self.lifepath.roll('traits')
         self.original_background = self.lifepath.roll('original_backgrounds')
@@ -48,7 +49,7 @@ class Character:
 class Lifepath:
     def __init__(self):
         self.tables = {
-            'cultural_regions': {
+            'cultural_region': {
                 1: {'region': "North American",
                     'language': ('Chinese', 'Cree', 'Creole', 'English',
                                  'French', 'Navajo', 'Spanish')},
@@ -83,7 +84,7 @@ class Lifepath:
                      'language': ('English', 'French', 'Hawaiian', 'Maori',
                                   'Pama-Nyungan', 'Tahitian')}
             },
-            'personalities': {
+            'personality': {
                 1: "Shy and secretive",
                 2: "Rebellious, antisocial, and violent",
                 3: "Arrogant, proud, and aloof",
@@ -95,7 +96,7 @@ class Lifepath:
                 9: "Intellectual and detached",
                 10: "Friendly and outgoing"
             },
-            'clothing_styles': {
+            'clothing_style': {
                 1: "Generic Chic (Standard, Colorful, Modular)",
                 2: "Leisurewear (Comfort, Agility, Athleticism)",
                 3: "Urban Flash (Flashy, Technological, Streetwear)",
@@ -107,7 +108,7 @@ class Lifepath:
                 9: "Nomad Leathers (Western, Rugged, Tribal)",
                 10: "Asia Pop (Bright, Costume-like, Youthful)"
             },
-            'hairstyles': {
+            'hairstyle': {
                 1: "Mohawk",
                 2: "Long and ratty",
                 3: "Short and spiked",
@@ -118,6 +119,18 @@ class Lifepath:
                 8: "Neat and short",
                 9: "Short and curly",
                 10: "Long and straight" 
+            },
+            'affectation': {
+                1: 'Tattoos',
+                2: 'Mirrorshades',
+                3: 'Ritual scars',
+                4: 'Spiked gloves',
+                5: 'Nose rings',
+                6: 'Tongue or other piercings',
+                7: 'Strange fingernail implants',
+                8: 'Spiked boots or heels',
+                9: 'Fingerless gloves',
+                10: 'Strange contacts'
             },
             'values': {
                 1: "Money",
