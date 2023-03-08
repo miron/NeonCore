@@ -147,6 +147,8 @@ homies before ya start runnin' with em, ya feel me?
         print('Affectation:', self.char_mngr.player.affectation)
         print("Value:", self.char_mngr.player.value)
         print("Trait:", self.char_mngr.player.trait)
+        print('Most Valued Person in Your Life:', 
+              self.char_mngr.player.valued_person)
         print("Original Background:",
             self.char_mngr.player.original_background)
         print("Childhood Environment:",

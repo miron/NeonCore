@@ -27,8 +27,9 @@ class Character:
         self.clothing_style = self.lifepath.roll('clothing_style')
         self.hairstyle = self.lifepath.roll('hairstyle')
         self.affectation = self.lifepath.roll('affectation')
-        self.value = self.lifepath.roll('values')
-        self.trait = self.lifepath.roll('traits')
+        self.value = self.lifepath.roll('value')
+        self.trait = self.lifepath.roll('trait')
+        self.valued_person = self.lifepath.roll('valued_person')
         self.original_background = self.lifepath.roll('original_backgrounds')
         self.childhood_environment = self.lifepath.roll(
             'childhood_environments')
@@ -132,7 +133,7 @@ class Lifepath:
                 9: 'Fingerless gloves',
                 10: 'Strange contacts'
             },
-            'values': {
+            'value': {
                 1: "Money",
                 2: "Honor",
                 3: "Your word",
@@ -144,7 +145,7 @@ class Lifepath:
                 9: "Family",
                 10: "Friendship"
             },
-            'traits': {
+            'trait': {
                 1: "I stay neutral.",
                 2: "I stay neutral.",
                 3: "I like almost everyone.",
@@ -156,6 +157,18 @@ class Lifepath:
                 8: "People are untrustworthy. Don't depend on anyone.",
                 9: "Wipe 'em all out and let the cockroaches take over.",
                 10: "People are wonderful!"
+            },
+            'valued_person': {
+                1: 'A parent',
+                2: 'A brother or sister',
+                3: 'A lover',
+                4: 'A friend',
+                5: 'Yourself',
+                6: 'A pet',
+                7: 'A teacher or mentro',
+                8: 'A public figure',
+                9: 'A personal hero',
+                10: 'No one'
             },
             'original_backgrounds': {
                 1: {'name': 'Corporate Execs',
