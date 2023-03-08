@@ -81,7 +81,7 @@ class SkillCheckCommand(Singleton):
     def check_skill(self, 
                     skill_name: str, 
                     skill_or_difficulty_value: int,
-                    player: Character) -> None:
+                    player: Character) -> int:
         """Perform a skill check using a specified skill and difficulty
            level.
 
@@ -121,6 +121,7 @@ class SkillCheckCommand(Singleton):
             wprint(f"Tie! Attacker roll: {skill_check_total}, "
                    f"Defender DV: {skill_or_difficulty_value}")
             print("Attacker loses.")
+        return skill_check_total
 
     def do_use_skill(self, skill_name: str) -> None:
         skill_commands: dict[str, Type[Command]] = {
@@ -133,7 +134,7 @@ class SkillCheckCommand(Singleton):
         command_class = skill_commands.get(skill_name)
         if command_class is not None:
             skcc = SkillCheckCommand()
-            command = command_class(self.char_mngr)
+            command = command_class(self.char_mngr.player)
             skcc.register(command) 
             skcc.execute(command)
         
@@ -153,11 +154,10 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
     # TODO: Move prints to story, use superclass template where applicable
     def check_skill(self):
-        roll = DiceRoller.d10()
-        human_perception = self.char_mngr.get_character_by_id(
-            self.char_mngr.player.char_id).skill_total("human_perception")
         difficulty_value = self.check_difficulty("lazlo")
-        if roll + human_perception > difficulty_value:
+        human_perception = super().check_skill(
+            'human_perception', difficulty_value, self.player)
+        if human_perception > difficulty_value:
             wprint("Yo, you're suspecting something's off. You're right, "
                    "Lazlo's being held at gunpoint and is being forced to "
                    "lure you into a trap.")
