@@ -49,16 +49,39 @@ class Lifepath:
     def __init__(self):
         self.tables = {
             'cultural_regions': {
-                1: "North American",
-                2: "South/Central American",
-                3: "Western European",
-                4: "Eastern European",
-                5: "Middle Eastern/North African",
-                6: "Sub-Saharan African",
-                7: "South Asian",
-                8: "South East Asian",
-                9: "East Asian",
-                10: "Oceania/Pacific Islander"
+                1: {'region': "North American",
+                    'language': ('Chinese', 'Cree', 'Creole', 'English',
+                                 'French', 'Navajo', 'Spanish')},
+                2: {'region': "South/Central American",
+                    'language': ('Creole', 'English', 'German', 'Guarani',
+                                 'Mayan', 'Portugese', 'Quechua', 'Spanish')},
+                3: {'region': "Western European",
+                    'language': ('Dutch', 'English', 'French', 'German',
+                                 'Italian', 'Norwegian', 'Portuguese',
+                                 'Spanish')},
+                4: {'region': "Eastern European",
+                    'language': ('English', 'Finnish', 'Polish', 'Romanian',
+                                 'Russian', 'Ukrainian')},
+                5: {'region': "Middle Eastern/North African",
+                    'language': ('Arabic', 'Berber', 'English', 'Farsi',
+                                 'French', 'Hebrew', 'Turkish')},
+                6: {'region': "Sub-Saharan African",
+                    'language': ('Arabic', 'English', 'French', 'Hausa',
+                                 'Lingala', 'Oromo', 'Portuguese', 'Swahili',
+                                 'Twi', 'Yoruba')},
+                7: {'region': "South Asian",
+                    'language' : ('Bengali', 'Dari', 'English', 'Hindi',
+                                  'Nepali', 'Sinhalese', 'Tamil', 'Urdu')},
+                8: {'region': "South East Asian",
+                    'language': ('Arabic', 'Burmese', 'English', 'Filipino',
+                                 'Hindi', 'Indonesian', 'Khmer', 'Malayan',
+                                 'Vietnamese')},
+                9: {'region': "East Asian",
+                    'language': ('Cantonese Chinese', 'English', 'Japanese',
+                                 'Korean', 'Mandarin Chinese', 'Mongolian')},
+                10: {'region': "Oceania/Pacific Islander",
+                     'language': ('English', 'French', 'Hawaiian', 'Maori',
+                                  'Pama-Nyungan', 'Tahitian')}
             },
             'personalities': {
                 1: "Shy and secretive",
@@ -192,7 +215,7 @@ class Lifepath:
             'childhood_environments': {
                 1: "Ran on The Street, with no adult supervision.",
                 2: ("Spent in a safe Corp Zone walled off from the rest of the"
-                    "City."),
+                    " City."),
                 3: "In a Nomad pack moving from place to place.",
                 4: ("In a Nomad pack with roots in transport (ships, planes, "
                     "caravans)."),
@@ -207,7 +230,7 @@ class Lifepath:
                 9: ("In a Drift Nation (a floating offshore city) that is a "
                     "meeting place for all kinds of people."),
                 10: ("In a Corporate luxury 'starscraper,' high above the rest"
-                     "of the teeming rabble.")
+                     " of the teeming rabble.")
             },
             'family_crises': {
                 1: "Your family lost everything through betrayal.",
