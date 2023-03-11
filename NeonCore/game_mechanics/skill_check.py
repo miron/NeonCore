@@ -1,7 +1,6 @@
 from __future__ import annotations
 import random
 from ..utils import wprint
-from typing import List, Type
 
 
 class DiceRoller:
@@ -45,7 +44,7 @@ class SkillCheckCommand(Singleton):
         if not self._initialized:
             self.player = player
             self.npc = npc
-            self._skillchecks: List[SkillCheckCommand] = []
+            self._skillchecks: list[SkillCheckCommand] = []
             self._initialized = True
 
     def register(self, skillcheck): 
@@ -124,7 +123,7 @@ class SkillCheckCommand(Singleton):
         return skill_check_total
 
     def do_use_skill(self, skill_name: str) -> None:
-        skill_commands: dict[str, Type[Command]] = {
+        skill_commands: dict[str, type[Command]] = {
             "human_perception": HumanPerceptionCheckCommand,
             "brawling": SkillCheckCommand,
         }

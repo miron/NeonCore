@@ -4,8 +4,9 @@ import random
 
 class Character:
     def __init__(
-            self, char_id, handle, role, stats, combat, skills, defence,
-            weapons, role_ability, cyberware, gear, ascii_art):
+        self, char_id, handle, role, stats, combat, skills, defence,
+        weapons, role_ability, cyberware, gear, ascii_art
+    ):
         self.char_id = char_id
         self.handle = handle
         self.role = role
@@ -31,10 +32,10 @@ class Character:
         self.trait = self.lifepath.roll('trait')
         self.valued_person = self.lifepath.roll('valued_person')
         self.valued_possession = self.lifepath.roll('valued_possession')
-        self.original_background = self.lifepath.roll('original_backgrounds')
+        self.original_background = self.lifepath.roll('original_background')
         self.childhood_environment = self.lifepath.roll(
-            'childhood_environments')
-        self.family_crisis = self.lifepath.roll('family_crises')
+            'childhood_environment')
+        self.family_crisis = self.lifepath.roll('family_crisis')
         self.friends = self.lifepath.get_friends()
         self.enemies = self.lifepath.get_enemies()
         self.lovers = self.lifepath.get_lovers()
@@ -183,7 +184,7 @@ class Lifepath:
                 9: 'A toy',
                 10: 'A letter'
             },
-            'original_backgrounds': {
+            'original_background': {
                 1: {'name': 'Corporate Execs',
                     'description': (
                         "Wealthy, powerful, with servants, luxury homes, and "
@@ -193,7 +194,7 @@ class Lifepath:
                 2: {'name': 'Corporate Managers', 
                     'description': (
                         "Well to do, with large homes, safe neighborhoods, "
-                        "nice cars, etc. Sometimes your parents would hire "
+                        "nice cars, etc. Sometimes your parent(s) would hire "
                         "servants, although this was rare. You had a mix of "
                         "private and corporate education.")},
                 3: {'name': 'Corporate Technicians', 
@@ -229,21 +230,21 @@ class Lifepath:
                         "cold, and scared, unless you were tough enough to "
                         "fight for the scraps. Education? School of Hard "
                         "Knocks.")},
-                8: {'name': 'Megastructure', 
+                8: {'name': 'Megastructure Warren Rats', 
                     'description': (
                         'You grew up in one of the huge new megastructures '
                         "that went up after the War. A tiny conapt, kibble and"
                         " scop for food, a mostly warm bed. Some better "
                         "educated adult warren dwellers or a local Corporation"
                         " may have set up a school.")},
-                9: {'name': 'Warren Rats', 
+                9: {'name': 'Reclaimers', 
                     'description': (
                         'You started out on the road, but then moved into one '
                         "of the deserted ghost towns or cities to rebuild it. "
                         "A pioneer life: dangerous, but with plenty of simple "
                         "food and a safe place to sleep. You were home "
                         "schooled if there was anyone who had the time.")},
-                10: {'name': 'Reclaimers', 
+                10: {'name': 'Edgerunners', 
                      'description': (
                          "Your home was always changing based on your parents'"
                          ' current "job." Could be a luxury apartment, an '
@@ -251,7 +252,7 @@ class Lifepath:
                          "Food and shelter ran the gamut from gourmet to "
                          "kibble.")}
             },
-            'childhood_environments': {
+            'childhood_environment': {
                 1: "Ran on The Street, with no adult supervision.",
                 2: ("Spent in a safe Corp Zone walled off from the rest of the"
                     " City."),
@@ -271,18 +272,18 @@ class Lifepath:
                 10: ("In a Corporate luxury 'starscraper,' high above the rest"
                      " of the teeming rabble.")
             },
-            'family_crises': {
+            'family_crisis': {
                 1: "Your family lost everything through betrayal.",
                 2: "Your family lost everything through bad management.",
                 3: ("Your family was exiled or otherwise driven from their "
-                    "original home/ nation/ Corporation."),
+                    "original home/nation/Corporation."),
                 4: "Your family is imprisoned, and you alone escaped.",
                 5: "Your family vanished. You are the only remaining member.",
                 6: "Your family was killed, and you were the only survivor.",
                 7: ("Your family is involved in a long-term conspiracy, "
                     "organization, or association, such as a crime family or "
                     "revolutionary group."),
-                8: "Your family was scattered to the winds due to relegation.",
+                8: "Your family was scattered to the winds due to misfortune.",
                 9: ("Your family is cursed with a hereditary feud that has "
                     "lasted for generations."),
                 10: ("You are the inheritor of a family debt, you must honor "
@@ -354,7 +355,6 @@ class Lifepath:
             9: "Someone you know from The Street.",
             10: "Someone with a common interest or goal."
         }
-
         num_friends = max(0, random.randint(1, 10) - 7)
         for i in range(num_friends):
             friend_type = random.randint(1, 10)

@@ -1,6 +1,5 @@
 # Change to singleton
 import uuid 
-from typing import List, Dict, Any
 import json
 from .character import Character 
 from pathlib import Path
@@ -27,7 +26,7 @@ class CharacterManager:
     def set_player(self, character: Character):
         self.player = character
 
-    def set_npcs(self, characters: List[Character]):
+    def set_npcs(self, characters: list[Character]):
         self.npcs = characters
         
     def get_player(self):
