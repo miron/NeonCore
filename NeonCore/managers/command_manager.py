@@ -1,17 +1,19 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 from . import CharacterManager
 from . import ActionManager
 from ..game_mechanics import SkillCheckCommand
 from ..story_modules import PhoneCall
 from ..game_maps import  Map
 
-class AbstractCommandManager(ABC):
-    @abstractmethod
+
+
+
+class AbstractCommandManager(Protocol):
     def get_check_command(self):
-        pass
+        ... 
 
 
-class CommandManager(AbstractCommandManager):
+class CommandManager:
     def check_state(self):
         """Check current game state and return commands that should be 
         registered"""
@@ -36,11 +38,11 @@ class CommandManager(AbstractCommandManager):
 
 
 # future expansion following
-class CombatCommandManager(AbstractCommandManager):
+class CombatCommandManager:
     def get_check_command(self):
         """Combat related commands"""
 
 
-class ItemCommandManager(AbstractCommandManager):
+class ItemCommandManager:
     def get_check_command(self):
         """Item related commands """

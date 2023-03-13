@@ -1,6 +1,6 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
-class StoryManager(metaclass=ABCMeta):
+class StoryManager(ABC):
     """Singleton class that manages the different story modules in the 
        game.
     """
