@@ -216,10 +216,11 @@ class NPCEncounterCommand(SkillCheckCommand):
                     self.current_npc = self.npcs[npc_index]
                     self.skill_check = SkillCheckCommand(self.current_npc)
                     return
+                else:
+                    print("Invalid choice. Please choose a number between 1 and",
+                    len(self.npcs))
             except ValueError:
-                pass
-            print("Invalid choice. Please choose a number between 0 and",
-                  len(self.npcs)-1)
+                print("Invalid input. Please enter a number.")
 
 
 class RangedCombatCommand:
