@@ -16,8 +16,7 @@ class HeywoodIndustrial:
         return False
 
     def check_skill(self, approach: str, skill_threshold: int):
-        # Use the appropriate method to check the skill of the player's approach
-        pass
+        """Use the appropriate method to check the skill of the player's approach."""
 
     def give_briefcase(self, character_id: int):
         character = self.characters_manager.get_character_by_id(character_id)
@@ -72,18 +71,15 @@ class HoodedMan:
         self.is_dirty = True
 
     def hand_off(self, briefcase):
-        # simulate fumbling with key and dropping briefcase
-        pass
+        """Simulate fumbling with key and dropping briefcase."""
 
 class CopFriends:
     def __init__(self):
         self.is_dirty = True
 
     def is_signnal(self, briefcase):
-        # check if the briefcase hand-off is the signal for the cops to ambush
-        pass
+        """Check if the briefcase hand-off is the signal for the cops to ambush."""
 
     def ambush(self):
-        # implement the ambush on the PCs
-        pass
+        """Implement the ambush on the PCs."""
 
