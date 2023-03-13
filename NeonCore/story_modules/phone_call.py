@@ -2,12 +2,6 @@ from ..utils import wprint
 
 
 class PhoneCall():
-    commands = {
-        'before_perception_check': [
-            'SkillCheckCommand.do_use_skill',
-            'SkillCheckCommand.complete_use_skill',
-            'Map.do_move']}
-
     def do_phone_call(self, args):
         """Yo, chummer! You wanna make some eddies and climb the ranks? 
 You wanna be a player in Night City? Type 'phone_call' and let's get this 

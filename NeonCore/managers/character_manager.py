@@ -6,14 +6,6 @@ from pathlib import Path
 
 
 class CharacterManager:
-    commands = {
-        'choose_character': ['CharacterManager.do_choose_character',
-                             'CharacterManager.complete_choose_character',
-                             'CharacterManager.roles'],
-        'character_chosen': ['CharacterManager.do_player_sheet',
-                             'CharacterManager.do_rap_sheet',
-                             'PhoneCall.do_phone_call']}
-
     def __init__(self):
         self.characters = {}
         self.load_characters()
