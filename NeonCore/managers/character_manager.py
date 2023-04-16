@@ -57,7 +57,7 @@ class CharacterManager:
             self.columnize(characters_list, displaywidth=80)
             print(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
-        self.prompt = f"{arg} >>> "
+        self.prompt = f"{arg} ᐸ/> "
         self.char_mngr.set_player(
             next(c for c in self.char_mngr.characters.values() if 
                  c.role.lower() == arg))

@@ -1,4 +1,4 @@
-"""A Role Playing Game in the Cyberpunk RED Universe"""
+"""A Role Playing Game in the Cyberpunk Universe"""
 import cmd
 import os
 import sys
@@ -31,7 +31,7 @@ class ActionManager(cmd.Cmd):
 
     def start_game(self):
         os.system('clear')
-        self.prompt = '(choose_character) '
+        self.prompt = 'choose_character ᐸ/> '
         self.cmdloop()
 
     def completenames(self, text, *ignored):
@@ -62,7 +62,7 @@ class ActionManager(cmd.Cmd):
         print("WTF dat mean, ain't no command like dat")
 
     def do_quit(self, arg):
-        """Exits Cyberpunk RED"""
+        """Exits Cyberpunk"""
         wprint("Catch you on the flip side, choombatta. Keep your chrome "
                "polished and your guns loaded, "
                "the neon jungle ain't no walk in the park.")
