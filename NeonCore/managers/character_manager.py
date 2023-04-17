@@ -1,8 +1,8 @@
 # Change to singleton
 import uuid 
 import json
-from .character import Character 
 from pathlib import Path
+from .character import Character 
 
 
 class CharacterManager:
@@ -130,24 +130,21 @@ they're all about.
 It's like peepin' into they mind, know what I'm sayin'? Gotta know ya 
 homies before ya start runnin' with em, ya feel me?
 """
-        print("Lifepath:")
-        print("Cultural Region:", self.char_mngr.player.cultural_region)
-        print("Personality:", self.char_mngr.player.personality)
-        print("Clothing Style:", self.char_mngr.player.clothing_style)
-        print("Hairstyle:", self.char_mngr.player.hairstyle)
-        print('Affectation:', self.char_mngr.player.affectation)
-        print("Value:", self.char_mngr.player.value)
-        print("Trait:", self.char_mngr.player.trait)
-        print('Most Valued Person in Your Life:', 
-              self.char_mngr.player.valued_person)
-        print('Most Valued Possession You Own:', 
-              self.char_mngr.player.valued_possession)
-        print("Original Background:",
-            self.char_mngr.player.original_background)
-        print("Childhood Environment:",
-            self.char_mngr.player.childhood_environment)
-        print("Family Crisis:", self.char_mngr.player.family_crisis)
-        print("Friends:", self.char_mngr.player.friends)
-        print("Enemies:", self.char_mngr.player.enemies)
-        print("Lovers:", self.char_mngr.player.lovers)
-        print("Life Goals:", self.char_mngr.player.life_goal)
+        rap_sheet = f"""Lifepath:
+Cultural Region: {self.char_mngr.player.cultural_region}
+Personality: {self.char_mngr.player.personality}
+Clothing Style: {self.char_mngr.player.clothing_style}
+Hairstyle: {self.char_mngr.player.hairstyle}
+Affectation: {self.char_mngr.player.affectation}
+Value: {self.char_mngr.player.value}
+Trait: {self.char_mngr.player.trait}
+Most Valued Person in Your Life: {self.char_mngr.player.valued_person}
+Most Valued Possession You Own: {self.char_mngr.player.valued_possession}
+Original Background: {self.char_mngr.player.original_background}
+Childhood Environment: {self.char_mngr.player.childhood_environment}
+Family Crisis: {self.char_mngr.player.family_crisis}
+Friends: {self.char_mngr.player.friends}
+Enemies: {self.char_mngr.player.enemies}
+Lovers: {self.char_mngr.player.lovers}
+Life Goals: {self.char_mngr.player.life_goal}"""
+        print(rap_sheet)
