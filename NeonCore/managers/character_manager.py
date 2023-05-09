@@ -52,7 +52,7 @@ class CharacterManager:
         """Allows the player to choose a character role."""
         if arg not in self.roles():
             characters_list = [
-                f"{character.handle} ({character.role})" for  character in 
+                f"{character.handle} ({character.role})" for character in 
                 self.char_mngr.characters.values()]
             self.columnize(characters_list, displaywidth=80)
             print(f"To pick yo' ride chummer, type in {self.roles()}.")
