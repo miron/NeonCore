@@ -1,3 +1,5 @@
+# NeonCore Framework
+
 ![image](https://user-images.githubusercontent.com/109377/211684849-7c9ffe0a-898c-4f84-bb96-642e179b29b2.jpeg)
 
 Welcome to the NeonCore Framework, the ultimate modular toolkit for building immersive role-playing experiences. Developed by the team at street.yoga in their free time, we've taken our dedication to creating a framework that is not only easy to use, but also easy to expand upon for future projects.
@@ -8,7 +10,18 @@ Our character and lifepath class allows for deep customization of player charact
 
 The command registrar class allows for easy registration and management of in-game commands, making it simple to add new features and functionality as your game grows.
 
-Built in Python, the NeonCore Framework is a terminal-based game that fits into 80x24, has graphic fidelity with animated ASCII art, and even has the potential to be a mod for Cyberpunk 2077, playable on a VT52.
+Built in Python, the **NeonCore Framework** is a terminal-based game that fits into 80x24, has graphic fidelity with animated ASCII art, and even has the potential to be a mod for Cyberpunk 2077, playable on a VT52.
 
-At street.yoga, we're dedicated to creating tools that empower game developers to bring their visions to life. The NeonCore Framework is the ultimate tool for building immersive role-playing experiences, no matter the genre.
+At **street.yoga**, we're dedicated to creating tools that empower game developers to bring their visions to life. The NeonCore Framework is the ultimate tool for building immersive role-playing experiences, no matter the genre.
 
+### Usage
+
+To use the **NeonCore Framework**, follow these steps:
+
+1. Clone the repository to your local machine.
+2. Run the game by running the following command:
+   ```bash
+   python run_game.py
+   ```
+   This will start the game and display the main menu.
+3. Follow the on-screen instructions to navigate the game and play through the story.
