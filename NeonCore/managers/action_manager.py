@@ -29,9 +29,14 @@ class ActionManager(cmd.Cmd):
         self.game_map = None 
         self.game_state = 'choose_character'
 
+    # TODO needed to show up in help before hitting tab
+    # but shows as Miscelaneous topic and doesn't use docstring of do_* for help text.
+    # def help_choose_character(self):
+        # wprint("choose_character - Allows the player to choose a character role.")
+
     def start_game(self):
         os.system('clear')
-        self.prompt = 'choose_character ᐸ/> '
+        self.prompt = "What's the deal, choomba? Give me the word:\nᐸ/> "
         self.cmdloop()
 
     def completenames(self, text, *ignored):
