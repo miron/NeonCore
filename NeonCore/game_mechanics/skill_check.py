@@ -4,7 +4,7 @@ from ..utils import wprint
 
 
 class DiceRoller:
-    @staticmethod 
+    @staticmethod
     def d6(num_of_dice: int) -> int:
         """Return the sum of rolls of specified number of d6 dice."""
         return sum(random.randint(1, 6) for _ in range(num_of_dice))
@@ -17,6 +17,7 @@ class DiceRoller:
 
 class Singleton:
     _singletons = {}
+
     def __new__(cls, *args, **kwds):
         if cls not in cls._singletons:
             cls._singletons[cls] = obj = super().__new__(cls)
@@ -26,74 +27,77 @@ class Singleton:
 
 class SkillCheckCommand(Singleton):
     """Attacker vs Defender
-       Trying Again:
-         only if chances of success have improved
-         - you took longer
-         - used better tool
-         - you or friends made Complementary Skill Check
-       Complementary Skill Check
-         Single +1 bonus for subsequent similar skill
-       Taking Extra Time
-         Single +1 bonus when taking four times longer
+    Trying Again:
+      only if chances of success have improved
+      - you took longer
+      - used better tool
+      - you or friends made Complementary Skill Check
+    Complementary Skill Check
+      Single +1 bonus for subsequent similar skill
+    Taking Extra Time
+      Single +1 bonus when taking four times longer
     """
-    def __init__(
-        self,
-        player: Character=None,
-        npc=None
-    ):
+
+    def __init__(self, player: Character = None, npc=None):
         if not self._initialized:
             self.player = player
             self.npc = npc
             self._skillchecks: list[SkillCheckCommand] = []
             self._initialized = True
 
-    def register(self, skillcheck): 
+    def register(self, skillcheck):
         self._skillchecks.append(skillcheck)
-    
+
     def execute(self, skillcheck):
-        [s.check_skill() for s in self._skillchecks if 
-            isinstance(s, HumanPerceptionCheckCommand)]
-        [s.check_skill(
-            "brawling", 
-            self.npc.skill_total('brawling'), 
-            self.player) for s in self._skillchecks if 
-                isinstance(s, SkillCheckCommand)]
+        [
+            s.check_skill()
+            for s in self._skillchecks
+            if isinstance(s, HumanPerceptionCheckCommand)
+        ]
+        [
+            s.check_skill(
+                "brawling", self.npc.skill_total("brawling"), self.player
+            )
+            for s in self._skillchecks
+            if isinstance(s, SkillCheckCommand)
+        ]
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
         Returns the difficulty value for the specified difficulty level.
         """
         difficulties = {
-                'Simple': 9,
-                'Everyday': 13,
-                'Difficult': 15,
-                'Professional': 17,
-                'Heroic': 21,
-                'Incredible': 24,
-                'Legendary': 29
+            "Simple": 9,
+            "Everyday": 13,
+            "Difficult": 15,
+            "Professional": 17,
+            "Heroic": 21,
+            "Incredible": 24,
+            "Legendary": 29,
         }
         if difficulty_level in difficulties:
             return difficulties[difficulty_level]
         else:
             raise ValueError(f"Unknown difficulty level: {difficulty_level}")
 
-    def check_skill(self, 
-                    skill_name: str, 
-                    skill_or_difficulty_value: int,
-                    player: Character) -> int:
+    def check_skill(
+        self,
+        skill_name: str,
+        skill_or_difficulty_value: int,
+        player: Character,
+    ) -> int:
         """Perform a skill check using a specified skill and difficulty
-           level.
+        level.
 
-           Args:
-           luck_points (int): The number of luck points to use for the
-           check.
+        Args:
+        luck_points (int): The number of luck points to use for the
+        check.
         """
         while True:
             luck_points = int(
                 input(
-                      f'Use LUCK {player.lucky_pool}'
-                      f'/{player.stats["luck"]} '
-                      )
+                    f"Use LUCK {player.lucky_pool}" f'/{player.stats["luck"]} '
+                )
             )
             if luck_points > player.lucky_pool:
                 print("Not enough luck points!")
@@ -102,23 +106,30 @@ class SkillCheckCommand(Singleton):
                 print(f"Lucky Pool: {player.lucky_pool}")
                 break
         d10_roll = DiceRoller.d10()
-        skill_check_total = (player.skill_total(skill_name)
-                             + d10_roll + luck_points)
+        skill_check_total = (
+            player.skill_total(skill_name) + d10_roll + luck_points
+        )
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             skill_check_total += DiceRoller.d10()
         elif d10_roll == 1:
             print("Critical Failure! Rolling another one")
-            skill_check_total -= DiceRoller.d10() 
+            skill_check_total -= DiceRoller.d10()
         if skill_check_total > skill_or_difficulty_value:
-            print(f"Success! Attacker roll: {skill_check_total}, "
-                  f"Defender DV: {skill_or_difficulty_value}")
+            print(
+                f"Success! Attacker roll: {skill_check_total}, "
+                f"Defender DV: {skill_or_difficulty_value}"
+            )
         elif skill_check_total < skill_or_difficulty_value:
-            print(f"Failure! Attacker roll: {skill_check_total}, "
-                  f"Defender DV: {skill_or_difficulty_value}")
+            print(
+                f"Failure! Attacker roll: {skill_check_total}, "
+                f"Defender DV: {skill_or_difficulty_value}"
+            )
         else:
-            wprint(f"Tie! Attacker roll: {skill_check_total}, "
-                   f"Defender DV: {skill_or_difficulty_value}")
+            wprint(
+                f"Tie! Attacker roll: {skill_check_total}, "
+                f"Defender DV: {skill_or_difficulty_value}"
+            )
             print("Attacker loses.")
         return skill_check_total
 
@@ -134,9 +145,9 @@ class SkillCheckCommand(Singleton):
         if command_class is not None:
             skcc = SkillCheckCommand()
             command = command_class(self.char_mngr.player)
-            skcc.register(command) 
+            skcc.register(command)
             skcc.execute(command)
-        
+
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.char_mngr.player.get_skills()
         return [skill for skill in skills if skill.startswith(text)]
@@ -155,11 +166,14 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
     def check_skill(self):
         difficulty_value = self.check_difficulty("lazlo")
         human_perception = super().check_skill(
-            'human_perception', difficulty_value, self.player)
+            "human_perception", difficulty_value, self.player
+        )
         if human_perception > difficulty_value:
-            wprint("Yo, you're suspecting something's off. You're right, "
-                   "Lazlo's being held at gunpoint and is being forced to "
-                   "lure you into a trap.")
+            wprint(
+                "Yo, you're suspecting something's off. You're right, "
+                "Lazlo's being held at gunpoint and is being forced to "
+                "lure you into a trap."
+            )
         else:
             print("You didn't suspect anything unusual with the phone call.")
         print("Lazlo hangs up before you can ask any more questions.")
@@ -167,13 +181,15 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
 class NPCEncounterCommand(SkillCheckCommand):
     """Class for handling NPC encounters."""
+
     def do_encounter(self, arg):
         """Handles the NPC encounter"""
         self.npc = self.get_random_npc()
         print(f"You have encountered an NPC: {self.npc.name}")
         while True:
             action = input(
-                "What would you like to do? (attack/negotiate/run): ")
+                "What would you like to do? (attack/negotiate/run): "
+            )
             if action == "attack":
                 self.handle_npc_attack()
                 break
@@ -184,27 +200,29 @@ class NPCEncounterCommand(SkillCheckCommand):
                 self.handle_npc_escape()
                 break
             else:
-                wprint("Invalid action. Please choose 'attack', 'negotiate', "
-                       "or 'run'.")
+                wprint(
+                    "Invalid action. Please choose 'attack', 'negotiate', "
+                    "or 'run'."
+                )
 
     def handle_npc_attack(self):
         """Handles an NPC attack."""
-        self.perform_check('brawling', 'Professional', 0)
+        self.perform_check("brawling", "Professional", 0)
 
     def handle_npc_negotiation(self):
         """Handles negotiating with an NPC."""
-        self.perform_check('negotiation', 'Average', 0)
+        self.perform_check("negotiation", "Average", 0)
 
     def handle_npc_escape(self):
         """Handles escaping from an NPC."""
-        self.perform_check('athletics', 'Easy', 0)
+        self.perform_check("athletics", "Easy", 0)
 
     def get_random_npc(self):
         """Returns a random NPC."""
 
     def do_encounter_npc(self, arg):
         """Encounter an NPC and assign the selected NPC
-           to self.current_npc
+        to self.current_npc
         """
         print("Select an NPC:")
         for i, npc in enumerate(self.npcs):
@@ -217,8 +235,10 @@ class NPCEncounterCommand(SkillCheckCommand):
                     self.skill_check = SkillCheckCommand(self.current_npc)
                     return
                 else:
-                    print("Invalid choice. Please choose a number between 1 and",
-                    len(self.npcs))
+                    print(
+                        "Invalid choice. Please choose a number between 1 and",
+                        len(self.npcs),
+                    )
             except ValueError:
                 print("Invalid input. Please enter a number.")
 
@@ -235,7 +255,7 @@ class RangedCombatCommand:
                 "51-100": 30,
                 "101-200": 30,
                 "201-400": None,
-                "401-800": None
+                "401-800": None,
             },
             "shotgun": {
                 "0-6": 13,
@@ -245,7 +265,7 @@ class RangedCombatCommand:
                 "51-100": 30,
                 "101-200": 35,
                 "201-400": None,
-                "401-800": None
+                "401-800": None,
             },
             "assault_rifle": {
                 "0-6": 17,
@@ -255,8 +275,8 @@ class RangedCombatCommand:
                 "51-100": 15,
                 "101-200": 20,
                 "201-400": 25,
-                "401-800": 30
-            }
+                "401-800": 30,
+            },
         }
 
     def get_dv(self, weapon_type, distance):
@@ -298,10 +318,12 @@ class RangedCombatCommand:
         # generate a random number from 1 to 10
         d10_roll = DiceRoller.d10()
         # add the roll to the total skill level and luck points
-        skill_check_total = (self.character.skill_total("ranged_combat")
-                             + d10_roll + luck_points)
+        skill_check_total = (
+            self.character.skill_total("ranged_combat")
+            + d10_roll
+            + luck_points
+        )
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             # generate another random number from 1 to 10
             skill_check_total += DiceRoller.d10()
-
