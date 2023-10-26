@@ -5,27 +5,36 @@ from . import ActionManager
 
 class AbstractCommandManager(Protocol):
     def get_check_command(self):
-        ... 
+        ...
 
 
 class CommandManager:
+    def __init__(self):
+        self.commands = {}
+
     def check_state(self):
-        """Check current game state and return commands that should be 
+        """Check current game state and return commands that should be
         registered"""
         return self.commands
 
-    def get_check_command(self):
-        if self.game_state in common.commands:
-            commands = common.commands[self.game_state]
-        for command in commands:
-            class_name, method_name = command.split('.')
-            class_ = getattr(common, class_name)
-            method = getattr(class_,  method_name)
-            setattr(ActionManager, method_name, method) 
-        return method_name[0][3:]
-        #if self.game_state == 'heywood_industrial':
+    def register_command(self, game_state, command):
+        if game_state not in self.commands:
+            self.commands[game_state] = []
+        self.commands[game_state].append(command)
+
+    def get_check_command(self, game_state):
+        if game_state in common.commands:
+            commands = common.commands[game_state]
+            for command in commands:
+                class_name, method_name = command.split(".")
+                class_ = getattr(common, class_name)
+                method = getattr(class_, method_name)
+                setattr(ActionManager, method_name, method)
+        return method_name[0][10:]
+
+        # if game_state == 'heywood_industrial':
         #    pass
-        #elif self.game_state == 'before_ranged_combat':
+        # elif game_state == 'before_ranged_combat':
         #    return RangedCombatCommand(self.player, self.npcs)
 
 
@@ -37,4 +46,4 @@ class CombatCommandManager:
 
 class ItemCommandManager:
     def get_check_command(self):
-        """Item related commands """
+        """Item related commands"""

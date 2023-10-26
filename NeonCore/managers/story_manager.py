@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
+
 class StoryManager(ABC):
-    """Singleton class that manages the different story modules in the 
-       game.
+    """Singleton class that manages the different story modules in the
+    game.
     """
 
     _instance = None
@@ -10,10 +11,10 @@ class StoryManager(ABC):
     def __init__(self):
         self.current_story = None
 
-   # instances = locals().copy()
-   # for name, value in instances.items():
-   #     if isinstance(value, Character):
-   #         print(name)
+    # instances = locals().copy()
+    # for name, value in instances.items():
+    #     if isinstance(value, Character):
+    #         print(name)
 
     @classmethod
     def instance(cls):
@@ -38,5 +39,3 @@ class StoryManager(ABC):
     @abstractmethod
     def update(self):
         """Updates the current story."""
-
-

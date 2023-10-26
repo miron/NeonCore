@@ -59,7 +59,7 @@ class ActionManager(cmd.Cmd):
 
     def completenames(self, text, *ignored):
         cmds = super().completenames(text, *ignored)
-        if check_cmd := self.cmd_mngr.get_check_command(self):
+        if check_cmd := self.cmd_mngr.get_check_command(self.game_state):
             cmds += [c for c in check_cmd if c.startswith(text)]
         return cmds
 
