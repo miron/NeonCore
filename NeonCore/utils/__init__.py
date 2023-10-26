@@ -1,1 +1,1 @@
-from .utils import wprint 
+from .utils import wprint

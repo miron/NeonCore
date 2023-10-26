@@ -3,6 +3,8 @@ import json
 import uuid
 from pathlib import Path
 
+from NeonCore.managers.action_manager import ActionManager
+
 from .character import Character
 
 
@@ -29,13 +31,16 @@ class CharacterManager:
         return self.npcs
 
     def load_characters(self):
-        file_path = Path(__file__).parent.parent / "character_assets/characters.json"
+        file_path = (
+            Path(__file__).parent.parent / "character_assets/characters.json"
+        )
         with open(file_path) as f:
             characters_data = json.load(f)
         for char in characters_data:
             char["char_id"] = uuid.uuid4()
             ascii_art_path = (
-                Path(__file__).parent.parent / f'character_assets/{char["ascii_art"]}'
+                Path(__file__).parent.parent
+                / f'character_assets/{char["ascii_art"]}'
             )
             with open(ascii_art_path, "r") as f:
                 char["ascii_art"] = f.read()
@@ -58,12 +63,20 @@ class CharacterManager:
             self.columnize(characters_list, displaywidth=80)
             print(f"To pick yo' ride chummer, type in {self.roles()}.")
             return
-        self.prompt = f"{arg} ᐸ/> "
+        self.prompt = f"{arg} {ActionManager.prompt}"
         self.char_mngr.set_player(
-            next(c for c in self.char_mngr.characters.values() if c.role.lower() == arg)
+            next(
+                c
+                for c in self.char_mngr.characters.values()
+                if c.role.lower() == arg
+            )
         )
         self.char_mngr.set_npcs(
-            [c for c in self.char_mngr.characters.values() if c.role.lower() != arg]
+            [
+                c
+                for c in self.char_mngr.characters.values()
+                if c.role.lower() != arg
+            ]
         )
         self.game_state = "character_chosen"
 
@@ -104,7 +117,14 @@ class CharacterManager:
         defence_list = (
             [f"WEAPONS & ARMOR{'⌁'*19:<10} "]
             + [" ".join(self.char_mngr.player.defence.keys())]
-            + [" ".join([str(row) for row in self.char_mngr.player.defence.values()])]
+            + [
+                " ".join(
+                    [
+                        str(row)
+                        for row in self.char_mngr.player.defence.values()
+                    ]
+                )
+            ]
         )
         weapons_list = [" ".join(self.char_mngr.player.weapons[0].keys())] + [
             " ".join([str(val) for val in row.values()])

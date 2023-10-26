@@ -52,7 +52,8 @@ class ActionManager(cmd.Cmd):
         """
         os.system("clear")
         self.prompt = (
-            f"What's the deal, choomba? Give me the word:\n{self.__class__.prompt}"
+            f"What's the deal, choomba? Give me the word:\n"
+            f"{ActionManager.prompt}"
         )
         self.cmdloop()
 
