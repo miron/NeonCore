@@ -1,4 +1,7 @@
-# breakpoint()
+"""
+This module runs the NeonCore game.
+"""
+
 from NeonCore import __main__
 
 if __name__ == "__main__":
