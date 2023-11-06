@@ -1,8 +1,10 @@
 """A Role Playing Game in the Cyberpunk Universe"""
-from argparse import Action
 import cmd
+import json
 import os
 import sys
+import urllib.request
+from argparse import Action
 
 from ..utils import wprint
 
@@ -33,6 +35,33 @@ class ActionManager(cmd.Cmd):
         self.game_map = None
         self.game_state = "choose_character"
 
+    def do_talk(self, arg):
+        "Start a conversation with an NPC"
+        npc_name = "Judy"
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a hacker in the dystopian city of Neo-Tokyo."
+                    f"You are now interfacing with {npc_name}."
+                ),
+            },
+            {"role": "user", "content": arg},
+        ]
+        completion = self.get_chat_completion(messages)
+        response = completion["choices"][0]["message"]["content"]
+        print(f"{npc_name}: {response}")
+
+    def get_chat_completion(self, prompt):
+        url = "http://localhost:8000/v1/chat/completions"
+        headers = {"Content-Type": "application/json"}
+        data = {"prompt": prompt, "max_tokens": 100}
+        req = urllib.request.Request(
+            url, headers=headers, data=json.dumps(data).encode()
+        )
+        response = urllib.request.urlopen(req)
+        return json.loads(response.read().decode())
+
     # TODO needed to show up in help before hitting tab
     # but shows as Miscelaneous topic and doesn't use docstring of do_* for
     # help text.
@@ -52,8 +81,7 @@ class ActionManager(cmd.Cmd):
         """
         os.system("clear")
         self.prompt = (
-            f"What's the deal, choomba? Give me the word:\n"
-            f"{ActionManager.prompt}"
+            f"What's the deal, choomba? Give me the word:\n" f"{ActionManager.prompt}"
         )
         self.cmdloop()
 
