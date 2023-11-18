@@ -1,3 +1,6 @@
+[build-system]
+requires = ["setuptools-scm"]
+
 [project]
 name = "NeonCore"
 requires-python = ">=3.9"
