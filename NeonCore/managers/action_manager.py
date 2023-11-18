@@ -1,4 +1,5 @@
 """A Role Playing Game in the Cyberpunk Universe"""
+
 import cmd
 import json
 import os
@@ -37,25 +38,27 @@ class ActionManager(cmd.Cmd):
 
     def do_talk(self, arg):
         "Start a conversation with an NPC"
+        player_name = "V"
         npc_name = "Judy"
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "You are a hacker in the dystopian city of Neo-Tokyo."
-                    f"You are now interfacing with {npc_name}."
+                    f"You are {npc_name}, a female hacker with streetwise savvy and a penchant for Night City street slang."
+                    f" You are known for your sharp wit and cyber skills. You are now indterfacing with {player_name}."
+                    " The conversation should be casual, using the colorful and gritty slang of Night City's streets."
                 ),
             },
             {"role": "user", "content": arg},
         ]
         completion = self.get_chat_completion(messages)
-        response = completion["choices"][0]["message"]["content"]
+        response = completion["message"]["content"]
         print(f"{npc_name}: {response}")
 
     def get_chat_completion(self, prompt):
-        url = "http://localhost:8000/v1/chat/completions"
+        url = "http://localhost:11434/api/chat"
         headers = {"Content-Type": "application/json"}
-        data = {"prompt": prompt, "max_tokens": 100}
+        data = {"model": "mistral", "messages": prompt, "stream": False}
         req = urllib.request.Request(
             url, headers=headers, data=json.dumps(data).encode()
         )

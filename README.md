@@ -24,19 +24,22 @@ To use the **NeonCore Framework**, follow these steps:
    This will start the game and display the main menu.
 3. Follow the on-screen instructions to navigate the game and play through the story.
 
-### Running the llama-cpp-python server
-To run the llama-cpp-python server with the example model, use the following command:
+### Running ollama 
+To run the ollama server with the example model mistral, use the following commands:
+Installation:
 ```bash
-python -m llama_cpp.server --model models/utopia-13b.Q4_K_M.gguf --n_gpu_layers -1 --tensor_split 2 --chat_format alpaca
+curl -fsSL https://ollama.com/install.sh | sh
 ```
-This command starts the server with the `utopia-13b.Q4_K_M.gguf` model, using all GPU layers and splitting tensors across 2 GPUs. The server is set to use the Alpaca chat format.
+Downoad the mistral model (4.1 GB) to use with the game:
+```bash
+ollama pull mistral
+```
 
 ### Talking to the AI
 
-Once the server is running, you can talk to the AI using the `talk` command in the `cmd.Cmd()` command line. Simply type `talk` followed by your message. For example:
+Once the server is running, you can talk to the AI named Judy, using the `talk` command in the `cmd.Cmd()` command line. Simply type `talk` followed by your message. For example:
 
 ```bash
-talk Hello, how are you?
+ᐸ/> talk Hey Judy, what's the word on the street about the latest cyberware coming out?
+Judy:  Hey there, V! I'm tellin' ya, the cybernetic underworld is buzzin' with excitement over this new chip rumor. They call it the "Neo-Mage" - supposedly packs a wallop of extra neural capacity, and some even claim it can tap into the mystical "Akashic Records." But beware, my dear cyber friend, it comes at a steep price and might just give the corporate dogs a new way to track us. So tread carefully before jumpin' on that bandwagon! How about you, any juicy rumors floatin' around your circuits?
 ```
-This will send the message "Hello, how are you?" to the AI, and the AI's response will be printed out in the command line.
-These instructions explain how to start the llama-cpp-python server and how to talk to the AI using the `talk` command.
