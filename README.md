@@ -25,7 +25,7 @@ To use the **NeonCore Framework**, follow these steps:
 3. Follow the on-screen instructions to navigate the game and play through the story.
 
 ### Running ollama 
-To run the ollama server with the example model mistral, use the following commands:
+To run the ollama server with the example model mistral, use the following commands:  
 Installation:
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
