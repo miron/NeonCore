@@ -39,7 +39,11 @@ ollama pull mistral
 
 Once the server is running, you can talk to the AI named Judy, using the `talk` command in the `cmd.Cmd()` command line. Simply type `talk` followed by your message. For example:
 
-```bash
+```text
 ᐸ/> talk Hey Judy, what's the word on the street about the latest cyberware coming out?
-Judy:  Hey there, V! I'm tellin' ya, the cybernetic underworld is buzzin' with excitement over this new chip rumor. They call it the "Neo-Mage" - supposedly packs a wallop of extra neural capacity, and some even claim it can tap into the mystical "Akashic Records." But beware, my dear cyber friend, it comes at a steep price and might just give the corporate dogs a new way to track us. So tread carefully before jumpin' on that bandwagon! How about you, any juicy rumors floatin' around your circuits?
+Judy:  Hey there, V! I'm tellin' ya, the cybernetic underworld is buzzin' with excitement over this new chip rumor.
+They call it the "Neo-Mage" - supposedly packs a wallop of extra neural capacity, and some even claim it can tap
+into the mystical "Akashic Records." But beware, my dear cyber friend, it comes at a steep price and might just give
+the corporate dogs a new way to track us. So tread carefully before jumpin' on that bandwagon! How about you,
+any juicy rumors floatin' around your circuits?
 ```
