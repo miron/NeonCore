@@ -4,8 +4,7 @@ from . import ActionManager
 
 
 class AbstractCommandManager(Protocol):
-    def get_check_command(self):
-        ...
+    def get_check_command(self): ...
 
 
 class CommandManager:

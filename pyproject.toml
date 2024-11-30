@@ -5,19 +5,18 @@ requires = ["setuptools-scm"]
 name = "NeonCore"
 dynamic = ["version"]
 requires-python = ">=3.9"
-authors = [
-    { name = "Miron Tewfik", email = "miron@street.yoga" }
-]
+authors = [{ name = "Miron Tewfik", email = "miron@street.yoga" }]
 
 [tool.setuptools]
 packages = [
-    "NeonCore", 
-    "NeonCore.managers", 
-    "NeonCore.game_maps", 
-    "NeonCore.npc_behavior", 
-    "NeonCore.story_modules", 
-    "NeonCore.utils"
+    "NeonCore",
+    "NeonCore.managers",
+    "NeonCore.game_maps",
+    "NeonCore.npc_behavior",
+    "NeonCore.story_modules",
+    "NeonCore.utils",
 ]
 
 [project.optional-dependencies]
-dev = ["bandit"]
+dev = ["bandit", "black"]
+windows = ["pyreadline3; platform_system=='Windows'"]

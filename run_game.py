@@ -1,6 +1,7 @@
 """
 This module runs the NeonCore game.
 """
+
 import sys
 from NeonCore import __main__
 

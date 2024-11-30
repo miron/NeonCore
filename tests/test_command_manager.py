@@ -11,9 +11,7 @@ class TestCommandManager(unittest.TestCase):
         self.assertIsNone(self.command_manager.get_check_command())
         self.command_manager.game_state = None
         self.assertIsNone(self.command_manager.get_check_command())
-        self.assertRaises(
-            AttributeError, self.command_manager.get_check_command
-        )
+        self.assertRaises(AttributeError, self.command_manager.get_check_command)
 
 
 if __name__ == "__main__":

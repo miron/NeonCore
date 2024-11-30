@@ -6,7 +6,7 @@ class CyberpunkManager(StoryManager):
         self.character_manager = character_manager
         self.heywood_industrial = HeywoodIndustrial(self.characters_manager)
         self.story_modules = {
-            'heywood_industrial': self.heywood_industrial,
+            "heywood_industrial": self.heywood_industrial,
             #'phone_call': PhoneCall
         }
 
@@ -19,8 +19,5 @@ class CyberpunkManager(StoryManager):
         Loads the specified story module and returns an instance of it
         """
         return self.story_modules.get(
-            module_name, 
-            lambda: print(f'Invalid story module name: {module_name}'))()
-
-
-
+            module_name, lambda: print(f"Invalid story module name: {module_name}")
+        )()

@@ -26,7 +26,6 @@ class PhoneCall:
         print("You got a bad feeling about this. Like, real bad.")
         print("Yo chummer, you wanna roll for human perception check? ")
         self.prompt = (
-            f"Double-hit the tab to see what's new!\n"
-            f"{ActionManager.prompt}"
+            f"Double-hit the tab to see what's new!\n" f"{ActionManager.prompt}"
         )
         self.game_state = "before_perception_check"

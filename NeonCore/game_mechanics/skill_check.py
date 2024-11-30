@@ -55,9 +55,7 @@ class SkillCheckCommand(Singleton):
             if isinstance(s, HumanPerceptionCheckCommand)
         ]
         [
-            s.check_skill(
-                "brawling", self.npc.skill_total("brawling"), self.player
-            )
+            s.check_skill("brawling", self.npc.skill_total("brawling"), self.player)
             for s in self._skillchecks
             if isinstance(s, SkillCheckCommand)
         ]
@@ -95,9 +93,7 @@ class SkillCheckCommand(Singleton):
         """
         while True:
             luck_points = int(
-                input(
-                    f"Use LUCK {player.lucky_pool}" f'/{player.stats["luck"]} '
-                )
+                input(f"Use LUCK {player.lucky_pool}" f'/{player.stats["luck"]} ')
             )
             if luck_points > player.lucky_pool:
                 print("Not enough luck points!")
@@ -106,9 +102,7 @@ class SkillCheckCommand(Singleton):
                 print(f"Lucky Pool: {player.lucky_pool}")
                 break
         d10_roll = DiceRoller.d10()
-        skill_check_total = (
-            player.skill_total(skill_name) + d10_roll + luck_points
-        )
+        skill_check_total = player.skill_total(skill_name) + d10_roll + luck_points
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
             skill_check_total += DiceRoller.d10()
@@ -187,9 +181,7 @@ class NPCEncounterCommand(SkillCheckCommand):
         self.npc = self.get_random_npc()
         print(f"You have encountered an NPC: {self.npc.name}")
         while True:
-            action = input(
-                "What would you like to do? (attack/negotiate/run): "
-            )
+            action = input("What would you like to do? (attack/negotiate/run): ")
             if action == "attack":
                 self.handle_npc_attack()
                 break
@@ -201,8 +193,7 @@ class NPCEncounterCommand(SkillCheckCommand):
                 break
             else:
                 wprint(
-                    "Invalid action. Please choose 'attack', 'negotiate', "
-                    "or 'run'."
+                    "Invalid action. Please choose 'attack', 'negotiate', " "or 'run'."
                 )
 
     def handle_npc_attack(self):
@@ -319,9 +310,7 @@ class RangedCombatCommand:
         d10_roll = DiceRoller.d10()
         # add the roll to the total skill level and luck points
         skill_check_total = (
-            self.character.skill_total("ranged_combat")
-            + d10_roll
-            + luck_points
+            self.character.skill_total("ranged_combat") + d10_roll + luck_points
         )
         if d10_roll == 10:
             print("Critical Success! Rolling another one")
