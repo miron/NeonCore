@@ -1,14 +1,12 @@
 """A Role Playing Game in the Cyberpunk Universe"""
 
 import cmd
-import json
 import os
 import sys
-import urllib.request
 from argparse import Action
-
 from ..utils import wprint
-
+from ..ai_backends.ollama import OllamaBackend
+from ..ai_backends.grok import GrokBackend
 
 class ActionManager(cmd.Cmd):
     """cli, displays character stats/skills, quits the game"""
@@ -36,6 +34,35 @@ class ActionManager(cmd.Cmd):
         self.game_map = None
         self.game_state = "choose_character"
 
+        # Initialize AI backend
+        self.ai_backends = {
+            "grok": GrokBackend(),
+            "ollama": OllamaBackend()
+        }
+        self.current_backend = self.select_available_backend()
+
+    def select_available_backend(self):
+        """Auto-select the first available backend"""
+        for name, backend in self.ai_backends.items():
+            if backend.is_available():
+                print(f"Using {name} AI backend")
+                return backend
+        raise RuntimeError("No AI backend available")
+
+    def do_switch_ai(self, arg):
+        """Switch between available AI backends (ollama/grok)"""
+        if arg not in self.ai_backends:
+            print(f"Available backends: {', '.join(self.ai_backends.keys())}")
+            return
+
+        backend = self.ai_backends[arg]
+        if not backend.is_available():
+            print(f"{arg} backend is not available")
+            return
+
+        self.current_backend = backend
+        print(f"Switched to {arg} backend")
+
     def do_talk(self, arg):
         "Start a conversation with an NPC"
         player_name = "V"
@@ -51,19 +78,14 @@ class ActionManager(cmd.Cmd):
             },
             {"role": "user", "content": arg},
         ]
-        completion = self.get_chat_completion(messages)
-        response = completion["message"]["content"]
-        print(f"{npc_name}: {response}")
 
-    def get_chat_completion(self, prompt):
-        url = "http://localhost:11434/api/chat"
-        headers = {"Content-Type": "application/json"}
-        data = {"model": "mistral", "messages": prompt, "stream": False}
-        req = urllib.request.Request(
-            url, headers=headers, data=json.dumps(data).encode()
-        )
-        response = urllib.request.urlopen(req)
-        return json.loads(response.read().decode())
+        try:
+            completion = self.current_backend.get_chat_completion(messages)
+            response = completion["message"]["content"]
+            print(f"{npc_name}: {response}")
+        except Exception as e:
+            print(f"AI communication error: {e}")
+
 
     # TODO needed to show up in help before hitting tab
     # but shows as Miscelaneous topic and doesn't use docstring of do_* for

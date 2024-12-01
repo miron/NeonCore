@@ -24,15 +24,27 @@ To use the **NeonCore Framework**, follow these steps:
    This will start the game and display the main menu.
 3. Follow the on-screen instructions to navigate the game and play through the story.
 
-### Running ollama 
-To run the ollama server with the example model mistral, use the following commands:  
+### AI Backend
+#### Using the Grok API
+```powershell
+$env:XAI_API_KEY="your-api-key-here"
+$env:OLLAMA_HOST="http://localhost:11434"
+python run_game.py
+```
+```bash
+export XAI_API_KEY="your-api-key-here"
+export OLLAMA_HOST="http://localhost:11434"
+python run_game.py
+```
+#### Running ollama
+To run the ollama server with the example model mistral, use the following commands:
 Installation:
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
-Downoad the mistral model (4.1 GB) to use with the game:
+Downoad the smolm2 model (271mb) to use with the game:
 ```bash
-ollama pull mistral
+ollama pull smollm2:135
 ```
 
 ### Talking to the AI

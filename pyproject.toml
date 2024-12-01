@@ -6,6 +6,7 @@ name = "NeonCore"
 dynamic = ["version"]
 requires-python = ">=3.9"
 authors = [{ name = "Miron Tewfik", email = "miron@street.yoga" }]
+dependencies = ["openai"]
 
 [tool.setuptools]
 packages = [
@@ -15,6 +16,7 @@ packages = [
     "NeonCore.npc_behavior",
     "NeonCore.story_modules",
     "NeonCore.utils",
+    "NeonCore.ai_backends",
 ]
 
 [project.optional-dependencies]
