@@ -66,7 +66,7 @@ class ActionManager(Cmd):
         self.current_backend = backend
         print(f"Switched to {arg} backend")
 
-    def complete_switch_ai(self, text, line, begidx, endidx): # noqa: unused-argument
+    def complete_switch_ai(self, text, line, begidx, endidx):
         """Complete AI backend options"""
         available_backends = list(self.ai_backends.keys())  # ['grok', 'ollama']
         logging.debug(f"Available AI backends: {available_backends}")

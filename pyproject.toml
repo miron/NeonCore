@@ -20,5 +20,5 @@ packages = [
 ]
 
 [project.optional-dependencies]
-dev = ["bandit", "black"]
+dev = ["black"]
 windows = ["pyreadline3; platform_system=='Windows'"]
