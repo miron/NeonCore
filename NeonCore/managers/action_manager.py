@@ -1,13 +1,18 @@
 """A Role Playing Game in the Cyberpunk Universe"""
 
-from cmd import Cmd
+#Standard library imports
 import os
 import sys
+from cmd import Cmd
 from argparse import Action
+
+# third party imports
+import logging
+
+# Local imports
 from ..utils import wprint
 from ..ai_backends.ollama import OllamaBackend
 from ..ai_backends.grok import GrokBackend
-import logging # Added
 
 
 class ActionManager(Cmd):
@@ -61,6 +66,12 @@ class ActionManager(Cmd):
         self.current_backend = backend
         print(f"Switched to {arg} backend")
 
+    def complete_switch_ai(self, text, line, begidx, endidx):
+        """Complete AI backend options"""
+        available_backends = list(self.ai_backends.keys())  # ['grok', 'ollama']
+        logging.debug(f"Available AI backends: {available_backends}")
+        return [backend for backend in available_backends if backend.startswith(text)]
+
     def do_talk(self, arg):
         "Start a conversation with an NPC"
         player_name = "V"
@@ -76,30 +87,12 @@ class ActionManager(Cmd):
             },
             {"role": "user", "content": arg},
         ]
-
         try:
             completion = self.current_backend.get_chat_completion(messages)
             response = completion["message"]["content"]
             print(f"{npc_name}: {response}")
         except Exception as e:
             print(f"AI communication error: {e}")
-
-    def start_game(self):
-        """
-        Clears the terminal screen and starts the Cyberpunk RPG game.
-        This method clears the terminal screen using the `os.system("clear")`
-        command, sets the command prompt for the game to the value of the
-        `prompt` class variable, and starts the command-line interface using
-        the `cmdloop()` method of the `cmd.Cmd()` class.
-
-        Returns:
-            None
-        """
-        os.system("clear")
-        self.prompt = (
-            f"What's the deal, choomba? Give me the word:\n" f"{ActionManager.prompt}"
-        )
-        self.cmdloop()
 
     def do_choose_character(self, arg=None):
         """Allows the player to choose a character role."""
@@ -129,6 +122,24 @@ class ActionManager(Cmd):
         """Complete character roles after 'choose_character' command"""
         logging.debug(f"Role completion: text='{text}', line='{line}'")
         return [role for role in self.char_mngr.roles(text)]
+
+    def start_game(self):
+        """
+        Clears the terminal screen and starts the Cyberpunk RPG game.
+        This method clears the terminal screen using the `os.system("clear")`
+        command, sets the command prompt for the game to the value of the
+        `prompt` class variable, and starts the command-line interface using
+        the `cmdloop()` method of the `cmd.Cmd()` class.
+
+        Returns:
+            None
+        """
+        os.system("clear")
+        self.prompt = (
+            f"What's the deal, choomba? Give me the word:\n" f"{ActionManager.prompt}"
+        )
+        self.cmdloop()
+
     def completenames(self, text, *ignored):
         """Handle command completion including character roles"""
         logging.debug(f"completenames called with: text='{text}', state={self.game_state}")
@@ -171,11 +182,6 @@ class ActionManager(Cmd):
         # Print defense and weapons
         for defence, weapon in zip(data['defence'], data['weapons']):
             print(defence.ljust(35) + weapon.ljust(45))
-
-        # Print abilities, cyberware, and gear
-        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
-        for ability, ware, gear in zip(data['abilities'], data['cyberware'], data['gear']):
-            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
 
         # Print abilities, cyberware, and gear
         print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
