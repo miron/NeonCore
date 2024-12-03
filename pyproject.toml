@@ -12,7 +12,7 @@ dependencies = ["openai"]
 packages = [
     "NeonCore",
     "NeonCore.managers",
-    "NeonCore.game_maps",
+    "NeonCore.world",
     "NeonCore.npc_behavior",
     "NeonCore.story_modules",
     "NeonCore.utils",

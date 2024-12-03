@@ -1,61 +1,108 @@
-# NeonCore Framework
+# NeonCore
 
 ![image](https://user-images.githubusercontent.com/109377/211684849-7c9ffe0a-898c-4f84-bb96-642e179b29b2.jpeg)
 
-Welcome to the NeonCore Framework, the ultimate modular toolkit for building immersive role-playing experiences, that is not only easy to use, but also easy to expand upon for future projects.
+Welcome to NeonCore - A Text-Based Cyberpunk RPG
 
-Whether you're building a game set in the gritty world of Night City, or creating an entirely new world of your own, the NeonCore Framework has everything you need to bring your vision to life. From the story manager with modular story elements, to the map class and skill check commander, every aspect of the framework has been designed with ease of use and expansion in mind.
+Dive into the neon-soaked streets of Night City in this immersive text-based role-playing game. As a cyberpunk operative, navigate through a world of corporate intrigue, street-level conflicts, and high-tech warfare.
 
-The character and lifepath class allows for deep customization of player characters, while the NPC behavior class ensures that the non-player characters in the world feel truly alive. The Characters Manager and Action Manager work seamlessly together to provide a smooth and immersive gameplay experience.
+Features:
+- Choose your role: Become a street-smart Netrunner, a combat-ready Solo, or other unique characters
+- Deep character customization with detailed lifepaths and backgrounds
+- Dynamic skill-based gameplay system
+- Text-based exploration of Night City's various districts
+- Engaging NPC interactions and encounters
+- Command-line interface with cyberpunk aesthetic
 
-The command registrar class allows for easy registration and management of in-game commands, making it simple to add new features and functionality as your game grows.
+Built with Python, NeonCore delivers a classic RPG experience inspired by the Cyberpunk 2020 tabletop game system. Use your skills, cyber-enhancements, and street smarts to survive and thrive in the dark future of 2045.
 
-Built in Python, the **NeonCore Framework** is a terminal-based game that fits into 80x24, has graphic fidelity with animated ASCII art, and even has the potential to be a mod for Cyberpunk 2077, playable on a VT52.
+### Installation & Usage
 
-### Usage
-
-To use the **NeonCore Framework**, follow these steps:
-
-1. Clone the repository to your local machine.
-2. Run the game by running the following command:
+#### Standard Installation (Linux/MacOS)
+1. Clone the repository to your local machine
+2. Install using pip:
+   ```bash
+   pip install -e .
+   ```
+3. Run the game:
    ```bash
    python run_game.py
    ```
-   This will start the game and display the main menu.
-3. Follow the on-screen instructions to navigate the game and play through the story.
 
-### AI Backend
-#### Using the Grok API
+#### Windows with msys2
+
+1. Create fresh virtual environment:
 ```powershell
-$env:XAI_API_KEY="your-api-key-here"
-$env:OLLAMA_HOST="http://localhost:11434"
+python -m venv venv
+```
+
+2. Allow PowerShell script execution:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+3. Activate virtual environment:
+```powershell
+./venv/bin/Activate.ps1
+```
+
+4. Upgrade pip:
+```powershell
+python -m pip install --upgrade pip
+```
+
+5. Install OpenAI using pre-built wheels only:
+```powershell
+python -m pip install openai --no-build-isolation --only-binary :all:
+```
+
+6. Run the game:
+```powershell
 python run_game.py
 ```
+
+### AI Chat Features
+
+NeonCore includes an AI chat system that lets you interact with NPCs. The system supports two backends:
+
+#### Using Grok API
+Set up your environment variables:
 ```bash
+# Windows PowerShell
+$env:XAI_API_KEY="your-api-key-here"
+
+# Linux/MacOS
 export XAI_API_KEY="your-api-key-here"
-export OLLAMA_HOST="http://localhost:11434"
-python run_game.py
 ```
-#### Running ollama
-To run the ollama server with the example model mistral, use the following commands:
-Installation:
+
+#### Using Ollama
+1. Install Ollama:
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
-Downoad the smolm2 model (271mb) to use with the game:
+
+2. Download the smollm2 model (271MB):
 ```bash
 ollama pull smollm2:135
 ```
 
-### Talking to the AI
+3. Set Ollama host (default is http://localhost:11434):
+```bash
+# Windows PowerShell
+$env:OLLAMA_HOST="http://localhost:11434"
 
-Once the server is running, you can talk to the AI named Judy, using the `talk` command in the `cmd.Cmd()` command line. Simply type `talk` followed by your message. For example:
+# Linux/MacOS
+export OLLAMA_HOST="http://localhost:11434"
+```
 
-```text
-ᐸ/> talk Hey Judy, what's the word on the street about the latest cyberware coming out?
-Judy:  Hey there, V! I'm tellin' ya, the cybernetic underworld is buzzin' with excitement over this new chip rumor.
-They call it the "Neo-Mage" - supposedly packs a wallop of extra neural capacity, and some even claim it can tap
-into the mystical "Akashic Records." But beware, my dear cyber friend, it comes at a steep price and might just give
-the corporate dogs a new way to track us. So tread carefully before jumpin' on that bandwagon! How about you,
-any juicy rumors floatin' around your circuits?
+### In-Game Chat
+
+Use the `talk` command to chat with NPCs. For example:
+
+```
+ᐸ/> talk Hey Judy, what's the word on the street about the latest cyberware?
+Judy: Hey there, V! Word on the street is there's some nova chrome hittin'
+the black market. Heard about this new neural booster that's supposed to
+jack your processing speed through the roof. But watch yourself - corps
+are crackin' down hard on unauthorized tech these days.
 ```

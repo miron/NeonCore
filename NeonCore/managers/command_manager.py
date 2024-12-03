@@ -1,6 +1,7 @@
 from typing import Protocol
 from . import common
 from . import ActionManager
+import logging # Added
 
 
 class AbstractCommandManager(Protocol):
@@ -10,26 +11,52 @@ class AbstractCommandManager(Protocol):
 class CommandManager:
     def __init__(self):
         self.commands = {}
+        self.completions = {} # Added
 
     def check_state(self):
         """Check current game state and return commands that should be
         registered"""
         return self.commands
 
-    def register_command(self, game_state, command):
-        if game_state not in self.commands:
-            self.commands[game_state] = []
-        self.commands[game_state].append(command)
+    def register_command(self, game_state, commands):
+        """Register commands and their completions for a game state"""
+        self.commands[game_state] = [cmd for cmd in commands if 'do_' in cmd]
+        self.completions[game_state] = [cmd for cmd in commands if 'complete_' in cmd]
 
     def get_check_command(self, game_state):
-        if game_state in common.commands:
-            commands = common.commands[game_state]
-            for command in commands:
-                class_name, method_name = command.split(".")
-                class_ = getattr(common, class_name)
-                method = getattr(class_, method_name)
-                setattr(ActionManager, method_name, method)
-        return method_name[0][10:]
+        """Return list of command names for current game state"""
+        logging.debug(f"Getting commands for state: {game_state}")
+        if game_state in self.commands:
+            commands = self.commands[game_state]
+            # Strip class name and 'do_' prefix
+            command_names = [cmd.split('.')[-1].replace('do_', '') for cmd in commands]
+            logging.debug(f"Returning commands: {command_names}")
+            return command_names
+        return []
+
+    def get_completion(self, game_state, command):
+        """Get completion method for a command in current state"""
+        if game_state in self.completions:
+            return [comp for comp in self.completions[game_state]
+                   if command in comp]
+        return []
+
+
+    def completenames(self, text, line, begidx, endidx):
+        """Handle command completion including character roles"""
+        if line.startswith('choose_character'):
+            # If completing arguments for choose_character, use roles
+            return self.char_mngr.roles(text)
+
+        # Get base commands
+        cmds = super().completenames(text, line, begidx, endidx)
+
+        # Add commands from current game state
+        if self.cmd_mngr:
+            state_commands = self.cmd_mngr.get_check_command(self.game_state)
+            cmds.extend(state_commands)
+
+        return sorted(set(cmds))
 
         # if game_state == 'heywood_industrial':
         #    pass
