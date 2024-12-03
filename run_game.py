@@ -1,9 +1,10 @@
-"""
-This module runs the NeonCore game.
-"""
+# miron/NeonCore/run_game.py
+from NeonCore.core.dependencies import GameDependencies
 
-import sys
-from NeonCore import __main__
+def main():
+    action_manager = GameDependencies.initialize_game()
+    action_manager.start_game()
+    return 0
 
 if __name__ == "__main__":
-    sys.exit(__main__())
+    exit(main())

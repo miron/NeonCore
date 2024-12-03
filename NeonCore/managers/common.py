@@ -1,13 +1,11 @@
 from . import CharacterManager
 from ..game_mechanics import SkillCheckCommand
 from ..story_modules import PhoneCall
-from ..game_maps import Map
+from ..world import World
 
 commands = {
     "choose_character": [
-        "CharacterManager.do_choose_character",
-        "CharacterManager.complete_choose_character",
-        "CharacterManager.roles",
+        "CharacterManager.do_choose_character"
     ],
     "character_chosen": [
         "CharacterManager.do_player_sheet",
@@ -15,8 +13,7 @@ commands = {
         "PhoneCall.do_phone_call",
     ],
     "before_perception_check": [
-        "SkillCheckCommand.do_use_skill",
-        "SkillCheckCommand.complete_use_skill",
-        "Map.do_move",
+        "World.do_go", # For movement between locations
+        "SkillCheckCommand.do_use_skill", # For when encountering NPCs
     ],
 }

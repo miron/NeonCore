@@ -1,14 +1,16 @@
 """A Role Playing Game in the Cyberpunk Universe"""
 
-import cmd
+from cmd import Cmd
 import os
 import sys
 from argparse import Action
 from ..utils import wprint
 from ..ai_backends.ollama import OllamaBackend
 from ..ai_backends.grok import GrokBackend
+import logging # Added
 
-class ActionManager(cmd.Cmd):
+
+class ActionManager(Cmd):
     """cli, displays character stats/skills, quits the game"""
 
     intro = r"""     ᐸ ソ ╱> /Ξ /≥ /> // /𐑘/ /ᐸ
@@ -27,18 +29,14 @@ class ActionManager(cmd.Cmd):
     ruler = "⌁"
     doc_header = "Recorded jive (type help <jargon>):"
 
-    def __init__(self, char_mngr, cmd_mngr):
+    def __init__(self, dependencies):
         super().__init__()
-        self.char_mngr = char_mngr
-        self.cmd_mngr = cmd_mngr
-        self.game_map = None
+        self.char_mngr = dependencies.char_mngr
+        self.cmd_mngr = dependencies.cmd_mngr
         self.game_state = "choose_character"
 
         # Initialize AI backend
-        self.ai_backends = {
-            "grok": GrokBackend(),
-            "ollama": OllamaBackend()
-        }
+        self.ai_backends = {"grok": GrokBackend(), "ollama": OllamaBackend()}
         self.current_backend = self.select_available_backend()
 
     def select_available_backend(self):
@@ -86,13 +84,6 @@ class ActionManager(cmd.Cmd):
         except Exception as e:
             print(f"AI communication error: {e}")
 
-
-    # TODO needed to show up in help before hitting tab
-    # but shows as Miscelaneous topic and doesn't use docstring of do_* for
-    # help text.
-    # def help_choose_character(self):
-    #     wprint(
-    #         "choose_character - Allows the player to choose a character role.")
     def start_game(self):
         """
         Clears the terminal screen and starts the Cyberpunk RPG game.
@@ -110,18 +101,106 @@ class ActionManager(cmd.Cmd):
         )
         self.cmdloop()
 
+    def do_choose_character(self, arg=None):
+        """Allows the player to choose a character role."""
+        if arg not in self.char_mngr.roles():
+            characters_list = [
+                f"{character.handle} ({character.role})"
+                for character in self.char_mngr.characters.values()
+            ]
+            self.columnize(characters_list, displaywidth=80)
+            print(f"To pick yo' ride chummer, type in {self.char_mngr.roles()}.")
+            return
+
+        self.prompt = f"{arg} {ActionManager.prompt}"
+        # Set player character
+        self.char_mngr.set_player(
+            next(c for c in self.char_mngr.characters.values()
+                if c.role.lower() == arg)
+        )
+        # Set remaining characters as NPCs
+        self.char_mngr.set_npcs(
+            [c for c in self.char_mngr.characters.values()
+            if c.role.lower() != arg]
+        )
+        self.game_state = "character_chosen"
+
+    def complete_choose_character(self, text, line, begidx, endidx):
+        """Complete character roles after 'choose_character' command"""
+        logging.debug(f"Role completion: text='{text}', line='{line}'")
+        return [role for role in self.char_mngr.roles(text)]
     def completenames(self, text, *ignored):
-        cmds = super().completenames(text, *ignored)
-        if check_cmd := self.cmd_mngr.get_check_command(self.game_state):
-            cmds += [c for c in check_cmd if c.startswith(text)]
-        return cmds
+        """Handle command completion including character roles"""
+        logging.debug(f"completenames called with: text='{text}', state={self.game_state}")
+
+        # Get base commands
+        base_cmds = super().completenames(text, *ignored)
+        logging.debug(f"Base commands from super(): {base_cmds}")
+
+        # Get state commands
+        state_cmds = []
+        if self.cmd_mngr:
+            state_cmds = self.cmd_mngr.get_check_command(self.game_state)
+        logging.debug(f"State commands: {state_cmds}")
+
+        # Combine all commands
+        all_cmds = base_cmds + state_cmds
+        logging.debug(f"Combined commands: {all_cmds}")
+
+        # Filter by text prefix
+        matching = [cmd for cmd in all_cmds if cmd.startswith(text)]
+        logging.debug(f"Final matching commands: {matching}")
+
+        return matching
+
+    def do_player_sheet(self, arg):
+        """Displays the character sheet"""
+        data = self.char_mngr.get_player_sheet_data()
+        # Print header
+        print(data['header'])
+
+        # Print stats
+        self.columnize(data['stats'], displaywidth=80)
+
+        # Print combat info
+        self.columnize(data['combat'], displaywidth=80)
+
+        # Print skills
+        self.columnize(data['skills'], displaywidth=80)
+
+        # Print defense and weapons
+        for defence, weapon in zip(data['defence'], data['weapons']):
+            print(defence.ljust(35) + weapon.ljust(45))
+
+        # Print abilities, cyberware, and gear
+        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
+        for ability, ware, gear in zip(data['abilities'], data['cyberware'], data['gear']):
+            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
+
+        # Print abilities, cyberware, and gear
+        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
+        for ability, ware, gear in zip(data['abilities'], data['cyberware'], data['gear']):
+            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
+
+    def do_rap_sheet(self, arg):
+        """Display character background"""
+        return self.char_mngr.do_rap_sheet(arg)
+
+    def do_phone_call(self, arg):
+        """Start the phone call story element"""
+        # Assuming PhoneCall class has this method
+        from ..story_modules import PhoneCall
+        phone = PhoneCall(self.char_mngr)
+        return phone.do_phone_call(arg)
 
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
         os.system("clear")
 
     def default(self, line):
-        print("WTF dat mean, ain't no command like dat")
+        print(
+            "WTF dat mean, ain't no command like dat. Jack in 'help or '?' for the 411 on the specs, omae"
+        )
 
     def do_quit(self, arg):
         """Exits Cyberpunk"""
