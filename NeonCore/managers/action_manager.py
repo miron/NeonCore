@@ -42,6 +42,10 @@ class ActionManager(Cmd):
         self.skill_check = dependencies.skill_check
         self.game_state = "choose_character"
 
+        # Initialize help system
+        from ..utils.utils import HelpSystem
+        self.help_system = HelpSystem()
+
         # Initialize AI backend
         self.ai_backends = {"grok": GrokBackend(), "ollama": OllamaBackend()}
         self.current_backend = self.select_available_backend()
@@ -303,6 +307,28 @@ class ActionManager(Cmd):
             print("This is a bug. Please report it.")
         except Exception as e:
             print(f"Error moving: {e}")
+
+    def do_help(self, arg):
+        """Get help for commands - context-sensitive based on game state."""
+        if not arg:
+            # Show general help introduction based on current state
+            help_intro = self.help_system.get_help(state=self.game_state)
+            wprint(help_intro)
+            
+            # Show available commands
+            print("\nAvailable commands in your current state:")
+            commands = self.help_system.get_available_commands(state=self.game_state)
+            self.columnize(commands, displaywidth=80)
+        else:
+            # Show specific command help
+            help_text = self.help_system.get_help(arg, self.game_state)
+            wprint(help_text)
+            
+            # If it's a skill command, show available skills
+            if arg == "use_skill" and self.game_state == "before_perception_check" and self.char_mngr.player:
+                print("\nAvailable skills:")
+                skills = self.char_mngr.player.get_skills()
+                self.columnize(skills, displaywidth=80)
 
     def do_quit(self, arg):
         """Exits Cyberpunk"""
