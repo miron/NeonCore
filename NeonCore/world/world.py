@@ -5,8 +5,7 @@ from ..game_mechanics import SkillCheckCommand
 
 class World:
     def __init__(self, char_mngr): # Add character manager as parameter
-        super().__init__()
-        self.char_mgr = char_mngr # Store reference to character manager
+        self.char_mngr = char_mngr # Store reference to character manager
         self.locations: Dict[str, Dict] = self._init_locations()
         self.player_position = "start_square"
         self.inventory = []
@@ -35,7 +34,48 @@ class World:
                 "npcs": ["street_thug", "gang_member", "street_vendor", "netrunner"],  # Potential NPCs to encounter
                 "encounter_chance": 0.4  # 40% chance of encounter
             },
-            # More locations...
+            "dark_alley": {
+                "description": "A narrow passage between buildings, shrouded in shadow. Graffiti covers the walls and the air smells of chemicals and decay.",
+                "exits": {"west": "start_square", "north": "industrial_zone"},
+                "ascii_art": """
+                +----------------+
+                |   DARK ALLEY   |
+                |  [\\] [|] [/]   |
+                |  [\\] [|] [/]   |
+                |  [\\] [|] [/]   |
+                +----------------+
+                """,
+                "npcs": ["street_thug", "cyberjunkie", "black_market_dealer"],
+                "encounter_chance": 0.6  # 60% chance of encounter
+            },
+            "corporate_plaza": {
+                "description": "Clean and sterile, the corporate plaza gleams with polished surfaces and armed guards. Corporate logos dominate the skyline.",
+                "exits": {"east": "market_street"},
+                "ascii_art": """
+                +----------------+
+                |    CORP PLAZA  |
+                |  [█] [█] [█]   |
+                |  [█] [X] [█]   |
+                |  [█] [█] [█]   |
+                +----------------+
+                """,
+                "npcs": ["corpo_exec", "security_guard", "office_worker"],
+                "encounter_chance": 0.3
+            },
+            "industrial_zone": {
+                "description": "Massive factories and warehouses dominate this area. The air is thick with smog and the sound of machinery never stops.",
+                "exits": {"south": "dark_alley"},
+                "ascii_art": """
+                +----------------+
+                | INDUSTRIAL ZN  |
+                |  [▮] [▮] [▮]   |
+                |  [▮] [X] [▮]   |
+                |  [▮] [▮] [▮]   |
+                +----------------+
+                """,
+                "npcs": ["factory_worker", "gang_member", "corpo_security"],
+                "encounter_chance": 0.5
+            }
         }
 
     def do_look(self, arg):
@@ -44,6 +84,14 @@ class World:
         print(location["description"])
         if location["ascii_art"]:
             print(location["ascii_art"])
+            
+        # Show available exits
+        exits = location["exits"]
+        if exits:
+            exit_list = ", ".join(exits.keys())
+            print(f"Exits: {exit_list}")
+        else:
+            print("There are no obvious exits.")
 
     def do_go(self, direction):
         """Move to another location. Usage: go [direction]"""
@@ -58,11 +106,14 @@ class World:
                 if random.random() < current_location.get('encounter_chance', 0.3):
                     npc_name = random.choice(current_location['npcs'])
                     # Get actual NPC object from character manager
-                    npc = next((npc for npc in self.char_mngr.get_npcs()
+                    try:
+                        npc = next((npc for npc in self.char_mngr.npcs
                               if npc.handle.lower() == npc_name.lower()), None)
-                    if npc:
-                        print(f"You've encountered {npc.handle}!")
-                        SkillCheckCommand(self.char_mngr.get_player(), npc=npc)
+                        if npc:
+                            print(f"You've encountered {npc.handle}!")
+                            SkillCheckCommand(self.char_mngr.player, npc=npc)
+                    except Exception as e:
+                        print(f"Error finding NPC: {e}")
             self.do_look(None)  # Automatically look after moving
         else:
             print(f"You can't go {direction} from here.")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 import random
+from typing import Optional
 from ..utils import wprint
 
 
@@ -38,10 +39,11 @@ class SkillCheckCommand(Singleton):
       Single +1 bonus when taking four times longer
     """
 
-    def __init__(self, player: Character = None, npc=None):
+    def __init__(self, player = None, npc=None):
         if not self._initialized:
             self.player = player
             self.npc = npc
+            self.char_mngr = None
             self._skillchecks: list[SkillCheckCommand] = []
             self._initialized = True
 
@@ -49,16 +51,16 @@ class SkillCheckCommand(Singleton):
         self._skillchecks.append(skillcheck)
 
     def execute(self, skillcheck):
-        [
-            s.check_skill()
-            for s in self._skillchecks
-            if isinstance(s, HumanPerceptionCheckCommand)
-        ]
-        [
-            s.check_skill("brawling", self.npc.skill_total("brawling"), self.player)
-            for s in self._skillchecks
-            if isinstance(s, SkillCheckCommand)
-        ]
+        # Special handling for human perception checks
+        for s in self._skillchecks:
+            if isinstance(s, HumanPerceptionCheckCommand):
+                s.check_skill()
+                
+        # Handle other skill checks only if NPC is available
+        if self.npc:
+            for s in self._skillchecks:
+                if isinstance(s, SkillCheckCommand) and not isinstance(s, HumanPerceptionCheckCommand):
+                    s.check_skill("brawling", self.npc.skill_total("brawling"), self.player)
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
@@ -127,20 +129,34 @@ class SkillCheckCommand(Singleton):
             print("Attacker loses.")
         return skill_check_total
 
-    def do_use_skill(self, skill_name: str) -> None:
-        skill_commands: dict[str, type[Command]] = {
+    def do_use_skill(self, args) -> None:
+        skill_name = args.strip()
+        
+        # No alias needed - perception and human_perception are different skills
+            
+        skill_commands = {
             "human_perception": HumanPerceptionCheckCommand,
             "brawling": SkillCheckCommand,
         }
-        if skill_name not in self.char_mngr.player.get_skills():
-            print("invalid skill name.")
+        
+        if not self.char_mngr or not self.char_mngr.player:
+            print("No active character. Please choose a character first.")
             return
+            
+        if skill_name not in self.char_mngr.player.get_skills():
+            print(f"Invalid skill name: {skill_name}")
+            print(f"Available skills: {', '.join(self.char_mngr.player.get_skills())}")
+            return
+            
         command_class = skill_commands.get(skill_name)
         if command_class is not None:
-            skcc = SkillCheckCommand()
             command = command_class(self.char_mngr.player)
-            skcc.register(command)
-            skcc.execute(command)
+            command.char_mngr = self.char_mngr
+            self.register(command)
+            self.execute(command)
+        else:
+            print(f"No command handler for skill: {skill_name}")
+            print(f"Supported skills: {', '.join(skill_commands.keys())}")
 
     def complete_use_skill(self, text, line, begidx, endidx):
         skills = self.char_mngr.player.get_skills()

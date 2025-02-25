@@ -36,8 +36,10 @@ class ActionManager(Cmd):
 
     def __init__(self, dependencies):
         super().__init__()
+        self.dependencies = dependencies
         self.char_mngr = dependencies.char_mngr
         self.cmd_mngr = dependencies.cmd_mngr
+        self.skill_check = dependencies.skill_check
         self.game_state = "choose_character"
 
         # Initialize AI backend
@@ -144,10 +146,23 @@ class ActionManager(Cmd):
         """Handle command completion including character roles"""
         logging.debug(f"completenames called with: text='{text}', state={self.game_state}")
 
-        # First, get base commands that should always be available
-        always_available = ['help', 'quit', 'choose_character', 'switch_ai']
+        # Get base commands that should always be available
+        always_available = ['help', 'quit', 'talk', 'look']
         base_cmds = [cmd for cmd in super().completenames(text, *ignored) 
                     if cmd in always_available]
+        
+        # Add choose_character only when in initial state
+        if self.game_state == "choose_character" and 'choose_character' in super().completenames(text, *ignored):
+            base_cmds.append('choose_character')
+            
+        # Add switch_ai to always available (it's a special case)
+        if 'switch_ai' in super().completenames(text, *ignored):
+            base_cmds.append('switch_ai')
+        
+        # Add 'go' command in proper state
+        if self.game_state == 'before_perception_check' and 'go' in super().completenames(text, *ignored):
+            base_cmds.append('go')
+            
         logging.debug(f"Always available commands: {base_cmds}")
 
         # Get state-specific commands
@@ -222,18 +237,72 @@ class ActionManager(Cmd):
                 self.prompt = result['prompt']
             if 'game_state' in result:
                 self.game_state = result['game_state']
+                logging.debug(f"Game state changed to: {self.game_state}")
         
-        return result
+        # Don't return anything - this prevented further commands
 
+    def do_use_skill(self, arg):
+        """Perform a skill check with the specified skill"""
+        # Check if command is allowed in current game state
+        if self.game_state != 'before_perception_check':
+            print("That command isn't available right now, choomba.")
+            return
+            
+        if not self.skill_check:
+            print("Skill check system not initialized!")
+            return
+            
+        self.skill_check.do_use_skill(arg)
+        
+    def complete_use_skill(self, text, line, begidx, endidx):
+        """Complete skill names for use_skill command"""
+        if self.game_state != 'before_perception_check' or not self.char_mngr.player:
+            return []
+            
+        skills = self.char_mngr.player.get_skills()
+            
+        return [skill for skill in skills if skill.startswith(text)]
+        
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
         os.system("clear")
 
     def default(self, line):
         # Command doesn't exist at all
-        print(
-            "WTF dat mean, ain't no command like dat. Jack in 'help or '?' for the 411 on the specs, omae"
-        )
+        if line.startswith("go "):
+            # Handle 'go' command directly
+            direction = line.split(' ')[1]
+            self.do_go(direction)
+        else:
+            print(
+                "WTF dat mean, ain't no command like dat. Jack in 'help or '?' for the 411 on the specs, omae"
+            )
+            
+    def do_look(self, arg):
+        """Look around at your current location"""
+        if self.game_state == 'before_perception_check':
+            self.dependencies.world.do_look(arg)
+        else:
+            print("Nothing much to see here yet, choomba.")
+            
+    def do_go(self, arg):
+        """Move to a new location"""
+        if self.game_state != 'before_perception_check':
+            print("That command isn't available right now, choomba.")
+            return
+        
+        if not arg or arg.strip() == "":
+            print("Go where? Try 'go north', 'go east', 'go south', or 'go west'.")
+            return
+            
+        direction = arg.strip()
+        try:
+            self.dependencies.world.do_go(direction)
+        except KeyError as e:
+            print(f"Error: Location not found - {e}")
+            print("This is a bug. Please report it.")
+        except Exception as e:
+            print(f"Error moving: {e}")
 
     def do_quit(self, arg):
         """Exits Cyberpunk"""

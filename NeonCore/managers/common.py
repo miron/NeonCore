@@ -14,6 +14,7 @@ commands = {
     ],
     "before_perception_check": [
         "World.do_go", # For movement between locations
+        "World.do_look", # For examining locations
         "SkillCheckCommand.do_use_skill", # For when encountering NPCs
     ],
 }
