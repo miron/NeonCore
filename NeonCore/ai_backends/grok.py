@@ -22,7 +22,7 @@ class GrokBackend(AIBackend):
 
         try:
             completion = self.client.chat.completions.create(
-                model="grok-beta",
+                model="grok-2-1212",
                 messages=messages
             )
             return {"message": {"content": completion.choices[0].message.content}}

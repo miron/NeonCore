@@ -144,11 +144,13 @@ class ActionManager(Cmd):
         """Handle command completion including character roles"""
         logging.debug(f"completenames called with: text='{text}', state={self.game_state}")
 
-        # Get base commands
-        base_cmds = super().completenames(text, *ignored)
-        logging.debug(f"Base commands from super(): {base_cmds}")
+        # First, get base commands that should always be available
+        always_available = ['help', 'quit', 'choose_character', 'switch_ai']
+        base_cmds = [cmd for cmd in super().completenames(text, *ignored) 
+                    if cmd in always_available]
+        logging.debug(f"Always available commands: {base_cmds}")
 
-        # Get state commands
+        # Get state-specific commands
         state_cmds = []
         if self.cmd_mngr:
             state_cmds = self.cmd_mngr.get_check_command(self.game_state)
@@ -166,6 +168,11 @@ class ActionManager(Cmd):
 
     def do_player_sheet(self, arg):
         """Displays the character sheet"""
+        # Check if command is allowed in current game state
+        if self.game_state == 'choose_character':
+            print("Can't do that yet, choomba. You need to choose a character first.")
+            return
+            
         data = self.char_mngr.get_player_sheet_data()
         # Print header
         print(data['header'])
@@ -190,20 +197,40 @@ class ActionManager(Cmd):
 
     def do_rap_sheet(self, arg):
         """Display character background"""
+        # Check if command is allowed in current game state
+        if self.game_state == 'choose_character':
+            print("Can't do that yet, choomba. You need to choose a character first.")
+            return
+            
         return self.char_mngr.do_rap_sheet(arg)
 
     def do_phone_call(self, arg):
         """Start the phone call story element"""
-        # Assuming PhoneCall class has this method
+        # Check if command is allowed in current game state
+        if self.game_state == 'choose_character':
+            print("Can't do that yet, choomba. You need to choose a character first.")
+            return
+            
+        # Create the PhoneCall instance with char_mngr
         from ..story_modules import PhoneCall
         phone = PhoneCall(self.char_mngr)
-        return phone.do_phone_call(arg)
+        result = phone.do_phone_call(arg)
+        
+        # Update the ActionManager's state based on PhoneCall's result
+        if isinstance(result, dict):
+            if 'prompt' in result:
+                self.prompt = result['prompt']
+            if 'game_state' in result:
+                self.game_state = result['game_state']
+        
+        return result
 
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
         os.system("clear")
 
     def default(self, line):
+        # Command doesn't exist at all
         print(
             "WTF dat mean, ain't no command like dat. Jack in 'help or '?' for the 411 on the specs, omae"
         )

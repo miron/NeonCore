@@ -3,6 +3,9 @@ from ..managers import ActionManager
 
 
 class PhoneCall:
+    def __init__(self, char_mngr):
+        self.char_mngr = char_mngr
+        
     def do_phone_call(self, args):
         """Yo, chummer! You wanna make some eddies and climb the ranks?
         You wanna be a player in Night City? Type 'phone_call' and let's get
@@ -25,7 +28,9 @@ class PhoneCall:
         )
         print("You got a bad feeling about this. Like, real bad.")
         print("Yo chummer, you wanna roll for human perception check? ")
-        self.prompt = (
-            f"Double-hit the tab to see what's new!\n" f"{ActionManager.prompt}"
-        )
-        self.game_state = "before_perception_check"
+        
+        # Return the new prompt and game state to be set by ActionManager
+        return {
+            "prompt": f"Double-hit the tab to see what's new!\n{ActionManager.prompt}",
+            "game_state": "before_perception_check"
+        }
