@@ -8,10 +8,10 @@ class TestCommandManager(unittest.TestCase):
 
     def test_get_check_command(self):
         self.command_manager.game_state = "before_perception_check"
-        self.assertIsNone(self.command_manager.get_check_command())
+        self.assertEqual(self.command_manager.get_check_command(self.command_manager.game_state), [])
         self.command_manager.game_state = None
-        self.assertIsNone(self.command_manager.get_check_command())
-        self.assertRaises(AttributeError, self.command_manager.get_check_command)
+        self.assertEqual(self.command_manager.get_check_command(self.command_manager.game_state), [])
+        self.assertRaises(TypeError, self.command_manager.get_check_command)
 
 
 if __name__ == "__main__":

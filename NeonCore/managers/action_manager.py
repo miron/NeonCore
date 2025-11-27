@@ -9,6 +9,15 @@ from argparse import Action
 # third party imports
 import logging
 
+# Patch pyreadline3 for Python 3.14 compatibility
+try:
+    import readline
+    if not hasattr(readline, 'backend'):
+        # Add missing backend attribute for Python 3.14+ compatibility
+        readline.backend = 'pyreadline3'
+except ImportError:
+    pass  # readline not available (fine on non-Windows or without pyreadline3)
+
 # Local imports
 from ..utils import wprint
 from ..ai_backends.ollama import OllamaBackend
@@ -140,7 +149,7 @@ class ActionManager(Cmd):
         Returns:
             None
         """
-        os.system("clear")
+        os.system("cls" if os.name == "nt" else "clear")
         self.prompt = (
             f"What's the deal, choomba? Give me the word:\n" f"{ActionManager.prompt}"
         )
@@ -269,7 +278,7 @@ class ActionManager(Cmd):
         
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
-        os.system("clear")
+        os.system("cls" if os.name == "nt" else "clear")
 
     def default(self, line):
         # Command doesn't exist at all

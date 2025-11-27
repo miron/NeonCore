@@ -1,7 +1,21 @@
 __pycache__/
+*.pyc
+*.pyo
+*.egg-info/
 .env
+
 # Logs
-+.log
+*.log
 debug.log
 logs/
-venv
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

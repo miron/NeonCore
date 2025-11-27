@@ -18,19 +18,7 @@ Built with Python, NeonCore delivers a classic RPG experience inspired by the Cy
 
 ### Installation & Usage
 
-#### Standard Installation (Linux/MacOS)
-1. Clone the repository to your local machine
-2. Install using pip:
-   ```bash
-   pip install -e .
-   ```
-3. Run the game:
-   ```bash
-   python run_game.py
-   ```
-
-#### Windows with msys2
-
+#### Windows (PowerShell)
 1. Create fresh virtual environment:
 ```powershell
 python -m venv venv
@@ -61,6 +49,17 @@ python -m pip install openai --no-build-isolation --only-binary :all:
 python run_game.py
 ```
 
+#### Standard Installation (Linux/MacOS)
+1. Clone the repository to your local machine
+2. Install using pip:
+   ```bash
+   pip install -e .
+   ```
+3. Run the game:
+   ```bash
+   python run_game.py
+   ```
+
 ### AI Chat Features
 
 NeonCore includes an AI chat system that lets you interact with NPCs. The system supports two backends:
@@ -83,7 +82,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 
 2. Download the smollm2 model (271MB):
 ```bash
-ollama pull smollm2:135
+ollama pull smollm2:135m
 ```
 
 3. Set Ollama host (default is http://localhost:11434):
@@ -106,3 +105,57 @@ the black market. Heard about this new neural booster that's supposed to
 jack your processing speed through the roof. But watch yourself - corps
 are crackin' down hard on unauthorized tech these days.
 ```
+
+## Future Development Roadmap
+
+To expand NeonCore into a more substantial text RPG (similar to Sindome), the following components would need to be developed:
+
+1. **Command System**
+   - More sophisticated command parser with aliases
+   - Command help system with examples
+   - Support for compound commands and macros
+
+2. **Game State Management**
+   - Proper database for persistent game state
+   - Save/load functionality
+   - Transaction system for atomic operations
+
+3. **World Model**
+   - Hierarchical location system
+   - Dynamic environment with time-based events
+   - Weather and environmental effects
+   - Object interaction framework
+
+4. **Character System**
+   - More detailed character stats and progression
+   - Skills system with advancement
+   - Character customization
+   - Inventory management
+
+5. **NPC System**
+   - Advanced NPC AI using ML models
+   - Conversation and relationship tracking
+   - NPC schedules and routines
+   - Faction system with reputation
+
+6. **Combat System**
+   - Turn-based combat mechanics
+   - Weapon and armor simulation
+   - Status effects and conditions
+   - Tactical options
+
+7. **Quest System**
+   - Quest tracking and progression
+   - Branching quest paths
+   - Dynamic quest generation
+
+8. **User Interface Improvements**
+   - Color-coded output
+   - Status bar/HUD elements
+   - Mini-map visualization
+   - Help system
+
+9. **Networking**
+   - Multi-user support
+   - Chat/communication systems
+   - Player interaction mechanics
