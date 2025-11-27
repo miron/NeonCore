@@ -97,25 +97,28 @@ class World:
         """Move to another location. Usage: go [direction]"""
         direction = direction.lower()
         current_location = self.locations[self.player_position]
-        if direction in current_location["exits"]:
+        try:
             self.player_position = current_location["exits"][direction]
 
-            # NPC encounter logics
-            if 'npcs' in current_location:
-                # Random chance for encounter
+            # NPC encounter logic using EAFP
+            try:
+                npcs = current_location['npcs']
+                # Random chance for  encounter
                 if random.random() < current_location.get('encounter_chance', 0.3):
-                    npc_name = random.choice(current_location['npcs'])
+                    npc_name = random.choice(npcs)
                     # Get actual NPC object from character manager
-                    try:
-                        npc = next((npc for npc in self.char_mngr.npcs
-                              if npc.handle.lower() == npc_name.lower()), None)
-                        if npc:
-                            print(f"You've encountered {npc.handle}!")
-                            SkillCheckCommand(self.char_mngr.player, npc=npc)
-                    except Exception as e:
-                        print(f"Error finding NPC: {e}")
+                    npc = next((npc for npc in self.char_mngr.npcs
+                          if npc.handle.lower() == npc_name.lower()), None)
+                    if npc:
+                        print(f"You've encountered {npc.handle}!")
+                        SkillCheckCommand(self.char_mngr.player, npc=npc)
+            except KeyError:
+                pass  # No NPCs in this location
+            except Exception as e:
+                print(f"Error during NPC encounter: {e}")
+                
             self.do_look(None)  # Automatically look after moving
-        else:
+        except KeyError:
             print(f"You can't go {direction} from here.")
 
     def do_quit(self, arg):
@@ -149,14 +152,16 @@ class Map:
 def check_for_npc_encounter(self) -> bool:
     """Check if player encounters an NPC in current location"""
     location = self.locations[self.player_position]
-    if 'npcs' in location and random.random() < location.get('encounter_chance', 0):
-        return True
-    return False
+    try:
+        return random.random() < location.get('encounter_chance', 0) and bool(location['npcs'])
+    except KeyError:
+        return False
 
 def get_location_npc(self):
     """Get a random NPC from current location"""
     location = self.locations[self.player_position]
-    if 'npcs' in location:
+    try:
         npc_id = random.choice(location['npcs'])
         return self.char_mngr.get_npc(npc_id)  # assuming this exists
-    return None
+    except KeyError:
+        return None

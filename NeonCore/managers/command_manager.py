@@ -26,20 +26,22 @@ class CommandManager:
     def get_check_command(self, game_state):
         """Return list of command names for current game state"""
         logging.debug(f"Getting commands for state: {game_state}")
-        if game_state in self.commands:
+        try:
             commands = self.commands[game_state]
             # Strip class name and 'do_' prefix
             command_names = [cmd.split('.')[-1].replace('do_', '') for cmd in commands]
             logging.debug(f"Returning commands: {command_names}")
             return command_names
-        return []
+        except KeyError:
+            return []
 
     def get_completion(self, game_state, command):
         """Get completion method for a command in current state"""
-        if game_state in self.completions:
+        try:
             return [comp for comp in self.completions[game_state]
                    if command in comp]
-        return []
+        except KeyError:
+            return []
 
 
     def completenames(self, text, line, begidx, endidx):

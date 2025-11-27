@@ -4,7 +4,7 @@ requires = ["setuptools-scm"]
 [project]
 name = "NeonCore"
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.14"
 authors = [{ name = "Miron Tewfik", email = "miron@street.yoga" }]
 dependencies = ["openai"]
 
@@ -17,6 +17,7 @@ packages = [
     "NeonCore.story_modules",
     "NeonCore.utils",
     "NeonCore.ai_backends",
+    "NeonCore.game_mechanics",
 ]
 
 [project.optional-dependencies]
