@@ -61,11 +61,13 @@ class ActionManager(Cmd):
 
     def select_available_backend(self):
         """Auto-select the first available backend"""
-        for name, backend in self.ai_backends.items():
-            if backend.is_available():
-                print(f"Using {name} AI backend")
-                return backend
-        raise RuntimeError("No AI backend available")
+        try:
+            name, backend = next((name, backend) for name, backend in self.ai_backends.items() 
+                                if backend.is_available())
+            print(f"Using {name} AI backend")
+            return backend
+        except StopIteration:
+            raise RuntimeError("No AI backend available")
 
     def do_switch_ai(self, arg):
         """Switch between available AI backends (ollama/grok)"""
@@ -216,12 +218,12 @@ class ActionManager(Cmd):
 
         # Print defense and weapons
         for defence, weapon in zip(data['defence'], data['weapons']):
-            print(defence.ljust(35) + weapon.ljust(45))
+            print(f"{defence:<35}{weapon:<45}")
 
         # Print abilities, cyberware, and gear
         print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
         for ability, ware, gear in zip(data['abilities'], data['cyberware'], data['gear']):
-            print(ability.ljust(28) + ware.ljust(28) + gear.ljust(24))
+            print(f"{ability:<28}{ware:<28}{gear:<24}")
 
     def do_rap_sheet(self, arg):
         """Display character background"""

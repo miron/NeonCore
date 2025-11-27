@@ -46,9 +46,10 @@ class CharacterManager:
 
     def roles(self, text=""):
         """Return list of available character roles"""
-        roles = [c.role.lower() for c in self.characters.values()]
+        text_lower = text.lower()  # Hoist method call outside loop
+        roles = [c.role.lower() for c in self.characters.values() if c.role.lower().startswith(text_lower)]
         logging.debug(f"Available roles: {roles}")
-        return [r for r in roles if r.startswith(text.lower())]
+        return roles
 
     def get_player_sheet_data(self):
         """Prepares character sheet data without formatting"""
