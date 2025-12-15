@@ -7,10 +7,12 @@ import logging
 from NeonCore.managers.action_manager import ActionManager
 
 from .character import Character
+from .trait_manager import TraitManager
 
 
 class CharacterManager:
     def __init__(self):
+        self.trait_manager = TraitManager()
         self.characters = {}
         self.load_characters()
         self.player = None
@@ -42,7 +44,10 @@ class CharacterManager:
             )
             with open(ascii_art_path, "r", encoding="utf-8") as f:
                 char["ascii_art"] = f.read()
-            self.characters[char["char_id"]] = Character(**char)
+            # Generate a random soul for now if not in JSON
+            # In future, we can load from JSON if we persist it
+            soul = self.trait_manager.generate_random_soul()
+            self.characters[char["char_id"]] = Character(**char, digital_soul=soul)
 
     def roles(self, text=""):
         """Return list of available character roles"""

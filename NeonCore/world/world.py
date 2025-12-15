@@ -1,11 +1,13 @@
 from typing import Dict
 import random
 from ..game_mechanics import SkillCheckCommand
+from ..utils import wprint
 
 
 class World:
-    def __init__(self, char_mngr): # Add character manager as parameter
-        self.char_mngr = char_mngr # Store reference to character manager
+    def __init__(self, char_mngr, npc_manager):
+        self.char_mngr = char_mngr
+        self.npc_manager = npc_manager
         self.locations: Dict[str, Dict] = self._init_locations()
         self.player_position = "start_square"
         self.inventory = []
@@ -79,19 +81,42 @@ class World:
         }
 
     def do_look(self, arg):
-        """Look around your current location."""
+        """Look around your current location or at a specific character. Usage: look [target]"""
+        # Specific target lookup
+        if arg:
+            # Check NPCs
+            target_npc = self.npc_manager.get_npc(arg)
+            if target_npc and target_npc.location == self.player_position:
+                print(f"\n\033[1;36m=== {target_npc.name.upper()} ({target_npc.role}) ===\033[0m")
+                wprint(target_npc.description)
+                if target_npc.stats_block:
+                    print(target_npc.stats_block)
+                return
+            else:
+                print(f"You don't see '{arg}' here.")
+                return
+
+        # Location lookup
         location = self.locations[self.player_position]
         print(location["description"])
         if location["ascii_art"]:
             print(location["ascii_art"])
             
+        # List NPCs currently in this location
+        visible_npcs = self.npc_manager.get_npcs_in_location(self.player_position)
+        if visible_npcs:
+            # unique list to avoid duplicates from aliases
+            unique_npcs = {npc.name: npc for npc in visible_npcs}.values()
+            npc_names = [f"\033[1;35m{npc.name} ({npc.role})\033[0m" for npc in unique_npcs]
+            print(f"\nVisible Characters: {', '.join(npc_names)}")
+            
         # Show available exits
         exits = location["exits"]
         if exits:
             exit_list = ", ".join(exits.keys())
-            print(f"Exits: {exit_list}")
+            print(f"\nExits: {exit_list}")
         else:
-            print("There are no obvious exits.")
+            print("\nThere are no obvious exits.")
 
     def do_go(self, direction):
         """Move to another location. Usage: go [direction]"""

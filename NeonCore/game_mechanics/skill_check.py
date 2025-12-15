@@ -61,6 +61,11 @@ class SkillCheckCommand(Singleton):
             for s in self._skillchecks:
                 if isinstance(s, SkillCheckCommand) and not isinstance(s, HumanPerceptionCheckCommand):
                     s.check_skill("brawling", self.npc.skill_total("brawling"), self.player)
+        else:
+             # Notify if trying to use combat skill with no target
+             for s in self._skillchecks:
+                if isinstance(s, SkillCheckCommand) and not isinstance(s, HumanPerceptionCheckCommand):
+                    print("There's no one here to brawl with, choomba.")
 
     def set_difficulty(self, difficulty_level: str) -> int:
         """
@@ -88,21 +93,25 @@ class SkillCheckCommand(Singleton):
     ) -> int:
         """Perform a skill check using a specified skill and difficulty
         level.
-
-        Args:
-        luck_points (int): The number of luck points to use for the
-        check.
         """
-        while True:
-            luck_points = int(
-                input(f"Use LUCK {player.lucky_pool}" f'/{player.stats["luck"]} ')
-            )
-            if luck_points > player.lucky_pool:
-                print("Not enough luck points!")
-            else:
-                player.lucky_pool -= luck_points
-                print(f"Lucky Pool: {player.lucky_pool}")
-                break
+        luck_points = 0
+        if player.lucky_pool > 0:
+            while True:
+                try:
+                    user_in = input(f"Use LUCK ({player.lucky_pool}/{player.stats['luck']}): ").strip()
+                    if not user_in:
+                        luck_points = 0
+                        break
+                    val = int(user_in)
+                    if 0 <= val <= player.lucky_pool:
+                        luck_points = val
+                        player.lucky_pool -= luck_points
+                        print(f"Lucky Pool: {player.lucky_pool}")
+                        break
+                    print("Not enough luck points or invalid amount!")
+                except ValueError:
+                    print("Please enter a valid number.")
+        
         d10_roll = DiceRoller.d10()
         skill_check_total = player.skill_total(skill_name) + d10_roll + luck_points
         if d10_roll == 10:
@@ -150,6 +159,9 @@ class SkillCheckCommand(Singleton):
             
         command_class = skill_commands.get(skill_name)
         if command_class is not None:
+            # Clear previous skill checks to prevent re-execution of old commands (Singleton issue)
+            self._skillchecks = []
+            
             command = command_class(self.char_mngr.player)
             command.char_mngr = self.char_mngr
             self.register(command)
@@ -174,19 +186,33 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
 
     # TODO: Move prints to story, use superclass template where applicable
     def check_skill(self):
+        # Prevent repetitive checks
+        history_key = "Checked Lazlo Call"
+        if getattr(self.player, 'digital_soul', None) and any(history_key in e for e in self.player.digital_soul.recent_events):
+             wprint("\nYou scan your surroundings, attempting to catch a vibe. Just the hum of neon and the distant wail of sirens. Nothing out of the ordinary right now.")
+             return
+
         difficulty_value = self.check_difficulty("lazlo")
         human_perception = super().check_skill(
             "human_perception", difficulty_value, self.player
         )
+        
+        msg = ""
         if human_perception > difficulty_value:
+            msg = "Suspects foul play regarding Lazlo."
             wprint(
                 "Yo, you're suspecting something's off. You're right, "
                 "Lazlo's being held at gunpoint and is being forced to "
                 "lure you into a trap."
             )
         else:
+            msg = "Missed cues on Lazlo call."
             print("You didn't suspect anything unusual with the phone call.")
         print("Lazlo hangs up before you can ask any more questions.")
+        
+        # Log event to prevent repetition
+        if getattr(self.player, 'digital_soul', None):
+             self.player.digital_soul.recent_events.append(f"{history_key}: {msg}")
 
 
 class NPCEncounterCommand(SkillCheckCommand):

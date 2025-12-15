@@ -14,29 +14,36 @@ class HelpSystem:
             # General help texts available in all states
             "general": {
                 "help": "Displays help information for available commands. Usage: help [command]",
-                "quit": "Exits the game. Usage: quit",
-                "talk": "Talk to NPCs using AI-generated responses. Usage: talk [your message]",
-                "look": "Examine your surroundings. Usage: look"
+                "quit": "Jack out. Exit the game.",
+                "talk": "Initiate conversation with an NPC. Usage: talk [name]",
+                "look": "Examine your surroundings or specific targets. Usage: look [target]",
             },
             
             # State-specific help texts
             "choose_character": {
                 "choose_character": "Select your character from available roles. Usage: choose_character [role]",
                 "switch_ai": "Switch between available AI backends (grok/ollama). Usage: switch_ai [backend_name]",
-                "_intro": "Welcome to NeonCore! You need to choose a character to begin. Type 'help choose_character' for details."
+                "_intro": "Welcome to NeonCore! Choose a character to begin. Hit TAB to see available commands."
             },
             
             "character_chosen": {
-                "player_sheet": "Displays your character stats and abilities. Usage: player_sheet",
-                "rap_sheet": "Displays your character's background and life story. Usage: rap_sheet",
-                "phone_call": "Answer the incoming call to start your adventure. Usage: phone_call",
-                "_intro": "Character selected! Check your stats with player_sheet, view your background with rap_sheet, or start the game with phone_call."
+                "whoami": "View Identity Dashboard (Stats, Bio, Soul). Usage: whoami [stats|bio|soul]",
+                "reflect": "Process events and evolve your Digital Soul. Usage: reflect",
+                "answer": "Answer the incoming holo-call from Lazlo. Usage: answer",
+                "_intro": "Character selected! Incoming Holo-Call... Type 'answer' to pick up."
             },
             
             "before_perception_check": {
                 "use_skill": "Use one of your character's skills. Usage: use_skill [skill_name]",
                 "go": "Move in a direction. Usage: go [north/east/south/west]",
-                "_intro": "You're now in the game world. Use 'look' to see your surroundings, 'go' to move around, and 'use_skill' to perform actions."
+                "_intro": "You're in the game world. Explore and survive. Hit TAB to see available commands."
+            },
+            
+            "conversation": {
+                "say": "Speak to the character. Usage: say [message] (or just type the message)",
+                "take": "Attempt to take an object. Usage: take [item]",
+                "bye": "End the conversation. Usage: bye",
+                "_intro": "Conversation Mode. Type your message or use commands. Hit TAB for options."
             }
         }
     

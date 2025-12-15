@@ -31,6 +31,6 @@ class PhoneCall:
         
         # Return the new prompt and game state to be set by ActionManager
         return {
-            "prompt": f"Double-hit the tab to see what's new!\n{ActionManager.prompt}",
+            "prompt": f"Hit TAB to see what's new!\n{ActionManager.prompt}",
             "game_state": "before_perception_check"
         }

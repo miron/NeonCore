@@ -1,7 +1,7 @@
 """Character Creator"""
 
 import random
-
+from .trait_manager import DigitalSoul
 
 class Character:
     def __init__(
@@ -18,6 +18,8 @@ class Character:
         cyberware,
         gear,
         ascii_art,
+        digital_soul=None,
+        inventory=None, # New dynamic inventory
     ):
         self.char_id = char_id
         self.handle = handle
@@ -31,6 +33,8 @@ class Character:
         self.cyberware = cyberware
         self.gear = gear
         self.ascii_art = ascii_art
+        self.digital_soul = digital_soul if digital_soul else DigitalSoul()
+        self.inventory = inventory if inventory else []
         self.lucky_pool = self.stats["luck"]
         self.x = None
         self.y = None
