@@ -67,50 +67,37 @@ python run_game.py
    ```
 
 ### AI Chat Features
+NeonCore requires an AI backend to power NPC interactions and the "Digital Soul" system.
 
-NeonCore includes an AI chat system that lets you interact with NPCs. The system supports two backends:
+#### Option A: Gemini (Cloud - Recommended)
+This is the default and most powerful option.
+1. Get an API Key from [Google AI Studio](https://aistudio.google.com/).
+2. Set it in your `.env` file or environment:
+   ```bash
+   GEMINI_API_KEY="your-api-key-here"
+   ```
 
-#### Using Grok API
-Set up your environment variables:
-```bash
-# Windows PowerShell
-$env:XAI_API_KEY="your-api-key-here"
-
-# Linux/MacOS
-export XAI_API_KEY="your-api-key-here"
-```
-
-#### Using Ollama
-1. Install Ollama:
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-2. Download the smollm2 model (271MB):
-```bash
-ollama pull smollm2:135m
-```
-
-3. Set Ollama host (default is http://localhost:11434):
-```bash
-# Windows PowerShell
-$env:OLLAMA_HOST="http://localhost:11434"
-
-# Linux/MacOS
-export OLLAMA_HOST="http://localhost:11434"
-```
-
+#### Option B: Ollama (Local - Private)
+Run the game offline using your own GPU.
+1. Install [Ollama](https://ollama.com/).
+2. Pull a model (e.g., Mistral or Llama3):
+   ```bash
+   ollama pull mistral
+   ```
+3. Update `config.py` or sets environment variables:
+   ```bash
+   OLLAMA_MODEL="mistral"
+   OLLAMA_HOST="http://localhost:11434"
+   ```
+   
 ### In-Game Chat
-
-Use the `talk` command to chat with NPCs. For example:
-
-```
-ᐸ/> talk Hey Judy, what's the word on the street about the latest cyberware?
-Judy: Hey there, V! Word on the street is there's some nova chrome hittin'
-the black market. Heard about this new neural booster that's supposed to
-jack your processing speed through the roof. But watch yourself - corps
-are crackin' down hard on unauthorized tech these days.
-```
+1. **Approach NPC**: Type `talk [NPC Name]` (e.g., `talk Lenard`).
+2. **Chat**: Just type natural text.
+   ```
+   You -> Lenard > Where is the money?
+   Lenard: (Sweating) look, I don't have it all...
+   ```
+3. **Commands**: Type `bye` to exit, or `take [item]` to grab things mid-conversation.
 
 ## Future Development Roadmap
 
