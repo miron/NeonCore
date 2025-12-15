@@ -6,7 +6,7 @@ name = "NeonCore"
 dynamic = ["version"]
 requires-python = ">=3.14"
 authors = [{ name = "Miron Tewfik", email = "miron@street.yoga" }]
-dependencies = ["openai"]
+dependencies = ["openai", "google-generativeai", "python-dotenv"]
 
 [tool.setuptools]
 packages = [

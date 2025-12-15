@@ -29,9 +29,15 @@ python -m venv venv
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-3. Activate virtual environment:
-```powershell
-./venv/bin/Activate.ps1
+3.### Activation
+*   **Windows (PowerShell):** `.\venv\Scripts\Activate.ps1`
+*   **Windows (CMD):** `.\venv\Scripts\activate.bat`
+*   **Linux/Mac:** `source venv/bin/activate`
+
+> **Note:** If you encounter an error about scripts being disabled or "not digitally signed", run this in your PowerShell terminal before activating:
+> ```powershell
+> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+> ```
 ```
 
 4. Upgrade pip:

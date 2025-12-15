@@ -21,7 +21,7 @@ except ImportError:
 # Local imports
 from ..utils import wprint
 from ..ai_backends.ollama import OllamaBackend
-from ..ai_backends.grok import GrokBackend
+from ..ai_backends.gemini import GeminiBackend
 
 
 class ActionManager(Cmd):
@@ -56,7 +56,7 @@ class ActionManager(Cmd):
         self.help_system = HelpSystem()
 
         # Initialize AI backend
-        self.ai_backends = {"grok": GrokBackend(), "ollama": OllamaBackend()}
+        self.ai_backends = {"gemini": GeminiBackend(), "ollama": OllamaBackend()}
         self.current_backend = self.select_available_backend()
 
     def select_available_backend(self):
@@ -70,7 +70,7 @@ class ActionManager(Cmd):
             raise RuntimeError("No AI backend available")
 
     def do_switch_ai(self, arg):
-        """Switch between available AI backends (ollama/grok)"""
+        """Switch between available AI backends (ollama/gemini)"""
         if arg not in self.ai_backends:
             print(f"Available backends: {', '.join(self.ai_backends.keys())}")
             return
@@ -85,7 +85,7 @@ class ActionManager(Cmd):
 
     def complete_switch_ai(self, text, line, begidx, endidx):
         """Complete AI backend options"""
-        available_backends = list(self.ai_backends.keys())  # ['grok', 'ollama']
+        available_backends = list(self.ai_backends.keys())  # ['gemini', 'ollama']
         logging.debug(f"Available AI backends: {available_backends}")
         return [backend for backend in available_backends if backend.startswith(text)]
 
