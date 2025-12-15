@@ -210,37 +210,53 @@ class ActionManager(Cmd):
             return present_npcs
         return [name for name in present_npcs if name.lower().startswith(text.lower())]
 
-    def do_choose_character(self, arg=None):
-        """Allows the player to choose a character role."""
-        if arg not in self.char_mngr.roles():
-            characters_list = [
-                f"{character.handle} ({character.role})"
-                for character in self.char_mngr.characters.values()
-            ]
+    def do_choose(self, arg=None):
+        """Allows the player to choose a character by Handle."""
+        allowed_names = self.char_mngr.character_names()
+        
+        # Parse Handle if input is "Handle (Role)"
+        if "(" in arg:
+            arg_handle = arg.split("(")[0].strip()
+        else:
+            arg_handle = arg.strip()
+            
+        arg_lower = arg_handle.lower() if arg_handle else ""
+
+        # Use partial name matching for the input check if strict match fails?
+        # But we want strict matching for the final selection.
+        # Let's extract handles from the allowed_names which are now "Handle (Role)"
+        allowed_handles = [name.split(' (')[0].lower() for name in allowed_names]
+        
+        if arg_lower not in allowed_handles:
+            # Fallback or help
+            characters_list = self.char_mngr.character_names()
             self.columnize(characters_list, displaywidth=80)
-            print(f"To pick yo' ride chummer, type in {self.char_mngr.roles()}.")
+            print(f"To pick yo' ride chummer, type 'choose <handle>'.")
             return
 
-        self.prompt = f"{arg} {ActionManager.prompt}"
-        # Set player character
-        self.char_mngr.set_player(
-            next(c for c in self.char_mngr.characters.values()
-                if c.role.lower() == arg)
+        self.prompt = f"{arg_handle} {ActionManager.prompt}"
+        
+        # Set player character (Match Handle)
+        selected_char = next(
+            c for c in self.char_mngr.characters.values()
+            if c.handle.lower() == arg_lower
         )
+        
+        self.char_mngr.set_player(selected_char)
+
         # Set remaining characters as NPCs
         self.char_mngr.set_npcs(
             [c for c in self.char_mngr.characters.values()
-            if c.role.lower() != arg]
+            if c.char_id != selected_char.char_id]
         )
         print(f"\n\033[1;33m[!] INCOMING HOLO-CALL: Unknown Number (Lazlo)\033[0m")
         print(f"\033[3mType 'answer' to accept the connection...\033[0m")
         
         self.game_state = "character_chosen"
 
-    def complete_choose_character(self, text, line, begidx, endidx):
-        """Complete character roles after 'choose_character' command"""
-        logging.debug(f"Role completion: text='{text}', line='{line}'")
-        return [role for role in self.char_mngr.roles(text)]
+    def complete_choose(self, text, line, begidx, endidx):
+        """Complete character handles after 'choose' command"""
+        return self.char_mngr.character_names(text)
 
     def start_game(self):
         """
@@ -270,8 +286,8 @@ class ActionManager(Cmd):
 
         # Add commands based on specific game state
         if self.game_state == 'choose_character':
-            if 'choose_character' in super().completenames(text, *ignored):
-                base_cmds.append('choose_character')
+            if 'choose' in super().completenames(text, *ignored):
+                base_cmds.append('choose')
 
         elif self.game_state == 'character_chosen':
             if 'answer' in super().completenames(text, *ignored):
@@ -280,7 +296,7 @@ class ActionManager(Cmd):
                 base_cmds.append('look')
         
         elif self.game_state == 'before_perception_check':
-            allowed = ['talk', 'look', 'go', 'inventory', 'whoami', 'reflect', 'use_skill']
+            allowed = ['talk', 'look', 'go', 'inventory', 'whoami', 'reflect', 'use_skill', 'deposit']
             for cmd in allowed:
                 if cmd in super().completenames(text, *ignored):
                     base_cmds.append(cmd)
@@ -333,10 +349,10 @@ class ActionManager(Cmd):
         for defence, weapon in zip(data['defence'], data['weapons']):
             print(f"{defence:<35}{weapon:<45}")
 
-        # Print abilities, cyberware, and gear
-        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17} GEAR {'⌁'*19}")
-        for ability, ware, gear in zip(data['abilities'], data['cyberware'], data['gear']):
-            print(f"{ability:<28}{ware:<28}{gear:<24}")
+        # Print abilities, cyberware (Gear moved to separate command)
+        print(f"ROLE ABILITY {'⌁'*14} CYBERWARE {'⌁'*17}")
+        for ability, ware in zip(data['abilities'], data['cyberware']):
+            print(f"{ability:<28}{ware:<28}")
 
     def _display_rap_sheet(self, arg):
         """Internal method to display character background"""
@@ -436,11 +452,48 @@ class ActionManager(Cmd):
             print(f"Error moving: {e}")
 
     def log_event(self, event):
-        """Log an event to the player's recent_events buffer"""
+        """Log an event to the player's recent_events buffer and trigger passive thoughts"""
         if self.char_mngr.player and self.char_mngr.player.digital_soul:
             self.char_mngr.player.digital_soul.recent_events.append(event)
             # Add some stress for any event (placeholder mechanic)
             self.char_mngr.player.digital_soul.stress = min(100, self.char_mngr.player.digital_soul.stress + 5)
+            
+            # Passive "Intrusive Thoughts" (Chance to trigger)
+            # Only trigger random thoughts if stress is building up or event is significant
+            if random.random() < 0.4: # 40% chance
+                 self._trigger_intrusive_thought(event)
+
+    def _trigger_intrusive_thought(self, event):
+        """Generates and displays a passive intrusive thought"""
+        try:
+            player = self.char_mngr.player
+            soul = player.digital_soul
+            
+            messages = [
+                {
+                    "role": "system",
+                    "content": (
+                         f"You are the inner consciousness of {player.handle} ({player.role}). "
+                         f"Current Stress: {soul.stress}%. Traits: {soul.traits}. "
+                         "Generate a SINGLE, short, gritty intrusive thought about the recent event. "
+                         "It should reflect your internal conflict or reaction. "
+                         "Max 15 words. No quotes."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"Event: {event}"
+                }
+            ]
+            # Use a quick call if possible, or just standard
+            response = self.ai_backend.get_chat_completion(messages)
+            thought = response['message']['content']
+            
+            # Print in grey italics
+            print(f"\033[3;90m{thought}\033[0m")
+            
+        except Exception:
+            pass # Fail silently for passive flavor
 
     def do_reflect(self, arg):
         """
@@ -586,6 +639,38 @@ class ActionManager(Cmd):
         arg = arg.strip().lower()
         player = self.char_mngr.player
         
+        # Default Dashboard View
+        if not arg or arg == 'dashboard':
+            # Header
+            print(f"\n\033[1;36mHID:\033[0m {player.handle} \033[1;36mROLE:\033[0m {player.role}")
+            stats = player.stats
+            print(f"\033[1;36mINT:\033[0m {stats.get('int', 0)} | \033[1;36mREF:\033[0m {stats.get('ref', 0)} | \033[1;36mEMP:\033[0m {stats.get('emp', 0)}")
+            print(f"{'⌁'*60}")
+            
+            # Cyber Stress Bar + Brain Icon
+            current_stress = player.digital_soul.stress
+            max_stress = 100 
+            fill_len = int(30 * (current_stress / max_stress))
+            bar = '█' * fill_len + '░' * (30 - fill_len)
+            color = "\033[1;32m" if current_stress < 50 else "\033[1;33m" if current_stress < 80 else "\033[1;31m"
+            print(f"CYBER STRESS: 🧠 {color}[{bar}] {current_stress}%\033[0m")
+
+            # HOST INSTINCT (The fixed trait of the body)
+            print(f"\n\033[1;35m[ HOST INSTINCT ]\033[0m")
+            print(f"{player.trait if player.trait else 'Survival'}")
+
+            # DIGITAL SOUL (Your True Self)
+            print(f"\n\033[1;36m[ TRUE SELF ]\033[0m")
+            if player.digital_soul.traits:
+                 print(f"{', '.join(player.digital_soul.traits)}")
+            else:
+                 print("(No traits developed yet)")
+
+            # Gear Summary
+            inv_count = len(player.inventory)
+            print(f"\n\033[1;33mGEAR:\033[0m {inv_count} item(s) carried. (Use 'gear' to view)")
+            return
+
         if arg == 'stats':
             self._display_player_sheet(None)
             return
@@ -680,14 +765,45 @@ class ActionManager(Cmd):
         else:
              print("You can't take that.")
 
-    def do_inventory(self, arg):
-        """Check your inventory."""
+    def do_deposit(self, arg):
+        """Deposit the mission item at the drop point."""
+        # 1. Check Location
+        if self.dependencies.world.player_position != "street_corner":
+            print("To a Drop Box? There isn't one here, choom.")
+            return
+
+        # 2. Check Inventory
+        player = self.char_mngr.player
+        briefcase = "Briefcase (Locked)"
+        if briefcase not in player.inventory:
+            print("You have nothing to deposit for the contract.")
+            return
+            
+        # 3. Mission Success Sequence
+        player.inventory.remove(briefcase)
+        print("\n\033[1;32m[ PROCESSING TRANSACTION... ]\033[0m")
+        print("You slide the heavy briefcase into the slot. The machine whirs, scans the biometrics, and chimes.")
+        print(f"\033[1;33m[ CRITICAL SUCCESS ]\033[0m Contract Fulfilled.")
+        print(f"\033[1;36m[+] 5000 EDDIES TRANSFERRED TO {player.handle.upper()}'S ACCOUNT\033[0m")
+        print(f"\033[1;35m[+] LEGEND REPUTATION INCREASED\033[0m")
+        
+        print("\n" + "="*50)
+        print("       M I S S I O N   C O M P L E T E       ")
+        print("="*50)
+        
+        # End or Continue?
+        print("\nYou've survived another night in Night City.")
+        print("The game loop is complete. Feel free to explore, or type 'quit'.")
+        self.log_event(f"COMPLETED MISSION: Delivered the briefcase. Got Paid.")
+
+    def do_gear(self, arg):
+        """Check your gear and inventory."""
         if not self.char_mngr.player:
             return
         inv = self.char_mngr.player.inventory
         if not inv:
             print("You pockets are empty, choom.")
         else:
-            print(f"\n\033[1;36m[ INVENTORY ]\033[0m")
+            print(f"\n\033[1;36m[ GEAR & INVENTORY ]\033[0m")
             for item in inv:
                 print(f"- {item}")

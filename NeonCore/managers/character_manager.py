@@ -56,6 +56,17 @@ class CharacterManager:
         logging.debug(f"Available roles: {roles}")
         return roles
 
+    def character_names(self, text=""):
+        """Return list of available character handles with roles"""
+        text_lower = text.lower()
+        # Return format: "Handle (Role)"
+        names = [
+            f"{c.handle} ({c.role})" 
+            for c in self.characters.values() 
+            if c.handle.lower().startswith(text_lower)
+        ]
+        return names
+
     def get_player_sheet_data(self):
         """Prepares character sheet data without formatting"""
         header = (
@@ -103,11 +114,6 @@ class CharacterManager:
         ]
         ware_list = [row.splitlines() for row in ware_list]
         ware_list = [item for sublist in ware_list for item in sublist]
-        gear_list = (
-            [" ".join(self.player.gear[0].keys())]
-            + [" ".join(row.values()) for row in self.player.gear]
-            + [""]
-        )
 
         return {
             'header': header,
@@ -118,7 +124,6 @@ class CharacterManager:
             'weapons': weapons_list,
             'abilities': ability_list,
             'cyberware': ware_list,
-            'gear': gear_list
         }
             # if ability == ability_list[0]:
             #    ability = "\033[1m" + ability + "\033[0m"

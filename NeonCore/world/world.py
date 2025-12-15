@@ -66,7 +66,7 @@ class World:
             },
             "industrial_zone": {
                 "description": "Massive factories and warehouses dominate this area. The air is thick with smog and the sound of machinery never stops.",
-                "exits": {"south": "dark_alley"},
+                "exits": {"south": "dark_alley", "east": "street_corner"},
                 "ascii_art": """
                 +----------------+
                 | INDUSTRIAL ZN  |
@@ -75,8 +75,22 @@ class World:
                 |  [▮] [▮] [▮]   |
                 +----------------+
                 """,
-                "npcs": ["factory_worker", "gang_member", "corpo_security"],
+                "npcs": ["factory_worker", "corpo_security"], # Removed gang_member to reduce clutter
                 "encounter_chance": 0.5
+            },
+            "street_corner": {
+                "description": "A rain-slicked intersection under a flickering streetlight. A yellow 'NC Express' drop box stands against a graffiti-stained wall.",
+                "exits": {"west": "industrial_zone"},
+                "ascii_art": """
+                +----------------+
+                | STREET CORNER  |
+                |      [BOX]     |
+                |  [ ] [X] [ ]   |
+                |  [ ] [ ] [ ]   |
+                +----------------+
+                """,
+                "npcs": [],
+                "encounter_chance": 0.1
             }
         }
 

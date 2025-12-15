@@ -31,10 +31,18 @@ class Character:
         self.weapons = weapons
         self.role_ability = role_ability
         self.cyberware = cyberware
-        self.gear = gear
+        # self.gear = gear  # Removed in favor of unified inventory
         self.ascii_art = ascii_art
         self.digital_soul = digital_soul if digital_soul else DigitalSoul()
+        
+        # Unified Inventory (Starting Gear + Acquired Items)
         self.inventory = inventory if inventory else []
+        if gear:
+            for item in gear:
+                item_str = f"{item['name']}"
+                if 'notes' in item and item['notes']:
+                    item_str += f" ({item['notes']})"
+                self.inventory.append(item_str)
         self.lucky_pool = self.stats["luck"]
         self.x = None
         self.y = None

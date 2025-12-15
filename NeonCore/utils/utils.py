@@ -17,11 +17,12 @@ class HelpSystem:
                 "quit": "Jack out. Exit the game.",
                 "talk": "Initiate conversation with an NPC. Usage: talk [name]",
                 "look": "Examine your surroundings or specific targets. Usage: look [target]",
+                "gear": "Check your inventory and equipment. Usage: gear",
             },
             
             # State-specific help texts
             "choose_character": {
-                "choose_character": "Select your character from available roles. Usage: choose_character [role]",
+                "choose": "Select your character by Handle. Usage: choose [handle] (e.g. choose mover)",
                 "switch_ai": "Switch between available AI backends (grok/ollama). Usage: switch_ai [backend_name]",
                 "_intro": "Welcome to NeonCore! Choose a character to begin. Hit TAB to see available commands."
             },
