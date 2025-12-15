@@ -21,3 +21,4 @@ ENV/
 *.swo
 
 debug_models.py
+reference/
