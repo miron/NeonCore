@@ -26,6 +26,7 @@ except ImportError:
 from ..utils import wprint
 from ..ai_backends.ollama import OllamaBackend
 from ..ai_backends.gemini import GeminiBackend
+from ..game_mechanics.combat_system import CombatEncounter
 
 
 class ActionManager(Cmd):
@@ -398,13 +399,30 @@ class ActionManager(Cmd):
         self.skill_check.do_use_skill(arg)
         
     def complete_use_skill(self, text, line, begidx, endidx):
-        """Complete skill names for use_skill command"""
-        if self.game_state != 'before_perception_check' or not self.char_mngr.player:
+        """Complete skill names AND targets for use_skill command"""
+        # Update allowed states to match do_use_skill
+        if self.game_state not in ['before_perception_check', 'conversation'] or not self.char_mngr.player:
             return []
+
+        args = line.split()
+        
+        # Determine completion context
+        completing_target = False
+        if len(args) > 2:
+            completing_target = True
+        elif len(args) == 2 and line.endswith(' '):
+            completing_target = True
             
-        skills = self.char_mngr.player.get_skills()
-            
-        return [skill for skill in skills if skill.startswith(text)]
+        if completing_target:
+            # Completing Target (NPCs in location)
+            loc = self.dependencies.world.player_position
+            npcs = self.dependencies.npc_manager.get_npcs_in_location(loc)
+            candidates = [npc.name for npc in npcs]
+            return [name for name in candidates if name.lower().startswith(text.lower())]
+        else:
+            # Completing Skill
+            skills = self.char_mngr.player.get_skills()
+            return [skill for skill in skills if skill.startswith(text)]
         
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
@@ -748,22 +766,66 @@ class ActionManager(Cmd):
             except Exception as e:
                  print(f"Error: {e}")
 
-    def do_take(self, arg):
-        """Take an item from the NPC or environment."""
-        if self.game_state == 'conversation' and hasattr(self, 'conversing_npc'):
-             npc = self.conversing_npc
-             target = arg.lower()
+
+
+    # do_take removed as per user request (replaced by skill interactions)
+    
+    def do_use_skill(self, arg):
+        """Perform a skill check with the specified skill"""
+        # Check if command is allowed in current game state
+        
+        # Determine if we are in conversation to allow using skills on NPCs
+        # Allow use_skill in conversation state for this mechanic
+        allowed_states = ['before_perception_check', 'conversation']
+        if self.game_state not in allowed_states:
+            print("That command isn't available right now, choomba.")
+            return
+
+        if not self.skill_check:
+             print("Skill check system not initialized!")
+             return
              
-             # Hardcoded interaction for the mission
-             if npc.name == "Lenard" and ("briefcase" in target or "case" in target):
-                 print(f"\033[1;32m[SUCCESS] You verify the biometric lock and snag the case.\033[0m")
-                 print("It's heavy. Heavier than simple eddies should be.")
-                 self.char_mngr.player.inventory.append("Briefcase (Locked)")
-                 self.log_event("Took the briefcase from the Dirty Cop.")
+        # Parse arguments to handle targets (e.g. use_skill brawling lenard)
+        parts = arg.split()
+        skill_name = parts[0] if parts else ""
+        target_name = parts[1] if len(parts) > 1 else ""
+        
+        # Special handling for conversation target
+        if self.game_state == 'conversation' and hasattr(self, 'conversing_npc') and not target_name:
+             target_name = self.conversing_npc.name
+        elif target_name:
+             # Just pass it through, SkillCheckCommand should handle lookup if needed 
+             # But likely needs us to find the NPC object or confirm presence.
+             # For now, we pass the name and let the Command handle logic or print errors.
+             pass
+
+        # Execute Skill Check
+        result = self.skill_check.do_use_skill(skill_name, target_name)
+        
+        # Handle Quest Trigger
+        if result == "ambush_trigger":
+             # === TRIGGER AMBUSH ===
+             from ..game_mechanics.combat_system import CombatEncounter
+             
+             squad = self.dependencies.npc_manager.create_dirty_cop_squad()
+             combat = CombatEncounter(self.char_mngr.player, squad)
+             
+             # Revert state temporarily to allow clean combat loop?
+             # Actually CombatEncounter.start_combat() runs its own loop.
+             combat_result = combat.start_combat()
+             
+             if combat_result == "dead":
+                 sys.exit() # Game Over
              else:
-                 print("You don't see that here.")
-        else:
-             print("You can't take that.")
+                 # Post-Combat Cleanup
+                 self.game_state = "before_perception_check"
+                 if hasattr(self, 'original_prompt'):
+                     self.prompt = self.original_prompt
+                 if hasattr(self, 'conversing_npc'):
+                     del self.conversing_npc
+                 
+                 wprint("\nThe adrenaline fades. The briefcase is yours. Now get it to the Drop Point at the Street Corner.")
+
 
     def do_deposit(self, arg):
         """Deposit the mission item at the drop point."""
@@ -795,6 +857,8 @@ class ActionManager(Cmd):
         print("\nYou've survived another night in Night City.")
         print("The game loop is complete. Feel free to explore, or type 'quit'.")
         self.log_event(f"COMPLETED MISSION: Delivered the briefcase. Got Paid.")
+
+
 
     def do_gear(self, arg):
         """Check your gear and inventory."""

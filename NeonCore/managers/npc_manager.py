@@ -53,3 +53,23 @@ class NPCManager:
 
     def get_npcs_in_location(self, location: str) -> List[NPC]:
         return [npc for npc in self.npcs.values() if npc.location == location]
+
+    def create_dirty_cop_squad(self, count=3) -> list:
+        """Spawn a squad of dirty cops for combat"""
+        squad = []
+        for i in range(count):
+             # Create an object that looks like a Character but for combat
+             dirty_cop = NPC(
+                name=f"Dirty Cop #{i+1}",
+                role="Solo",
+                location="combat",
+                description="Corrupt NCPD officer.",
+                # handle argument removed as it's not in dataclass
+             )
+             # Inject combat stats/attributes directly
+             dirty_cop.handle = dirty_cop.name 
+             dirty_cop.hp = 35
+             dirty_cop.sp = 7
+             dirty_cop.weapon_dmg = 4 
+             squad.append(dirty_cop)
+        return squad
