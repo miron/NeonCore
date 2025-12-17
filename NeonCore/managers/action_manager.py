@@ -306,7 +306,7 @@ class ActionManager(Cmd):
         
         elif self.game_state == 'conversation':
             # say is visible here, as per user request
-            allowed = ['say', 'bye', 'take', 'inventory', 'look']
+            allowed = ['say', 'bye', 'take', 'inventory', 'look', 'talk']
             for cmd in allowed:
                 if cmd in super().completenames(text, *ignored):
                     base_cmds.append(cmd)
