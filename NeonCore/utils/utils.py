@@ -1,7 +1,21 @@
 import textwrap
+import random
+
+
+class DiceRoller:
+    @staticmethod
+    def d6(num_of_dice: int) -> int:
+        """Return the sum of rolls of specified number of d6 dice."""
+        return sum(random.randint(1, 6) for _ in range(num_of_dice))
+
+    @staticmethod
+    def d10() -> int:
+        """Return the sum of rolls of specified number of d6 dice."""
+        return random.randint(1, 10)
 
 
 def wprint(text, width=80):
+
     wrapped_text = textwrap.fill(text, width=width)
     print(wrapped_text)
 

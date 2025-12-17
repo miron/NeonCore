@@ -2,21 +2,10 @@ from __future__ import annotations
 import random
 from typing import Optional
 from ..utils import wprint
+from ..utils import DiceRoller
 from ..managers.character_manager import (
     Character,
 )  # Type hint only, circular dependency risk handled at runtime
-
-
-class DiceRoller:
-    @staticmethod
-    def d6(num_of_dice: int) -> int:
-        """Return the sum of rolls of specified number of d6 dice."""
-        return sum(random.randint(1, 6) for _ in range(num_of_dice))
-
-    @staticmethod
-    def d10() -> int:
-        """Return the sum of rolls of specified number of d6 dice."""
-        return random.randint(1, 10)
 
 
 class Singleton:
