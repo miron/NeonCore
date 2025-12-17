@@ -272,13 +272,61 @@ class BrawlingCheckCommand(SkillCheckCommand):
         if "lenard" in target_name.lower():
             print(f"Attempting to grab the briefcase from {target_name}...")
 
-            # Difficulty Check
-            # Use base skill + d10
-            roll = self.player.skill_total("brawling") + DiceRoller.d10()
-            dv = 13  # Standard Brawling defense
+            # Identify Defender (Dirty Cop)
+            defender = next(
+                (c for c in self.char_mngr.npcs if c.handle == "Dirty Cop"), None
+            )
 
-            print(f"Brawling Check (Rolled {roll} vs DV {dv})")
-            if roll >= dv:
+            if not defender:
+                wprint(
+                    "\n[DEBUG] 'Dirty Cop' NPC not found in current session. Using placeholder stats."
+                )
+                # Fallback stats if Dirty Cop isn't loaded (e.g. game not restarted)
+                def_dex = 5
+                def_evasion_lvl = 2
+                def_base = def_dex + def_evasion_lvl
+            else:
+                def_dex = defender.stats["dex"]
+                def_evasion_lvl = defender.skills["evasion"][1]
+                def_base = defender.skill_total("evasion")
+
+            # Attacker Stats
+            att_dex = self.player.stats["dex"]
+            att_brawl_lvl = self.player.skills["brawling"][1]
+            att_base = self.player.skill_total("brawling")
+
+            # Rolls
+            roll_att = DiceRoller.d10()
+            if roll_att == 10:
+                print("Attacker Critical Success! Rolling another one")
+                roll_att += DiceRoller.d10()
+            elif roll_att == 1:
+                print("Attacker Critical Failure! Rolling another one")
+                roll_att -= DiceRoller.d10()
+
+            roll_def = DiceRoller.d10()
+            if roll_def == 10:
+                print("Defender Critical Success! Rolling another one")
+                roll_def += DiceRoller.d10()
+            elif roll_def == 1:
+                print("Defender Critical Failure! Rolling another one")
+                roll_def -= DiceRoller.d10()
+
+            # Totals
+            att_total = att_base + roll_att
+            def_total = def_base + roll_def
+
+            # Display Formula
+            wprint(f"\n[ BRAWLING CHECK: {self.player.handle} vs Lengthy Lenard ]")
+            wprint(
+                f"Attacker Total: (DEX {att_dex} + Skill {att_brawl_lvl} + 1d10 {roll_att}) = {att_total}"
+            )
+            wprint(
+                f"Defender Total: (DEX {def_dex} + Evasion {def_evasion_lvl} + 1d10 {roll_def}) = {def_total}"
+            )
+
+            # Resolution (Defender Wins Ties)
+            if att_total > def_total:
                 wprint(
                     "\n\033[1;32m[SUCCESS] You lunge forward, twisting Lenard's arm and snapping the cord!\033[0m"
                 )
@@ -287,7 +335,7 @@ class BrawlingCheckCommand(SkillCheckCommand):
                 return "ambush_trigger"
             else:
                 wprint(
-                    "\n\033[1;31m[FAILURE] Lenard jerks back. 'Hey! What gives?!'\033[0m"
+                    "\n\033[1;31m[FAILURE] Lenard jerks back, anticipating your move. 'Hey! What gives?!'\033[0m"
                 )
                 return "failed"
 
