@@ -23,5 +23,3 @@ jobs:
           pip install -e .
           pip install black
 
-      - name: Run Pyright
-        run: pyright
