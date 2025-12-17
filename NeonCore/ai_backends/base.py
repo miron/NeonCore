@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class AIBackend(ABC):
     @abstractmethod
     def get_chat_completion(self, messages):
