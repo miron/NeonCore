@@ -268,65 +268,81 @@ class PickPocketCheckCommand(SkillCheckCommand):
 
 class BrawlingCheckCommand(SkillCheckCommand):
     def check_skill(self, target_name=""):
-        # Mission Logic: Grab Briefcase
-        if "lenard" in target_name.lower():
-            print(f"Attempting to grab the briefcase from {target_name}...")
+        if not target_name:
+            print("You assume a fighting stance.")
+            return
 
-            # Identify Defender (Dirty Cop)
-            defender = next(
-                (c for c in self.char_mngr.npcs if c.handle == "Dirty Cop"), None
-            )
+        print(f"Attempting to brawl with {target_name}...")
 
-            if not defender:
-                wprint(
-                    "\n[DEBUG] 'Dirty Cop' NPC not found in current session. Using placeholder stats."
-                )
-                # Fallback stats if Dirty Cop isn't loaded (e.g. game not restarted)
-                def_dex = 5
-                def_evasion_lvl = 2
-                def_base = def_dex + def_evasion_lvl
-            else:
-                def_dex = defender.stats["dex"]
-                def_evasion_lvl = defender.skills["evasion"][1]
-                def_base = defender.skill_total("evasion")
+        # Resolve Target (Lenard -> Dirty Cop alias)
+        target_handle = "Dirty Cop" if "lenard" in target_name.lower() else target_name
 
-            # Attacker Stats
-            att_dex = self.player.stats["dex"]
-            att_brawl_lvl = self.player.skills["brawling"][1]
-            att_base = self.player.skill_total("brawling")
+        # Identify Defender
+        defender = next(
+            (
+                c
+                for c in self.char_mngr.npcs
+                if c.handle.lower() == target_handle.lower()
+            ),
+            None,
+        )
 
-            # Rolls
-            roll_att = DiceRoller.d10()
-            if roll_att == 10:
-                print("Attacker Critical Success! Rolling another one")
-                roll_att += DiceRoller.d10()
-            elif roll_att == 1:
-                print("Attacker Critical Failure! Rolling another one")
-                roll_att -= DiceRoller.d10()
+        if not defender:
+            print(f"Target '{target_name}' not found.")
+            return
 
-            roll_def = DiceRoller.d10()
-            if roll_def == 10:
-                print("Defender Critical Success! Rolling another one")
-                roll_def += DiceRoller.d10()
-            elif roll_def == 1:
-                print("Defender Critical Failure! Rolling another one")
-                roll_def -= DiceRoller.d10()
+        # Skill Names
+        att_skill_name = "brawling"
+        def_skill_name = "evasion"
 
-            # Totals
-            att_total = att_base + roll_att
-            def_total = def_base + roll_def
+        # Attacker Stats
+        att_dex = self.player.stats["dex"]
+        att_skill_lvl = self.player.skills[att_skill_name][1]
+        att_base = self.player.skill_total(att_skill_name)
 
-            # Display Formula
-            wprint(f"\n[ BRAWLING CHECK: {self.player.handle} vs Lengthy Lenard ]")
-            wprint(
-                f"Attacker Total: (DEX {att_dex} + Skill {att_brawl_lvl} + 1d10 {roll_att}) = {att_total}"
-            )
-            wprint(
-                f"Defender Total: (DEX {def_dex} + Evasion {def_evasion_lvl} + 1d10 {roll_def}) = {def_total}"
-            )
+        # Defender Stats
+        def_dex = defender.stats["dex"]
+        if def_skill_name in defender.skills:
+            def_skill_lvl = defender.skills[def_skill_name][1]
+        else:
+            def_skill_lvl = 0
+            
+        def_base = def_dex + def_skill_lvl
 
-            # Resolution (Defender Wins Ties)
-            if att_total > def_total:
+        # Rolls
+        roll_att = DiceRoller.d10()
+        if roll_att == 10:
+            print("Attacker Critical Success! Rolling another one")
+            roll_att += DiceRoller.d10()
+        elif roll_att == 1:
+            print("Attacker Critical Failure! Rolling another one")
+            roll_att -= DiceRoller.d10()
+
+        roll_def = DiceRoller.d10()
+        if roll_def == 10:
+            print("Defender Critical Success! Rolling another one")
+            roll_def += DiceRoller.d10()
+        elif roll_def == 1:
+            print("Defender Critical Failure! Rolling another one")
+            roll_def -= DiceRoller.d10()
+
+        # Totals
+        att_total = att_base + roll_att
+        def_total = def_base + roll_def
+
+        # Display Formula
+        wprint(f"\n[ BRAWLING CHECK: {self.player.handle} vs {defender.handle} ]")
+        wprint(
+            f"Attacker Total: (DEX {att_dex} + {att_skill_name.title()} {att_skill_lvl} + 1d10 {roll_att}) = {att_total}"
+        )
+        wprint(
+            f"Defender Total: (DEX {def_dex} + {def_skill_name.title()} {def_skill_lvl} + 1d10 {roll_def}) = {def_total}"
+        )
+
+        # Resolution (Defender Wins Ties)
+        if att_total > def_total:
+            # Special Outcome for Lenard
+            if "lenard" in target_name.lower():
                 wprint(
                     "\n\033[1;32m[SUCCESS] You lunge forward, twisting Lenard's arm and snapping the cord!\033[0m"
                 )
@@ -334,13 +350,15 @@ class BrawlingCheckCommand(SkillCheckCommand):
                 self.char_mngr.player.inventory.append("Briefcase (Locked)")
                 return "ambush_trigger"
             else:
-                wprint(
+                 wprint(f"\n\033[1;32m[SUCCESS] You strike {defender.handle} strictly!\033[0m")
+        else:
+            if "lenard" in target_name.lower():
+                 wprint(
                     "\n\033[1;31m[FAILURE] Lenard jerks back, anticipating your move. 'Hey! What gives?!'\033[0m"
                 )
-                return "failed"
-
-        # Standard brawling
-        print("You assume a fighting stance.")
+                 return "failed"
+            else:
+                 wprint(f"\n\033[1;31m[FAILURE] {defender.handle} dodges your attack!\033[0m")
 
 
 class RangedCombatCommand:
