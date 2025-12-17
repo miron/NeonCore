@@ -54,7 +54,13 @@ class NPCManager:
         return self.npcs.get(name.lower())
 
     def get_npcs_in_location(self, location: str) -> List[NPC]:
-        return [npc for npc in self.npcs.values() if npc.location == location]
+        seen = set()
+        unique_npcs = []
+        for npc in self.npcs.values():
+            if npc.location == location and id(npc) not in seen:
+                unique_npcs.append(npc)
+                seen.add(id(npc))
+        return unique_npcs
 
     def create_dirty_cop_squad(self, count=3) -> list:
         """Spawn a squad of dirty cops for combat"""
