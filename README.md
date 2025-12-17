@@ -11,8 +11,9 @@ Features:
 - Deep character customization with detailed lifepaths and backgrounds
 - Dynamic skill-based gameplay system
 - Text-based exploration of Night City's various districts
-- Engaging NPC interactions and encounters
+- Engaging NPC interactions and encounters (Combat & Social)
 - Command-line interface with cyberpunk aesthetic
+- Detailed Life Path system including cultural regions, personality, and background
 
 Built with Python, NeonCore delivers a classic RPG experience inspired by the Cyberpunk 2020 tabletop game system. Use your skills, cyber-enhancements, and street smarts to survive and thrive in the dark future of 2045.
 
@@ -114,7 +115,7 @@ To expand NeonCore into a more substantial text RPG (similar to Sindome), the fo
    - Transaction system for atomic operations
 
 3. **World Model**
-   - Hierarchical location system
+   - [x] Hierarchical location system (Implemented)
    - Dynamic environment with time-based events
    - Weather and environmental effects
    - Object interaction framework
@@ -122,7 +123,7 @@ To expand NeonCore into a more substantial text RPG (similar to Sindome), the fo
 4. **Character System**
    - More detailed character stats and progression
    - Skills system with advancement
-   - Character customization
+   - [x] Character customization (Life Path Implemented)
    - Inventory management
 
 5. **NPC System**
@@ -132,10 +133,10 @@ To expand NeonCore into a more substantial text RPG (similar to Sindome), the fo
    - Faction system with reputation
 
 6. **Combat System**
-   - Turn-based combat mechanics
-   - Weapon and armor simulation
+   - [x] Turn-based combat mechanics (Basic Implementation)
+   - [x] Weapon and armor simulation
    - Status effects and conditions
-   - Tactical options
+   - Tactical options (Cover implemented)
 
 7. **Quest System**
    - Quest tracking and progression

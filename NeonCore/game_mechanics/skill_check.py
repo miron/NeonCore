@@ -197,45 +197,6 @@ class HumanPerceptionCheckCommand(SkillCheckCommand):
             self.player.digital_soul.recent_events.append(f"{history_key}: {msg}")
 
 
-class NPCEncounterCommand(SkillCheckCommand):
-    """Class for handling NPC encounters."""
-
-    def do_encounter(self, arg):
-        """Handles the NPC encounter"""
-        self.npc = self.get_random_npc()
-        print(f"You have encountered an NPC: {self.npc.name}")
-        while True:
-            action = input("What would you like to do? (attack/negotiate/run): ")
-            if action == "attack":
-                self.handle_npc_attack()
-                break
-            elif action == "negotiate":
-                self.handle_npc_negotiation()
-                break
-            elif action == "run":
-                self.handle_npc_escape()
-                break
-            else:
-                wprint("Invalid action. Please choose 'attack', 'negotiate', or 'run'.")
-
-    def handle_npc_attack(self):
-        self.perform_check("brawling", "Professional", 0)
-
-    def handle_npc_negotiation(self):
-        self.perform_check("negotiation", "Average", 0)
-
-    def handle_npc_escape(self):
-        self.perform_check("athletics", "Easy", 0)
-
-    def get_random_npc(self):
-        """Returns a random NPC (placeholder)."""
-        pass
-
-    def do_encounter_npc(self, arg):
-        """Encounter an NPC."""
-        pass
-
-
 class PickPocketCheckCommand(SkillCheckCommand):
     def check_skill(self, target_name):
         # Mission Logic: Briefcase is too big
