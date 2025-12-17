@@ -872,30 +872,64 @@ class ActionManager(Cmd):
         result = self.skill_check.do_use_skill(skill_name, target_name)
 
         # Handle Quest Trigger
+        # Handle Quest Trigger
         if result == "ambush_trigger":
-            # === TRIGGER AMBUSH ===
-            from ..game_mechanics.combat_system import CombatEncounter
+            self._trigger_ambush()
 
-            squad = self.dependencies.npc_manager.create_dirty_cop_squad()
-            combat = CombatEncounter(self.char_mngr.player, squad)
-
-            # Revert state temporarily to allow clean combat loop?
-            # Actually CombatEncounter.start_combat() runs its own loop.
-            combat_result = combat.start_combat()
-
-            if combat_result == "dead":
-                sys.exit()  # Game Over
+    def do_take(self, arg):
+        """Take an object from the environment."""
+        # Determine if we are in conversation or before_perception_check
+        # (Both allow 'take' now)
+        
+        # Check argument
+        arg_lower = arg.lower()
+        if "case" in arg_lower: # Matches briefcase, case, suitcase
+             # Check Context: Is Lenard present?
+            current_location = self.dependencies.world.player_position
+            # We can check via npc_manager or just assume if prompt logic led here.
+            # Ideally verification:
+            present_npcs = [n.name.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_location)]
+            
+            if "lenard" in present_npcs:
+                 player = self.char_mngr.player
+                 # Add to inventory
+                 if "Briefcase (Locked)" not in player.inventory:
+                     player.inventory.append("Briefcase (Locked)")
+                     print(f"\n\033[1;32m[SUCCESS] You snatch the Briefcase from Lenard's grasp!\033[0m")
+                     self._trigger_ambush()
+                 else:
+                     print("You already have the briefcase, choom.")
             else:
-                # Post-Combat Cleanup
-                self.game_state = "before_perception_check"
-                if hasattr(self, "original_prompt"):
-                    self.prompt = self.original_prompt
-                if hasattr(self, "conversing_npc"):
-                    del self.conversing_npc
+                 print("There's no briefcase here to take.")
+        else:
+             print("You can't take that.")
 
-                wprint(
-                    "\nThe adrenaline fades. The briefcase is yours. Now get it to the Drop Point at the Street Corner."
-                )
+    def _trigger_ambush(self):
+        """Triggers the scripted ambush event."""
+        # === TRIGGER AMBUSH ===
+        from ..game_mechanics.combat_system import CombatEncounter
+
+        print("\n\033[1;31m[!] SUDDENLY, TIRES SCREECH! A BLACK VAN SLIDES AROUND THE CORNER!\033[0m")
+
+        squad = self.dependencies.npc_manager.create_dirty_cop_squad()
+        combat = CombatEncounter(self.char_mngr.player, squad)
+
+        # CombatEncounter.start_combat() runs its own loop.
+        combat_result = combat.start_combat()
+
+        if combat_result == "dead":
+            sys.exit()  # Game Over
+        else:
+            # Post-Combat Cleanup
+            self.game_state = "before_perception_check"
+            if hasattr(self, "original_prompt"):
+                self.prompt = self.original_prompt
+            if hasattr(self, "conversing_npc"):
+                del self.conversing_npc
+
+            wprint(
+                "\nThe adrenaline fades. The briefcase is yours. Now get it to the Drop Point at the Street Corner."
+            )
 
     def do_deposit(self, arg):
         """Deposit the mission item at the drop point."""
