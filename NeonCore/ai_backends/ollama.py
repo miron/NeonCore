@@ -3,6 +3,7 @@ import urllib.request
 from .base import AIBackend
 from ..config import AI_CONFIG
 
+
 class OllamaBackend(AIBackend):
     def __init__(self):
         self.host = AI_CONFIG["ollama_host"]

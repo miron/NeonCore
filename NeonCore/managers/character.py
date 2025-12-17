@@ -3,6 +3,7 @@
 import random
 from .trait_manager import DigitalSoul
 
+
 class Character:
     def __init__(
         self,
@@ -19,7 +20,7 @@ class Character:
         gear,
         ascii_art,
         digital_soul=None,
-        inventory=None, # New dynamic inventory
+        inventory=None,  # New dynamic inventory
     ):
         self.char_id = char_id
         self.handle = handle
@@ -34,13 +35,13 @@ class Character:
         # self.gear = gear  # Removed in favor of unified inventory
         self.ascii_art = ascii_art
         self.digital_soul = digital_soul if digital_soul else DigitalSoul()
-        
+
         # Unified Inventory (Starting Gear + Acquired Items)
         self.inventory = inventory if inventory else []
         if gear:
             for item in gear:
                 item_str = f"{item['name']}"
-                if 'notes' in item and item['notes']:
+                if "notes" in item and item["notes"]:
                     item_str += f" ({item['notes']})"
                 self.inventory.append(item_str)
         self.lucky_pool = self.stats["luck"]

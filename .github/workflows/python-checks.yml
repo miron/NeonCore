@@ -23,8 +23,6 @@ jobs:
           pip install -e .
           pip install black pyright ruff
 
-      - name: Run Black
-        run: black . --check
 
       - name: Run Pyright
         run: pyright

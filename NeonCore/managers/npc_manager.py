@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 
+
 @dataclass
 class NPC:
     name: str
@@ -9,6 +10,7 @@ class NPC:
     description: str
     dialogue_context: str = ""
     stats_block: str = ""
+
 
 class NPCManager:
     def __init__(self):
@@ -23,7 +25,7 @@ class NPCManager:
             role="Fixer",
             location="industrial_zone",
             description="A middle-aged Fixer with a cybernetic eye and a nervous twitch. He looks uncharacteristically rattled.",
-            dialogue_context="Lazlo is currently being held hostage by dirty cops in the Heywood Industrial Zone. He is desperate but trying to maintain his cool."
+            dialogue_context="Lazlo is currently being held hostage by dirty cops in the Heywood Industrial Zone. He is desperate but trying to maintain his cool.",
         )
         self.npcs["lazlo"] = lazlo
 
@@ -42,7 +44,7 @@ class NPCManager:
             location="industrial_zone",
             description="A hooded man in dark clothes. He keeps looking over his shoulder.",
             dialogue_context="Undercover cop posing as a contact. Holding a briefcase. Nervous.",
-            stats_block=dirty_cop_stats
+            stats_block=dirty_cop_stats,
         )
         # We can alias 'dirty_cop' to Lenard for 'look dirty_cop'
         self.npcs["lenard"] = lenard
@@ -58,18 +60,18 @@ class NPCManager:
         """Spawn a squad of dirty cops for combat"""
         squad = []
         for i in range(count):
-             # Create an object that looks like a Character but for combat
-             dirty_cop = NPC(
+            # Create an object that looks like a Character but for combat
+            dirty_cop = NPC(
                 name=f"Dirty Cop #{i+1}",
                 role="Solo",
                 location="combat",
                 description="Corrupt NCPD officer.",
                 # handle argument removed as it's not in dataclass
-             )
-             # Inject combat stats/attributes directly
-             dirty_cop.handle = dirty_cop.name 
-             dirty_cop.hp = 35
-             dirty_cop.sp = 7
-             dirty_cop.weapon_dmg = 4 
-             squad.append(dirty_cop)
+            )
+            # Inject combat stats/attributes directly
+            dirty_cop.handle = dirty_cop.name
+            dirty_cop.hp = 35
+            dirty_cop.sp = 7
+            dirty_cop.weapon_dmg = 4
+            squad.append(dirty_cop)
         return squad

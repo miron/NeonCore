@@ -5,7 +5,6 @@ from pathlib import Path
 import logging
 
 
-
 from .character import Character
 from .trait_manager import TraitManager
 
@@ -52,7 +51,11 @@ class CharacterManager:
     def roles(self, text=""):
         """Return list of available character roles"""
         text_lower = text.lower()  # Hoist method call outside loop
-        roles = [c.role.lower() for c in self.characters.values() if c.role.lower().startswith(text_lower)]
+        roles = [
+            c.role.lower()
+            for c in self.characters.values()
+            if c.role.lower().startswith(text_lower)
+        ]
         logging.debug(f"Available roles: {roles}")
         return roles
 
@@ -61,8 +64,8 @@ class CharacterManager:
         text_lower = text.lower()
         # Return format: "Handle (Role)"
         names = [
-            f"{c.handle} ({c.role})" 
-            for c in self.characters.values() 
+            f"{c.handle} ({c.role})"
+            for c in self.characters.values()
             if c.handle.lower().startswith(text_lower)
         ]
         return names
@@ -83,8 +86,7 @@ class CharacterManager:
             for key, value in self.player.stats.items()
         ]
         combat_list = [
-            (f"{key:⌁<23}{value:>2}")
-            for key, value in self.player.combat.items()
+            (f"{key:⌁<23}{value:>2}") for key, value in self.player.combat.items()
         ]
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
@@ -101,36 +103,33 @@ class CharacterManager:
             + [" ".join([str(row) for row in self.player.defence.values()])]
         )
         weapons_list = [" ".join(self.player.weapons[0].keys())] + [
-            " ".join([str(val) for val in row.values()])
-            for row in self.player.weapons
+            " ".join([str(val) for val in row.values()]) for row in self.player.weapons
         ]
         ability_list = list(self.player.role_ability.values())
         ability_list = [row.splitlines() for row in ability_list]
         ability_list = [item for sublist in ability_list for item in sublist]
         ware_list = [
-            value
-            for row in self.player.cyberware
-            for key, value in row.items()
+            value for row in self.player.cyberware for key, value in row.items()
         ]
         ware_list = [row.splitlines() for row in ware_list]
         ware_list = [item for sublist in ware_list for item in sublist]
 
         return {
-            'header': header,
-            'stats': stat_list,
-            'combat': combat_list,
-            'skills': skill_list,
-            'defence': defence_list,
-            'weapons': weapons_list,
-            'abilities': ability_list,
-            'cyberware': ware_list,
+            "header": header,
+            "stats": stat_list,
+            "combat": combat_list,
+            "skills": skill_list,
+            "defence": defence_list,
+            "weapons": weapons_list,
+            "abilities": ability_list,
+            "cyberware": ware_list,
         }
-            # if ability == ability_list[0]:
-            #    ability = "\033[1m" + ability + "\033[0m"
-            # if ware == ware_list[0]:
-            #    ware = "\033[1m" + ware + "\033[0m"
-            # if gear == gear_list[0]:
-            #    gear = "\033[1m" + gear + "\033[0m"
+        # if ability == ability_list[0]:
+        #    ability = "\033[1m" + ability + "\033[0m"
+        # if ware == ware_list[0]:
+        #    ware = "\033[1m" + ware + "\033[0m"
+        # if gear == gear_list[0]:
+        #    gear = "\033[1m" + gear + "\033[0m"
 
     def do_rap_sheet(self, arg):
         """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on
