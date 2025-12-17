@@ -152,9 +152,11 @@ class ActionManager(Cmd):
         npc_context = target_npc.dialogue_context
 
         # Switch to Conversation State
+        if self.game_state != "conversation":
+            self.original_prompt = self.prompt
+            
         self.game_state = "conversation"
         self.conversing_npc = target_npc
-        self.original_prompt = self.prompt
         self.prompt = f"\033[1;32mYou -> {npc_name} > \033[0m"
         
         print(f"\n\033[1;35m[ Entering conversation with {npc_name}. Type 'bye' to exit. ]\033[0m")
