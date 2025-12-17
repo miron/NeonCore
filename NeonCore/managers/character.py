@@ -2,6 +2,7 @@
 
 import random
 from .trait_manager import DigitalSoul
+from ..utils import DiceRoller, wprint
 
 
 class Character:
@@ -65,12 +66,94 @@ class Character:
         self.lovers = self.lifepath.get_lovers()
         self.life_goal = self.lifepath.roll("life_goals")
 
+
     def skill_total(self, skill_name):
-        skill_list = self.skills[skill_name]
+        skill_list = self.skills.get(skill_name, [0, 0])
         return sum(skill_list)
+
+    def roll_check(self, defender, skill_name, def_skill_name="evasion"):
+        """
+        Perform an opposed skill check against a defender.
+        Returns dictionary with details: {'result': 'success'|'failure', 'att_total': int, 'def_total': int, ...}
+        """
+        # Attacker Stats
+        att_base = self.skill_total(skill_name)
+        
+        # Defender Stats
+        # Handle defender not having the skill gracefully (default to stat 0, skill 0 -> total 0, or just Ref/Dex?)
+        # For now assuming defender has the skill or default [0,0] from skill_total logic if I update it.
+        # But defender is also a Character instance? Yes.
+        def_base = defender.skill_total(def_skill_name)
+        
+        # Rolls
+        roll_att = DiceRoller.d10()
+        att_crit = None
+        if roll_att == 10:
+            roll_att += DiceRoller.d10()
+            att_crit = "Critical Success"
+        elif roll_att == 1:
+            roll_att -= DiceRoller.d10()
+            att_crit = "Critical Failure"
+            
+        roll_def = DiceRoller.d10()
+        def_crit = None
+        if roll_def == 10:
+            roll_def += DiceRoller.d10()
+            def_crit = "Critical Success"
+        elif roll_def == 1:
+            roll_def -= DiceRoller.d10()
+            def_crit = "Critical Failure"
+            
+        att_total = att_base + roll_att
+        def_total = def_base + roll_def
+        
+        # Output
+        wprint(f"\n[ CHECK: {self.handle} ({skill_name}) vs {defender.handle} ({def_skill_name}) ]")
+        att_breakdown = f"Base {att_base} + Roll {roll_att}"
+        if att_crit:
+            att_breakdown += f" ({att_crit})"
+        wprint(f"Attacker Total: {att_total} ({att_breakdown})")
+        
+        def_breakdown = f"Base {def_base} + Roll {roll_def}"
+        if def_crit:
+            def_breakdown += f" ({def_crit})"
+        wprint(f"Defender Total: {def_total} ({def_breakdown})")
+        
+        if att_total > def_total:
+             wprint(f"Result: {self.handle} WINS!")
+             return {
+                 "result": "success",
+                 "att_total": att_total,
+                 "def_total": def_total
+             }
+        else:
+             wprint(f"Result: {defender.handle} WINS!")
+             return {
+                 "result": "failure",
+                 "att_total": att_total,
+                 "def_total": def_total
+             }
 
     def get_skills(self):
         return list(self.skills.keys())
+
+    def take_damage(self, amount: int, ignore_armor: bool = False):
+        """
+        Apply damage to the character, accounting for armor unless ignored.
+        """
+        effective_damage = amount
+        if not ignore_armor:
+             # Assuming 'sp' is in self.defence
+             armor_sp = self.defence.get("sp", 0)
+             if effective_damage <= armor_sp:
+                 print(f"Armor absorbed the damage! (SP: {armor_sp} vs Damage: {effective_damage})")
+                 return
+             effective_damage -= armor_sp
+
+        # Apply damage to HP
+        self.combat["hp"] -= effective_damage
+        print(f"{self.handle} took {effective_damage} damage! HP Remaining: {self.combat['hp']}")
+
 
 
 class Lifepath:
