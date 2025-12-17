@@ -396,9 +396,7 @@ class ActionManager(Cmd):
         """Internal method to display character background"""
         return self.char_mngr.do_rap_sheet(arg)
 
-    def do_answer(self, arg):
-        """Answer the incoming holo-call from Lazlo."""
-        # Check if command is allowed in current game state
+
 
     def do_answer(self, arg):
         """Answer the incoming holo-call from Lazlo."""
@@ -427,7 +425,8 @@ class ActionManager(Cmd):
     def do_use_skill(self, arg):
         """Perform a skill check with the specified skill"""
         # Check if command is allowed in current game state
-        if self.game_state != "before_perception_check":
+        allowed_states = ["before_perception_check", "conversation"]
+        if self.game_state not in allowed_states:
             print("That command isn't available right now, choomba.")
             return
 
@@ -435,7 +434,28 @@ class ActionManager(Cmd):
             print("Skill check system not initialized!")
             return
 
-        self.skill_check.do_use_skill(arg)
+        # Parse argument: skill_name [target_name]
+        parts = arg.strip().split(maxsplit=1)
+        skill_name = parts[0].lower() if parts else ""
+        target_name = parts[1] if len(parts) > 1 else None
+
+        if skill_name == "brawling":
+            from ..game_mechanics.combat_shells import BrawlingShell
+            if not target_name:
+                print("Brawl with who? yourself? Provide a target.")
+                return
+            
+            # Create and launch the shell
+            shell = BrawlingShell(self.char_mngr.player, target_name)
+            shell.cmdloop()
+            return
+
+        # Fallback to standard skill check for other skills
+        result = self.skill_check.do_use_skill(skill_name, target_name)
+        
+        # Handle Quest Trigger
+        if result == "ambush_trigger":
+            self._trigger_ambush()
 
     def complete_use_skill(self, text, line, begidx, endidx):
         """Complete skill names AND targets for use_skill command"""
@@ -835,46 +855,7 @@ class ActionManager(Cmd):
 
     # do_take removed as per user request (replaced by skill interactions)
 
-    def do_use_skill(self, arg):
-        """Perform a skill check with the specified skill"""
-        # Check if command is allowed in current game state
 
-        # Determine if we are in conversation to allow using skills on NPCs
-        # Allow use_skill in conversation state for this mechanic
-        allowed_states = ["before_perception_check", "conversation"]
-        if self.game_state not in allowed_states:
-            print("That command isn't available right now, choomba.")
-            return
-
-        if not self.skill_check:
-            print("Skill check system not initialized!")
-            return
-
-        # Parse arguments to handle targets (e.g. use_skill brawling lenard)
-        parts = arg.split()
-        skill_name = parts[0] if parts else ""
-        target_name = parts[1] if len(parts) > 1 else ""
-
-        # Special handling for conversation target
-        if (
-            self.game_state == "conversation"
-            and hasattr(self, "conversing_npc")
-            and not target_name
-        ):
-            target_name = self.conversing_npc.name
-        elif target_name:
-            # Just pass it through, SkillCheckCommand should handle lookup if needed
-            # But likely needs us to find the NPC object or confirm presence.
-            # For now, we pass the name and let the Command handle logic or print errors.
-            pass
-
-        # Execute Skill Check
-        result = self.skill_check.do_use_skill(skill_name, target_name)
-
-        # Handle Quest Trigger
-        # Handle Quest Trigger
-        if result == "ambush_trigger":
-            self._trigger_ambush()
 
     def do_take(self, arg):
         """Take an object from the environment."""
