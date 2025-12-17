@@ -267,7 +267,7 @@ class PickPocketCheckCommand(SkillCheckCommand):
 
 
 class BrawlingCheckCommand(SkillCheckCommand):
-    def check_skill(self, target_name):
+    def check_skill(self, target_name=""):
         # Mission Logic: Grab Briefcase
         if "lenard" in target_name.lower():
             print(f"Attempting to grab the briefcase from {target_name}...")
