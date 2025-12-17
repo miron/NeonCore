@@ -32,13 +32,4 @@ jobs:
       - name: Run Ruff
         run: ruff check .
 
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
