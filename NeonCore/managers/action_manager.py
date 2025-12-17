@@ -96,7 +96,9 @@ class ActionManager(Cmd):
         """Complete AI backend options"""
         available_backends = list(self.ai_backends.keys())  # ['gemini', 'ollama']
         logging.debug(f"Available AI backends: {available_backends}")
-        return [backend for backend in available_backends if backend.startswith(text)]
+        return [
+            backend + " " for backend in available_backends if backend.startswith(text)
+        ]
 
     def do_talk(self, arg):
         "Start a conversation with an NPC"
@@ -184,15 +186,7 @@ class ActionManager(Cmd):
                     self.do_say(msg)
         return
 
-    def complete_go(self, text, line, begidx, endidx):
-        """Complete go command with available exits"""
-        current_location = self.dependencies.world.locations[
-            self.dependencies.world.player_position
-        ]
-        exits = list(current_location.get("exits", {}).keys())
-        if not text:
-            return exits
-        return [direction for direction in exits if direction.startswith(text)]
+
 
     def complete_look(self, text, line, begidx, endidx):
         """Complete look command with visible NPC names"""
@@ -204,13 +198,12 @@ class ActionManager(Cmd):
         present_names = list({npc.name for npc in visible_npcs})
 
         if not text:
-            return present_names
-        return [name for name in present_names if name.lower().startswith(text.lower())]
+            return [name + " " for name in present_names]
+        return [
+            name + " " for name in present_names if name.lower().startswith(text.lower())
+        ]
 
-    def complete_talk(self, text, line, begidx, endidx):
-        """Complete talk command with visible NPC names"""
-        # Reuse logic from complete_look as it's the same set of valid targets
-        return self.complete_look(text, line, begidx, endidx)
+
 
     def complete_go(self, text, line, begidx, endidx):
         """Complete go command with available exits"""
@@ -219,8 +212,8 @@ class ActionManager(Cmd):
         ]
         exits = list(current_location.get("exits", {}).keys())
         if not text:
-            return exits
-        return [direction for direction in exits if direction.startswith(text)]
+            return [e + " " for e in exits]
+        return [direction + " " for direction in exits if direction.startswith(text)]
 
     def complete_talk(self, text, line, begidx, endidx):
         """Complete talk command with visible NPC names"""
@@ -232,8 +225,10 @@ class ActionManager(Cmd):
             )
         ]
         if not text:
-            return present_npcs
-        return [name for name in present_npcs if name.lower().startswith(text.lower())]
+            return [n + " " for n in present_npcs]
+        return [
+            name + " " for name in present_npcs if name.lower().startswith(text.lower())
+        ]
 
     def do_choose(self, arg=None):
         """Allows the player to choose a character by Handle."""
@@ -285,7 +280,7 @@ class ActionManager(Cmd):
 
     def complete_choose(self, text, line, begidx, endidx):
         """Complete character handles after 'choose' command"""
-        return self.char_mngr.character_names(text)
+        return [n + " " for n in self.char_mngr.character_names(text)]
 
     def start_game(self):
         """
@@ -365,8 +360,8 @@ class ActionManager(Cmd):
         all_cmds = base_cmds + state_cmds
         logging.debug(f"Combined commands: {all_cmds}")
 
-        # Filter by text prefix
-        matching = [cmd for cmd in all_cmds if cmd.startswith(text)]
+        # Filter by text prefix and append space
+        matching = [cmd + " " for cmd in all_cmds if cmd.startswith(text)]
         logging.debug(f"Final matching commands: {matching}")
 
         return matching
@@ -466,12 +461,14 @@ class ActionManager(Cmd):
             npcs = self.dependencies.npc_manager.get_npcs_in_location(loc)
             candidates = [npc.name for npc in npcs]
             return [
-                name for name in candidates if name.lower().startswith(text.lower())
+                name + " "
+                for name in candidates
+                if name.lower().startswith(text.lower())
             ]
         else:
             # Completing Skill
             skills = self.char_mngr.player.get_skills()
-            return [skill for skill in skills if skill.startswith(text)]
+            return [skill + " " for skill in skills if skill.startswith(text)]
 
     def do_shell(self, arg):
         """Shell commands can be added here prefixed with !"""
@@ -693,7 +690,7 @@ class ActionManager(Cmd):
     def complete_whoami(self, text, line, begidx, endidx):
         """Complete whoami subcommands"""
         subcommands = ["stats", "bio", "soul"]
-        return [s for s in subcommands if s.startswith(text)]
+        return [s + " " for s in subcommands if s.startswith(text)]
 
     def do_whoami(self, arg):
         """
