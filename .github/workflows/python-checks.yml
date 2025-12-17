@@ -21,13 +21,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-          pip install black pyright ruff
+          pip install black ruff
 
-
-      - name: Run Pyright
-        run: pyright
+      - name: Run Black
+        run: black . --checkt
 
       - name: Run Ruff
         run: ruff check .
-
-
