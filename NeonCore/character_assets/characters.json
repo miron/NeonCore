@@ -1170,5 +1170,126 @@
             }
         ],
         "ascii_art": "24_7_ascii_art.txt"
+    },
+    {
+        "handle": "Dirty Cop",
+        "role": "Lawman",
+        "stats": {
+            "int": 3,
+            "ref": 6,
+            "dex": 5,
+            "tech": 2,
+            "cool": 4,
+            "will": 4,
+            "luck": 0,
+            "move": 4,
+            "body": 6,
+            "emp": 3
+        },
+        "combat": {
+            "hp": 35,
+            "seriously_wounded": 18,
+            "death_save": 6
+        },
+        "skills": {
+            "athletics": [
+                5,
+                4
+            ],
+            "brawling": [
+                5,
+                6
+            ],
+            "concentration": [
+                4,
+                2
+            ],
+            "conversation": [
+                3,
+                2
+            ],
+            "drive_land_vehicle": [
+                6,
+                4
+            ],
+            "education": [
+                3,
+                2
+            ],
+            "evasion": [
+                5,
+                2
+            ],
+            "first_aid": [
+                2,
+                2
+            ],
+            "handgun": [
+                6,
+                6
+            ],
+            "human_perception": [
+                3,
+                2
+            ],
+            "interrogation": [
+                4,
+                2
+            ],
+            "local_expert": [
+                3,
+                2
+            ],
+            "perception": [
+                3,
+                6
+            ],
+            "persuasion": [
+                4,
+                6
+            ],
+            "resist_torture_drugs": [
+                4,
+                4
+            ],
+            "shoulder_arms": [
+                6,
+                6
+            ],
+            "stealth": [
+                5,
+                2
+            ]
+        },
+        "defence": {
+            "armor": "Kevlar",
+            "sp": 7
+        },
+        "weapons": [
+            {
+                "name": "Very Heavy Pistol",
+                "dmg": 4,
+                "ammo": 8,
+                "rof": 1,
+                "notes": 16
+            }
+        ],
+        "role_ability": {
+            "name": "Backup",
+            "notes": "Can call for backup."
+        },
+        "cyberware": [
+            {
+                "name": "Radio/Communicator",
+                "notes": "Allows communication w/ other dirty cops"
+            }
+        ],
+        "gear": [
+            {
+                "name": "Very Heavy Pistol Ammo",
+                "notes": "x16"
+            }
+        ],
+        "ascii_art": "dirty_cop_ascii_art.txt"
     }
 ]
