@@ -448,6 +448,11 @@ class ActionManager(Cmd):
             # Resolve target to NPC object
             if self.dependencies.npc_manager: # Check if manager exists
                  target_npc = self.dependencies.npc_manager.get_npc(target_name)
+                 
+                 # Fallback: Check CharacterManager's NPCs (loaded from npcs.json)
+                 if not target_npc:
+                     target_npc = self.char_mngr.get_npc(target_name)
+
                  if not target_npc:
                      # Check if it's "character_chosen" and maybe "brawling lazlo" works even if he's virtual?
                      # But physically we need an object.

@@ -13,9 +13,9 @@ class CharacterManager:
     def __init__(self):
         self.trait_manager = TraitManager()
         self.characters = {}
+        self.npcs = []
         self.load_characters()
         self.player = None
-        self.npcs = []
 
     def get_character_by_id(self, character_id: int) -> Character:
         return self.characters.get(character_id)
@@ -26,27 +26,53 @@ class CharacterManager:
     def set_npcs(self, characters: list[Character]):
         self.npcs = characters
 
-    def get_player(self):
-        return self.player
-
-    def get_npcs(self):
-        return self.npcs
+    def get_npc(self, handle: str) -> Character:
+        for npc in self.npcs:
+            if npc.handle.lower() == handle.lower():
+                return npc
+        return None
 
     def load_characters(self):
-        file_path = Path(__file__).parent.parent / "character_assets/characters.json"
-        with open(file_path) as f:
+        # Load Playable Characters
+        char_path = Path(__file__).parent.parent / "character_assets/characters.json"
+        
+        # Load NPCs
+        npc_path = Path(__file__).parent.parent / "character_assets/npcs.json"
+
+        with open(char_path) as f:
             characters_data = json.load(f)
-        for char in characters_data:
-            char["char_id"] = uuid.uuid4()
-            ascii_art_path = (
-                Path(__file__).parent.parent / f'character_assets/{char["ascii_art"]}'
-            )
-            with open(ascii_art_path, "r", encoding="utf-8") as f:
-                char["ascii_art"] = f.read()
-            # Generate a random soul for now if not in JSON
-            # In future, we can load from JSON if we persist it
-            soul = self.trait_manager.generate_random_soul()
-            self.characters[char["char_id"]] = Character(**char, digital_soul=soul)
+        
+        # Helper to process character data list into Character objects
+        def process_chars(data_list, target_dict=None, target_list=None):
+            for char in data_list:
+                char["char_id"] = uuid.uuid4()
+                # Check if Ascii art exists, otherwise placeholder or skip
+                # Assuming ascii art files for NPCs exist or are managed similarly
+                if "ascii_art" in char:
+                   ascii_path = (
+                       Path(__file__).parent.parent / f'character_assets/{char["ascii_art"]}'
+                   )
+                   if ascii_path.exists():
+                       with open(ascii_path, "r", encoding="utf-8") as f:
+                            char["ascii_art"] = f.read()
+                   else:
+                       char["ascii_art"] = "No Art"
+                
+                soul = self.trait_manager.generate_random_soul()
+                character_obj = Character(**char, digital_soul=soul)
+                
+                if target_dict is not None:
+                    target_dict[character_obj.char_id] = character_obj
+                
+                if target_list is not None:
+                    target_list.append(character_obj)
+
+        process_chars(characters_data, target_dict=self.characters)
+
+        if npc_path.exists():
+            with open(npc_path) as f:
+                npcs_data = json.load(f)
+            process_chars(npcs_data, target_list=self.npcs)
 
     def roles(self, text=""):
         """Return list of available character roles"""

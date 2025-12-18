@@ -20,47 +20,171 @@
             "death_save": 3
         },
         "skills": {
-            "accounting": { "stat": "int", "lvl": 0 },
-            "acting": { "stat": "cool", "lvl": 0 },
-            "athletics": { "stat": "dex", "lvl": 2 },
-            "brawling": { "stat": "dex", "lvl": 6, "dice": "1d6" },
-            "bribery": { "stat": "cool", "lvl": 0 },
-            "bureaucracy": { "stat": "int", "lvl": 0 },
-            "business": { "stat": "int", "lvl": 0 },
-            "composition": { "stat": "int", "lvl": 6 },
-            "conceal_reveal_object": { "stat": "int", "lvl": 0 },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 2 },
-            "criminology": { "stat": "int", "lvl": 0 },
-            "cryptography": { "stat": "int", "lvl": 0 },
-            "deduction": { "stat": "int", "lvl": 0 },
-            "drive_land_vehicle": { "stat": "ref", "lvl": 0 },
-            "education": { "stat": "int", "lvl": 2 },
-            "electronics_security_tech": { "stat": "tech", "lvl": 0 },
-            "evasion": { "stat": "dex", "lvl": 6 },
-            "first_aid": { "stat": "tech", "lvl": 6 },
-            "forgery": { "stat": "tech", "lvl": 0 },
-            "handgun": { "stat": "ref", "lvl": 6 },
-            "human_perception": { "stat": "emp", "lvl": 6 },
-            "interrogation": { "stat": "cool", "lvl": 0 },
-            "library_search": { "stat": "int", "lvl": 0 },
-            "local_expert": { "stat": "int", "lvl": 4 },
-            "melee_weapon": { "stat": "dex", "lvl": 6 },
-            "paramedic": { "stat": "tech", "lvl": 0 },
-            "perception": { "stat": "int", "lvl": 2 },
-            "persuasion": { "stat": "cool", "lvl": 6 },
-            "photography_film": { "stat": "tech", "lvl": 0 },
-            "pick_lock": { "stat": "tech", "lvl": 0 },
-            "pick_pocket": { "stat": "tech", "lvl": 0 },
-            "play_instrument": { "stat": "tech", "lvl": 6 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 0 },
-            "shoulder_arms": { "stat": "ref", "lvl": 0 },
-            "stealth": { "stat": "dex", "lvl": 2 },
-            "streetwise": { "stat": "cool", "lvl": 6 },
-            "tactics": { "stat": "int", "lvl": 0 },
-            "tracking": { "stat": "int", "lvl": 0 },
-            "trading": { "stat": "cool", "lvl": 0 },
-            "wardrobe_and_style": { "stat": "cool", "lvl": 4 }
+            "accounting": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "acting": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 6,
+                "dice": "1d6"
+            },
+            "bribery": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "bureaucracy": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "business": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "composition": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "conceal_reveal_object": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "criminology": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "cryptography": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "deduction": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "drive_land_vehicle": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "electronics_security_tech": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "forgery": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "library_search": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 4
+            },
+            "melee_weapon": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "paramedic": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "photography_film": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_lock": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_pocket": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "play_instrument": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 0
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "tactics": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "tracking": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "wardrobe_and_style": {
+                "stat": "cool",
+                "lvl": 4
+            }
         },
         "defence": {
             "armor": "Light Armorjack",
@@ -137,47 +261,171 @@
             "death_save": 7
         },
         "skills": {
-            "accounting": { "stat": "int", "lvl": 0 },
-            "acting": { "stat": "cool", "lvl": 0 },
-            "athletics": { "stat": "dex", "lvl": 2 },
-            "brawling": { "stat": "dex", "lvl": 6, "dice": "3d6" },
-            "bribery": { "stat": "cool", "lvl": 0 },
-            "bureaucracy": { "stat": "int", "lvl": 0 },
-            "business": { "stat": "int", "lvl": 0 },
-            "composition": { "stat": "int", "lvl": 0 },
-            "conceal_reveal_object": { "stat": "int", "lvl": 8 },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 2 },
-            "criminology": { "stat": "int", "lvl": 0 },
-            "cryptography": { "stat": "int", "lvl": 0 },
-            "deduction": { "stat": "int", "lvl": 0 },
-            "drive_land_vehicle": { "stat": "ref", "lvl": 0 },
-            "education": { "stat": "int", "lvl": 2 },
-            "electronics_security_tech": { "stat": "tech", "lvl": 0 },
-            "evasion": { "stat": "dex", "lvl": 6 },
-            "first_aid": { "stat": "tech", "lvl": 6 },
-            "forgery": { "stat": "tech", "lvl": 0 },
-            "handgun": { "stat": "ref", "lvl": 6 },
-            "human_perception": { "stat": "emp", "lvl": 2 },
-            "interrogation": { "stat": "cool", "lvl": 6 },
-            "library_search": { "stat": "int", "lvl": 0 },
-            "local_expert": { "stat": "int", "lvl": 2 },
-            "melee_weapon": { "stat": "dex", "lvl": 0 },
-            "paramedic": { "stat": "tech", "lvl": 0 },
-            "perception": { "stat": "int", "lvl": 8 },
-            "persuasion": { "stat": "cool", "lvl": 2 },
-            "photography_film": { "stat": "tech", "lvl": 0 },
-            "pick_lock": { "stat": "tech", "lvl": 0 },
-            "pick_pocket": { "stat": "tech", "lvl": 0 },
-            "play_instrument": { "stat": "tech", "lvl": 0 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 6 },
-            "shoulder_arms": { "stat": "ref", "lvl": 6 },
-            "stealth": { "stat": "dex", "lvl": 6 },
-            "streetwise": { "stat": "cool", "lvl": 0 },
-            "tactics": { "stat": "int", "lvl": 6 },
-            "tracking": { "stat": "int", "lvl": 0 },
-            "trading": { "stat": "cool", "lvl": 0 },
-            "wardrobe_and_style": { "stat": "cool", "lvl": 0 }
+            "accounting": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "acting": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 6,
+                "dice": "3d6"
+            },
+            "bribery": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "bureaucracy": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "business": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "composition": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "conceal_reveal_object": {
+                "stat": "int",
+                "lvl": 8
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "criminology": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "cryptography": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "deduction": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "drive_land_vehicle": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "electronics_security_tech": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "forgery": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "library_search": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "melee_weapon": {
+                "stat": "dex",
+                "lvl": 0
+            },
+            "paramedic": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 8
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 2
+            },
+            "photography_film": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_lock": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_pocket": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "play_instrument": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 6
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "tactics": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "tracking": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "wardrobe_and_style": {
+                "stat": "cool",
+                "lvl": 0
+            }
         },
         "defence": {
             "armor": "Light Armorjack",
@@ -242,47 +490,171 @@
             "death_save": 6
         },
         "skills": {
-            "accounting": { "stat": "int", "lvl": 0 },
-            "acting": { "stat": "cool", "lvl": 0 },
-            "athletics": { "stat": "dex", "lvl": 2 },
-            "brawling": { "stat": "dex", "lvl": 2, "dice": "2d6" },
-            "bribery": { "stat": "cool", "lvl": 0 },
-            "bureaucracy": { "stat": "int", "lvl": 0 },
-            "business": { "stat": "int", "lvl": 0 },
-            "composition": { "stat": "int", "lvl": 0 },
-            "conceal_reveal_object": { "stat": "int", "lvl": 0 },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 2 },
-            "criminology": { "stat": "int", "lvl": 0 },
-            "cryptography": { "stat": "int", "lvl": 0 },
-            "deduction": { "stat": "int", "lvl": 0 },
-            "drive_land_vehicle": { "stat": "ref", "lvl": 0 },
-            "education": { "stat": "int", "lvl": 6 },
-            "electronics_security_tech": { "stat": "tech", "lvl": 10 },
-            "evasion": { "stat": "dex", "lvl": 6 },
-            "first_aid": { "stat": "tech", "lvl": 6 },
-            "forgery": { "stat": "tech", "lvl": 6 },
-            "handgun": { "stat": "ref", "lvl": 6 },
-            "human_perception": { "stat": "emp", "lvl": 2 },
-            "interrogation": { "stat": "cool", "lvl": 0 },
-            "library_search": { "stat": "int", "lvl": 0 },
-            "local_expert": { "stat": "int", "lvl": 2 },
-            "melee_weapon": { "stat": "dex", "lvl": 0 },
-            "paramedic": { "stat": "tech", "lvl": 0 },
-            "perception": { "stat": "int", "lvl": 2 },
-            "persuasion": { "stat": "cool", "lvl": 2 },
-            "photography_film": { "stat": "tech", "lvl": 0 },
-            "pick_lock": { "stat": "tech", "lvl": 6 },
-            "pick_pocket": { "stat": "tech", "lvl": 6 },
-            "play_instrument": { "stat": "tech", "lvl": 0 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 0 },
-            "shoulder_arms": { "stat": "ref", "lvl": 6 },
-            "stealth": { "stat": "dex", "lvl": 6 },
-            "streetwise": { "stat": "cool", "lvl": 0 },
-            "tactics": { "stat": "int", "lvl": 0 },
-            "tracking": { "stat": "int", "lvl": 0 },
-            "trading": { "stat": "cool", "lvl": 0 },
-            "wardrobe_and_style": { "stat": "cool", "lvl": 0 }
+            "accounting": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "acting": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 2,
+                "dice": "2d6"
+            },
+            "bribery": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "bureaucracy": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "business": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "composition": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "conceal_reveal_object": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "criminology": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "cryptography": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "deduction": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "drive_land_vehicle": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "electronics_security_tech": {
+                "stat": "tech",
+                "lvl": 10
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "forgery": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "library_search": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "melee_weapon": {
+                "stat": "dex",
+                "lvl": 0
+            },
+            "paramedic": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 2
+            },
+            "photography_film": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_lock": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "pick_pocket": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "play_instrument": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 0
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "tactics": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "tracking": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "wardrobe_and_style": {
+                "stat": "cool",
+                "lvl": 0
+            }
         },
         "defence": {
             "armor": "Light Armorjack",
@@ -355,46 +727,167 @@
             "death_save": 5
         },
         "skills": {
-            "accounting": { "stat": "int", "lvl": 0 },
-            "acting": { "stat": "cool", "lvl": 0 },
-            "athletics": { "stat": "dex", "lvl": 2 },
-            "brawling": { "stat": "dex", "lvl": 2, "dice": "2d6" },
-            "bribery": { "stat": "cool", "lvl": 0 },
-            "bureaucracy": { "stat": "int", "lvl": 0 },
-            "business": { "stat": "int", "lvl": 0 },
-            "composition": { "stat": "int", "lvl": 0 },
-            "conceal_reveal_object": { "stat": "int", "lvl": 0 },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 6 },
-            "criminology": { "stat": "int", "lvl": 0 },
-            "cryptography": { "stat": "int", "lvl": 0 },
-            "education": { "stat": "int", "lvl": 6 },
-            "electronics_security_tech": { "stat": "tech", "lvl": 4 },
-            "evasion": { "stat": "dex", "lvl": 6 },
-            "first_aid": { "stat": "tech", "lvl": 2 },
-            "forgery": { "stat": "tech", "lvl": 0 },
-            "handgun": { "stat": "ref", "lvl": 0 },
-            "human_perception": { "stat": "emp", "lvl": 6 },
-            "interrogation": { "stat": "cool", "lvl": 0 },
-            "library_search": { "stat": "int", "lvl": 0 },
-            "local_expert": { "stat": "int", "lvl": 2 },
-            "melee_weapon": { "stat": "dex", "lvl": 0 },
-            "paramedic": { "stat": "tech", "lvl": 6 },
-            "perception": { "stat": "int", "lvl": 6 },
-            "persuasion": { "stat": "cool", "lvl": 5 },
-            "photography_film": { "stat": "tech", "lvl": 0 },
-            "pick_lock": { "stat": "tech", "lvl": 0 },
-            "pick_pocket": { "stat": "tech", "lvl": 0 },
-            "play_instrument": { "stat": "tech", "lvl": 0 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 4 },
-            "shoulder_arms": { "stat": "ref", "lvl": 6 },
-            "stealth": { "stat": "dex", "lvl": 6 },
-            "streetwise": { "stat": "cool", "lvl": 0 },
-            "surgery": { "stat": "tech", "lvl": 4 },
-            "tactics": { "stat": "int", "lvl": 0 },
-            "tracking": { "stat": "int", "lvl": 0 },
-            "trading": { "stat": "cool", "lvl": 0 },
-            "wardrobe_and_style": { "stat": "cool", "lvl": 0 }
+            "accounting": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "acting": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 2,
+                "dice": "2d6"
+            },
+            "bribery": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "bureaucracy": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "business": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "composition": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "conceal_reveal_object": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "criminology": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "cryptography": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "electronics_security_tech": {
+                "stat": "tech",
+                "lvl": 4
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 2
+            },
+            "forgery": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "library_search": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "melee_weapon": {
+                "stat": "dex",
+                "lvl": 0
+            },
+            "paramedic": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 5
+            },
+            "photography_film": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_lock": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_pocket": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "play_instrument": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 4
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "surgery": {
+                "stat": "tech",
+                "lvl": 4
+            },
+            "tactics": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "tracking": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "wardrobe_and_style": {
+                "stat": "cool",
+                "lvl": 0
+            }
         },
         "defence": {
             "armor": "Light Armorjack",
@@ -471,47 +964,171 @@
             "death_save": 5
         },
         "skills": {
-            "accounting": { "stat": "int", "lvl": 0 },
-            "acting": { "stat": "cool", "lvl": 0 },
-            "athletics": { "stat": "dex", "lvl": 2 },
-            "brawling": { "stat": "dex", "lvl": 2, "dice": "2d6" },
-            "bribery": { "stat": "cool", "lvl": 0 },
-            "bureaucracy": { "stat": "int", "lvl": 0 },
-            "business": { "stat": "int", "lvl": 0 },
-            "composition": { "stat": "int", "lvl": 6 },
-            "conceal_reveal_object": { "stat": "int", "lvl": 8 },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 6 },
-            "criminology": { "stat": "int", "lvl": 0 },
-            "cryptography": { "stat": "int", "lvl": 0 },
-            "deduction": { "stat": "int", "lvl": 0 },
-            "drive_land_vehicle": { "stat": "ref", "lvl": 0 },
-            "education": { "stat": "int", "lvl": 2 },
-            "electronics_security_tech": { "stat": "tech", "lvl": 0 },
-            "evasion": { "stat": "dex", "lvl": 6 },
-            "first_aid": { "stat": "tech", "lvl": 2 },
-            "forgery": { "stat": "tech", "lvl": 6 },
-            "handgun": { "stat": "ref", "lvl": 6 },
-            "human_perception": { "stat": "emp", "lvl": 6 },
-            "interrogation": { "stat": "cool", "lvl": 0 },
-            "library_search": { "stat": "int", "lvl": 4 },
-            "local_expert": { "stat": "int", "lvl": 6 },
-            "melee_weapon": { "stat": "dex", "lvl": 6 },
-            "paramedic": { "stat": "tech", "lvl": 0 },
-            "perception": { "stat": "int", "lvl": 8 },
-            "persuasion": { "stat": "cool", "lvl": 6 },
-            "photography_film": { "stat": "tech", "lvl": 0 },
-            "pick_lock": { "stat": "tech", "lvl": 0 },
-            "pick_pocket": { "stat": "tech", "lvl": 0 },
-            "play_instrument": { "stat": "tech", "lvl": 0 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 0 },
-            "shoulder_arms": { "stat": "ref", "lvl": 0 },
-            "stealth": { "stat": "dex", "lvl": 6 },
-            "streetwise": { "stat": "cool", "lvl": 0 },
-            "tactics": { "stat": "int", "lvl": 0 },
-            "tracking": { "stat": "int", "lvl": 0 },
-            "trading": { "stat": "cool", "lvl": 0 },
-            "wardrobe_and_style": { "stat": "cool", "lvl": 0 }
+            "accounting": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "acting": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 2,
+                "dice": "2d6"
+            },
+            "bribery": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "bureaucracy": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "business": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "composition": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "conceal_reveal_object": {
+                "stat": "int",
+                "lvl": 8
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "criminology": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "cryptography": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "deduction": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "drive_land_vehicle": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "electronics_security_tech": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 2
+            },
+            "forgery": {
+                "stat": "tech",
+                "lvl": 6
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "library_search": {
+                "stat": "int",
+                "lvl": 4
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "melee_weapon": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "paramedic": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 8
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "photography_film": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_lock": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "pick_pocket": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "play_instrument": {
+                "stat": "tech",
+                "lvl": 0
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 0
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 0
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 6
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "tactics": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "tracking": {
+                "stat": "int",
+                "lvl": 0
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 0
+            },
+            "wardrobe_and_style": {
+                "stat": "cool",
+                "lvl": 0
+            }
         },
         "defence": {
             "armor": "Light Armorjack",
@@ -558,75 +1175,5 @@
             }
         ],
         "ascii_art": "24_7_ascii_art.txt"
-    },
-    {
-        "handle": "Dirty Cop",
-        "role": "Lawman",
-        "stats": {
-            "int": 3,
-            "ref": 6,
-            "dex": 5,
-            "tech": 2,
-            "cool": 4,
-            "will": 4,
-            "luck": 0,
-            "move": 4,
-            "body": 6,
-            "emp": 3
-        },
-        "combat": {
-            "hp": 35,
-            "seriously_wounded": 18,
-            "death_save": 6
-        },
-        "skills": {
-            "athletics": { "stat": "dex", "lvl": 4 },
-            "brawling": { "stat": "dex", "lvl": 6, "dice": "2d6" },
-            "concentration": { "stat": "will", "lvl": 2 },
-            "conversation": { "stat": "emp", "lvl": 2 },
-            "drive_land_vehicle": { "stat": "ref", "lvl": 4 },
-            "education": { "stat": "int", "lvl": 2 },
-            "evasion": { "stat": "dex", "lvl": 2 },
-            "first_aid": { "stat": "tech", "lvl": 2 },
-            "handgun": { "stat": "ref", "lvl": 6 },
-            "human_perception": { "stat": "emp", "lvl": 2 },
-            "interrogation": { "stat": "cool", "lvl": 2 },
-            "local_expert": { "stat": "int", "lvl": 2 },
-            "perception": { "stat": "int", "lvl": 6 },
-            "persuasion": { "stat": "cool", "lvl": 6 },
-            "resist_torture_drugs": { "stat": "will", "lvl": 4 },
-            "shoulder_arms": { "stat": "ref", "lvl": 6 },
-            "stealth": { "stat": "dex", "lvl": 2 }
-        },
-        "defence": {
-            "armor": "Kevlar",
-            "sp": 7
-        },
-        "weapons": [
-            {
-                "name": "Very Heavy Pistol",
-                "dmg": "4d6",
-                "ammo": 8,
-                "rof": 1,
-                "notes": "16 rounds extra"
-            }
-        ],
-        "role_ability": {
-            "name": "Backup",
-            "notes": "Can call for backup."
-        },
-        "cyberware": [
-            {
-                "name": "Radio/Communicator",
-                "notes": "Allows communication w/ other dirty cops"
-            }
-        ],
-        "gear": [
-            {
-                "name": "Very Heavy Pistol Ammo",
-                "notes": "x16"
-            }
-        ],
-        "ascii_art": "dirty_cop_ascii_art.txt"
     }
 ]
