@@ -1,5 +1,6 @@
 from cmd import Cmd
 import os
+import random
 
 class BrawlingShell(Cmd):
     """
@@ -7,23 +8,46 @@ class BrawlingShell(Cmd):
     """
     intro = "\n\033[1;31m[ COMBAT MODE: BRAWLING ]\033[0m\nType 'help' or '?' to list commands. Type 'back' to exit."
     
-    def __init__(self, player, target_name):
+    def __init__(self, player, target):
         super().__init__()
         self.player = player
-        self.target_name = target_name
-        self.prompt = f"\033[1;31m(brawling {target_name}) > \033[0m"
+        self.target = target
+        self.prompt = f"\033[1;31m(brawling {target.handle}) > \033[0m"
 
     def do_attack(self, arg):
-        """Standard brawling attack."""
-        print(f"\033[31m[PLACEHOLDER] Reducing teeth count on {self.target_name}...\033[0m")
-        return True  # Exit shell after action? Or stay in combat? 
-        # User requested: "Ensure it prints the placeholder and returns you to the main game prompt." -> So return True.
+        """
+        Action: Standard Brawling Attack
+        Rule: Rate of Fire (ROF) is 2. 
+        Damage: 1d6 per hit.
+        Special: Does NOT ignore armor.
+        """
+        print(f"\033[31mYou launch a flurry of blows at {self.target.handle}!\033[0m")
+        
+        # Loop twice because Brawling RoF = 2
+        for i in range(1, 3):
+            print(f"\n--- Attack {i} ---")
+            # 1. Skill Check: DEX + Brawling + 1d10
+            # Note: roll_check returns a dict with 'result', 'att_total', etc.
+            result_data = self.player.roll_check(self.target, "brawling", "evasion")
+            
+            if result_data["result"] == "success":
+                # 2. Damage Roll: 1d6
+                dmg = random.randint(1, 6)
+                print(f"Damage Roll: {dmg}")
+                
+                # 3. Apply Damage (Respects Armor)
+                self.target.take_damage(dmg, ignore_armor=False)
+            else:
+                print("MISS!")
+        
+        # Turn is over, exit the shell
+        return True
 
     def do_grab(self, arg):
         """Attempt to grapple the target."""
-        print(f"\033[33m[COMBAT] Initiating Grapple with {self.target_name}...\033[0m")
+        print(f"\033[33m[COMBAT] Initiating Grapple with {self.target.handle}...\033[0m")
         # Launch Grapple Shell
-        grapple = GrappleShell(self.player, self.target_name)
+        grapple = GrappleShell(self.player, self.target.handle)
         grapple.cmdloop()
         return True # Exit brawling shell after grapple finishes (or stay? usually grapple ends with throw/release)
 
