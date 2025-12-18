@@ -91,9 +91,9 @@ class CharacterManager:
         skill_keys = list(self.player.skills.keys())
         skill_values = list(self.player.skills.values())
         skill_list = [
-            (f"{key:⌁<30}{value[0]:>2}")
+            (f"{key:⌁<30}{value['lvl']:>2}")
             for key, value in zip(skill_keys, skill_values)
-            if value[1 != 0]
+            if value.get('lvl', 0) != 0
         ]
         skill_list += self.player.ascii_art.splitlines()
 

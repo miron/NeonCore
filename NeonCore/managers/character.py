@@ -68,8 +68,11 @@ class Character:
 
 
     def skill_total(self, skill_name):
-        skill_list = self.skills.get(skill_name, [0, 0])
-        return sum(skill_list)
+        skill_data = self.skills.get(skill_name, {"stat": "ref", "lvl": 0})
+        stat_name = skill_data.get("stat", "ref")
+        skill_rank = skill_data.get("lvl", 0)
+        stat_value = self.stats.get(stat_name, 0)
+        return stat_value + skill_rank
 
     def roll_check(self, defender, skill_name, def_skill_name="evasion"):
         """
