@@ -445,8 +445,20 @@ class ActionManager(Cmd):
                 print("Brawl with who? yourself? Provide a target.")
                 return
             
+            # Resolve target to NPC object
+            if self.dependencies.npc_manager: # Check if manager exists
+                 target_npc = self.dependencies.npc_manager.get_npc(target_name)
+                 if not target_npc:
+                     # Check if it's "character_chosen" and maybe "brawling lazlo" works even if he's virtual?
+                     # But physically we need an object.
+                     print(f"You don't see '{target_name}' here to brawl with.")
+                     return
+            else:
+                 print("Error: NPC Manager not available.")
+                 return
+
             # Create and launch the shell
-            shell = BrawlingShell(self.char_mngr.player, target_name)
+            shell = BrawlingShell(self.char_mngr.player, target_npc)
             shell.cmdloop()
             return
 
