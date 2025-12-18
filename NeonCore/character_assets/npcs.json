@@ -1,0 +1,124 @@
+[
+    {
+        "handle": "Dirty Cop",
+        "role": "Lawman",
+        "stats": {
+            "int": 3,
+            "ref": 6,
+            "dex": 5,
+            "tech": 2,
+            "cool": 4,
+            "will": 4,
+            "luck": 0,
+            "move": 4,
+            "body": 6,
+            "emp": 3
+        },
+        "combat": {
+            "hp": 35,
+            "seriously_wounded": 18,
+            "death_save": 6
+        },
+        "skills": {
+            "athletics": {
+                "stat": "dex",
+                "lvl": 4
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 6,
+                "dice": "2d6"
+            },
+            "concentration": {
+                "stat": "will",
+                "lvl": 2
+            },
+            "conversation": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "drive_land_vehicle": {
+                "stat": "ref",
+                "lvl": 4
+            },
+            "education": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 2
+            },
+            "first_aid": {
+                "stat": "tech",
+                "lvl": 2
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 2
+            },
+            "interrogation": {
+                "stat": "cool",
+                "lvl": 2
+            },
+            "local_expert": {
+                "stat": "int",
+                "lvl": 2
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "resist_torture_drugs": {
+                "stat": "will",
+                "lvl": 4
+            },
+            "shoulder_arms": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "stealth": {
+                "stat": "dex",
+                "lvl": 2
+            }
+        },
+        "defence": {
+            "armor": "Kevlar",
+            "sp": 7
+        },
+        "weapons": [
+            {
+                "name": "Very Heavy Pistol",
+                "dmg": "4d6",
+                "ammo": 8,
+                "rof": 1,
+                "notes": "16 rounds extra"
+            }
+        ],
+        "role_ability": {
+            "name": "Backup",
+            "notes": "Can call for backup."
+        },
+        "cyberware": [
+            {
+                "name": "Radio/Communicator",
+                "notes": "Allows communication w/ other dirty cops"
+            }
+        ],
+        "gear": [
+            {
+                "name": "Very Heavy Pistol Ammo",
+                "notes": "x16"
+            }
+        ],
+        "ascii_art": "dirty_cop_ascii_art.txt"
+    }
+]
