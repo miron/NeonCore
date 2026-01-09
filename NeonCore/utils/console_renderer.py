@@ -83,11 +83,11 @@ class ConsoleRenderer:
              # Header
             lines.append(f" {'Name':<25} {'Dmg':<5} {'Ammo':<5} {'ROF':<3} {'Notes'}")
             for w in weapons:
-                name = w.get("name", "Weapon")
-                dmg = w.get("dmg", "-")
-                ammo = w.get("ammo", "-")
-                rof = w.get("rof", "-")
-                notes = w.get("notes", "")
+                name = str(w.get("name") or "Weapon")
+                dmg = str(w.get("dmg") or "-")
+                ammo = str(w.get("ammo") or "-")
+                rof = str(w.get("rof") or "-")
+                notes = str(w.get("notes") or "")
                 lines.append(f" {name:<25} {dmg:<5} {ammo:<5} {rof:<3} {notes}")
         lines.append("─" * width)
 
