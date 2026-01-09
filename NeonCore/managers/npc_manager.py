@@ -115,7 +115,7 @@ class NPCManager:
                 # handle argument removed as it's not in dataclass
             )
             # Inject combat stats/attributes directly
-            dirty_cop.handle = dirty_cop.name
+            # dirty_cop.handle is a property returning name, so no assignment needed
             dirty_cop.hp = 35
             dirty_cop.sp = 7
             dirty_cop.weapon_dmg = 4

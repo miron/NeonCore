@@ -7,6 +7,9 @@ import logging
 
 from .character import Character
 from .trait_manager import TraitManager
+from ..utils import DiceRoller, wprint
+import textwrap
+from itertools import zip_longest
 
 
 class CharacterManager:
@@ -97,58 +100,19 @@ class CharacterManager:
         return names
 
     def get_player_sheet_data(self):
-        """Prepares character sheet data without formatting"""
-        header = (
-            f"HANDLE \033[1;3;35m{self.player.handle:⌁^33}"
-            "\033[0m ROLE "
-            f"\033[1;3;35m{self.player.role:⌁^33}\033[0m"
-        )
-        stat_list = [
-            (
-                f"{key:⌁<12}{self.player.lucky_pool}/{value}"
-                if key == "luck"
-                else f"{key:⌁<12}{value:>2}"
-            )
-            for key, value in self.player.stats.items()
-        ]
-        combat_list = [
-            (f"{key:⌁<23}{value:>2}") for key, value in self.player.combat.items()
-        ]
-        skill_keys = list(self.player.skills.keys())
-        skill_values = list(self.player.skills.values())
-        skill_list = [
-            (f"{key:⌁<30}{value['lvl']:>2}")
-            for key, value in zip(skill_keys, skill_values)
-            if value.get('lvl', 0) != 0
-        ]
-        skill_list += self.player.ascii_art.splitlines()
-
-        defence_list = (
-            [f"WEAPONS & ARMOR{'⌁'*19:<10} "]
-            + [" ".join(self.player.defence.keys())]
-            + [" ".join([str(row) for row in self.player.defence.values()])]
-        )
-        weapons_list = [" ".join(self.player.weapons[0].keys())] + [
-            " ".join([str(val) for val in row.values()]) for row in self.player.weapons
-        ]
-        ability_list = list(self.player.role_ability.values())
-        ability_list = [row.splitlines() for row in ability_list]
-        ability_list = [item for sublist in ability_list for item in sublist]
-        ware_list = [
-            value for row in self.player.cyberware for key, value in row.items()
-        ]
-        ware_list = [row.splitlines() for row in ware_list]
-        ware_list = [item for sublist in ware_list for item in sublist]
-
+        """Prepares raw character sheet data for rendering"""
         return {
-            "header": header,
-            "stats": stat_list,
-            "combat": combat_list,
-            "skills": skill_list,
-            "defence": defence_list,
-            "weapons": weapons_list,
-            "abilities": ability_list,
-            "cyberware": ware_list,
+            "handle": self.player.handle,
+            "role": self.player.role,
+            "stats": self.player.stats,
+            "combat": self.player.combat,
+            "skills": self.player.skills,
+            "ascii_art": self.player.ascii_art,
+            "defence": self.player.defence,
+            "weapons": self.player.weapons,
+            "role_ability": self.player.role_ability,
+            "cyberware": self.player.cyberware,
+            "inventory": self.player.inventory
         }
         # if ability == ability_list[0]:
         #    ability = "\033[1m" + ability + "\033[0m"
@@ -180,4 +144,4 @@ Friends: {self.player.friends}
 Enemies: {self.player.enemies}
 Lovers: {self.player.lovers}
 Life Goals: {self.player.life_goal}"""
-        print(rap_sheet)
+        return rap_sheet

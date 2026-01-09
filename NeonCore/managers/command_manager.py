@@ -1,6 +1,6 @@
 from typing import Protocol
 from . import common
-from . import ActionManager
+from .action_manager import ActionManager
 import logging  # Added
 
 

@@ -1,12 +1,12 @@
-# miron/NeonCore/run_game.py
+import asyncio
 from NeonCore.core.dependencies import GameDependencies
 
 
-def main():
+async def main():
     action_manager = GameDependencies.initialize_game()
-    action_manager.start_game()
+    await action_manager.start_game()
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
