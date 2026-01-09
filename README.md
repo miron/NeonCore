@@ -20,76 +20,60 @@ Built with Python, NeonCore delivers a classic RPG experience inspired by the Cy
 ### Installation & Usage
 
 #### Windows (PowerShell)
-1. Create fresh virtual environment:
-```powershell
-python -m venv venv
-```
+1. **Setup Environment**:
+   ```powershell
+   python -m venv venv
+   .\venv\Scripts\python.exe -m pip install --upgrade pip
+   .\venv\Scripts\python.exe -m pip install -e .
+   ```
 
-2. Allow PowerShell script execution:
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
+2. **Run NeonCore**:
+   **Client-Server Mode (Default)**:
+   ```powershell
+   .\play.ps1
+   ```
+   *Starts the Game Server in the background and launches the Client.*
 
-3.### Activation
-*   **Windows (PowerShell):** `.\venv\Scripts\Activate.ps1`
-*   **Windows (CMD):** `.\venv\Scripts\activate.bat`
-*   **Linux/Mac:** `source venv/bin/activate`
+   **Standalone Mode**:
+   ```powershell
+   .\play.ps1 -Local
+   ```
+   *Runs the game as a single monolithic process (useful for development/debugging).*
 
-> **Note:** If you encounter an error about scripts being disabled or "not digitally signed", run this in your PowerShell terminal before activating:
-> ```powershell
-> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-> ```
-```
+   > **Note:** `play.ps1` automatically uses the virtual environment's Python, bypassing the need for manual activation scripts and avoiding common PowerShell permission errors.
 
-4. Upgrade pip:
-```powershell
-python -m pip install --upgrade pip
-```
-
-5. Install OpenAI using pre-built wheels only:
-```powershell
-python -m pip install openai --no-build-isolation --only-binary :all:
-```
-
-6. Run the game:
-```powershell
-python run_game.py
-```
-
-#### Standard Installation (Linux/MacOS)
-1. Clone the repository to your local machine
-2. Install using pip:
+#### Linux/MacOS
+1. Setup:
    ```bash
+   python3 -m venv venv
+   source venv/bin/activate
    pip install -e .
    ```
-3. Run the game:
+2. Run:
    ```bash
    python run_game.py
    ```
 
-### AI Chat Features
-NeonCore requires an AI backend to power NPC interactions and the "Digital Soul" system.
+### AI & Architecture
 
-#### Option A: Gemini (Cloud - Recommended)
-This is the default and most powerful option.
-1. Get an API Key from [Google AI Studio](https://aistudio.google.com/).
-2. Set it in your `.env` file or environment:
-   ```bash
-   GEMINI_API_KEY="your-api-key-here"
-   ```
+#### Architecture
+NeonCore utilizes a **Client-Server** architecture by default.
+- **Server**: Handles game state, world simulation, and AI requests (`server.py`).
+- **Client**: Handles UI and user input (`client.py`).
+- **Database (Concept)**: A decentralized **Nostr** relay system is planned for persistent world state and player communications, but is currently in conceptual phase.
 
-#### Option B: Ollama (Local - Private)
-Run the game offline using your own GPU.
-1. Install [Ollama](https://ollama.com/).
-2. Pull a model (e.g., Mistral or Llama3):
-   ```bash
-   ollama pull mistral
-   ```
-3. Update `config.py` or sets environment variables:
-   ```bash
-   OLLAMA_MODEL="mistral"
-   OLLAMA_HOST="http://localhost:11434"
-   ```
+#### AI Backend
+The game requires an LLM to power the "Digital Soul" and NPC interactions.
+
+1. **Gemini (Recommended - Cloud)**
+   - Get API Key from Google AI Studio.
+   - Set env var: `GEMINI_API_KEY="your-key"`
+   - *Default backend if key is present.*
+
+2. **Ollama (Alternative - Local)**
+   - Install [Ollama](https://ollama.com/) and pull a model (e.g., `mistral`).
+   - Set env var: `NEONCORE_AI_BACKEND="ollama"` (or simply ensure `GEMINI_API_KEY` is not set).
+   - Configurable in `NeonCore/config.py`.
    
 ### In-Game Chat
 1. **Approach NPC**: Type `talk [NPC Name]` (e.g., `talk Lenard`).

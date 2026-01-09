@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonCore | Usage Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="monitor">
+        <div class="screen">
+            <div class="crt-overlay"></div>
+            <div class="scanline"></div>
+            <div class="terminal">
+                <div id="boot-sequence"></div>
+                <pre id="ascii-logo" style="display:none;">
+     ᐸ ソ ╱> /Ξ /≥ /> // /𐑘/ /ᐸ
+                      ‾
+   …   ˛⁄⁔       ˛⁔     ⁔    _  ¸¸
+  (˙}  \(∞l   ,, {˚)/ ¸{=}˛ |\\(˚}
+ /(\)╲  `••\˛_ \/(⎔◊𐑘 (\+/)  \∏(p)]
+ \ᢘ╦╤═÷- Y¸∆     ¸U˛   \Ξ˛\   ´¸v˛|
+  7˘ 𐑘 ¸⁄∫𐑘      [][]  7 𐑘 `   [ ]´
+  ]  ]  / |      [ [   ] ]     { }
+  l  L ∫  l      ɺ[ɺ]  l L     ɺ L
+</pre>
+                <div id="main-content" style="display:none;">
+                    <p class="glitch-text" data-text="WELCOME TO NIGHT CITY">WELCOME TO NIGHT CITY</p>
+                    <p>NeonCore is an immersive text-based RPG engine built on Python.</p>
+                    <p>Experience the dark future through your terminal.</p>
+                    
+                    <div class="box">
+                        <p class="label">INSTALLATION_PROTOCOL:</p>
+                        <p class="command">> pip install neoncore</p>
+                        <p class="command">> neoncore start</p>
+                    </div>
+
+                    <div class="links">
+                        <a href="https://github.com/miron/NeonCore">[ SOURCE_CODE ]</a>
+                        <a href="https://pypi.org/project/NeonCore/">[ PYPI_PACKAGE ]</a>
+                    </div>
+                </div>
+                <div class="input-line">
+                    <span class="prompt">root@nightcity:~$</span>
+                    <span class="cursor">█</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="terminal.js"></script>
+</body>
+</html>
