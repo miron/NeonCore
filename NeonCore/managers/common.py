@@ -1,4 +1,4 @@
-from . import CharacterManager
+from .character_manager import CharacterManager
 from ..game_mechanics import SkillCheckCommand
 from ..story_modules import PhoneCall
 from ..world import World

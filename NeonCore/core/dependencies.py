@@ -13,6 +13,7 @@ from ..world.world import World
 from ..managers import common
 from ..game_mechanics.skill_check import SkillCheckCommand
 from ..managers.npc_manager import NPCManager
+from .game_io import GameIO
 
 
 @dataclass
@@ -21,14 +22,19 @@ class GameDependencies:
     cmd_mngr: CommandManager
     world: World
     npc_manager: NPCManager
+    io: GameIO
     skill_check: SkillCheckCommand = None
 
     @classmethod
     def initialize_game(cls) -> ActionManager:
+        # Initialize IO
+        from .game_io import ConsoleIO
+        io = ConsoleIO()
+
         char_mngr = CharacterManager()
         cmd_mngr = CommandManager()
         npc_manager = NPCManager()
-        world = World(char_mngr, npc_manager)
+        world = World(char_mngr, npc_manager, io)
 
         # Initialize the skill check command
         skill_check = SkillCheckCommand()
@@ -44,6 +50,7 @@ class GameDependencies:
             world=world,
             npc_manager=npc_manager,
             skill_check=skill_check,
+            io=io,
         )
 
         return ActionManager(dependencies)

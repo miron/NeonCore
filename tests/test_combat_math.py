@@ -15,15 +15,15 @@ def test_combat_math():
         "will": 8, "luck": 5, "move": 7, "body": 10, "emp": 6
     }
     
-    # Skills format: [Stat+Skill, Rank] -> sum is total
+    # Skills format: {"stat": name, "lvl": rank}
     attacker_skills = {
-        "brawling": [5, 4], # Total 9
-        "evasion": [4, 3]   # Total 7
+        "brawling": {"stat": "dex", "lvl": 4}, # Dex 7 + 4 = 11
+        "evasion": {"stat": "dex", "lvl": 3}   # Dex 7 + 3 = 10
     }
     
     defender_skills = {
-        "brawling": [4, 2], # Total 6
-        "evasion": [5, 5]   # Total 10
+        "brawling": {"stat": "dex", "lvl": 2}, # Dex 7 + 2 = 9
+        "evasion": {"stat": "dex", "lvl": 5}   # Dex 7 + 5 = 12
     }
 
     attacker = Character(
