@@ -230,6 +230,7 @@ class ActionManager(AsyncCmd):
             name + " " for name in present_npcs if name.lower().startswith(text.lower())
         ]
 
+
     async def do_choose(self, arg=None):
         """Allows the player to choose a character by Handle."""
         allowed_names = self.char_mngr.character_names()
@@ -263,8 +264,11 @@ class ActionManager(AsyncCmd):
             if c.handle.lower() == arg_lower
         )
 
-        self.char_mngr.set_player(selected_char)
-
+        if selected_char:
+             self.char_mngr.set_player(selected_char)
+             await self.io.send(f"\nLocked and loaded. You are now {selected_char.handle}.")
+             # Trigger perception check if needed or just welcome
+             
         # Set remaining characters as NPCs
         self.char_mngr.set_npcs(
             [
@@ -280,7 +284,10 @@ class ActionManager(AsyncCmd):
 
     def complete_choose(self, text, line, begidx, endidx):
         """Complete character handles after 'choose' command"""
-        return [n + " " for n in self.char_mngr.character_names(text)]
+        # Ensure we call character_names without args if it doesn't support them
+        # And filter manually + append space
+        names = self.char_mngr.character_names()
+        return [n + " " for n in names if n.lower().startswith(text.lower())]
 
     async def start_game(self):
         """
@@ -310,66 +317,33 @@ class ActionManager(AsyncCmd):
             f"completenames called with: text='{text}', state={self.game_state}"
         )
 
-        # Get base commands that should always be available
-        always_available = ["help", "quit"]
-        base_cmds = [
-            cmd
-            for cmd in super().completenames(text, *ignored)
-            if cmd in always_available
-        ]
+        # 1. Get ALL valid completions from parent (already filtered by text matching)
+        #    These come with trailing spaces e.g. "choose ", "help "
+        candidates = super().completenames(text, *ignored)
 
-        # Add commands based on specific game state
+        # 2. Define whitelist of allowed commands based on state
+        allowed = {"help", "quit"} # Always allowed
+
         if self.game_state == "choose_character":
-            if "choose" in super().completenames(text, *ignored):
-                base_cmds.append("choose")
+            allowed.add("choose")
 
         elif self.game_state == "character_chosen":
-            if "answer" in super().completenames(text, *ignored):
-                base_cmds.append("answer")
-            if "look" in super().completenames(text, *ignored):
-                base_cmds.append("look")
+            allowed.update({"answer", "look"})
 
         elif self.game_state == "before_perception_check":
-            allowed = [
-                "talk",
-                "look",
-                "go",
-                "inventory",
-                "whoami",
-                "reflect",
-                "use_skill",
-                "deposit",
-            ]
-            for cmd in allowed:
-                if cmd in super().completenames(text, *ignored):
-                    base_cmds.append(cmd)
+            allowed.update({
+                "talk", "look", "go", "inventory", 
+                "whoami", "reflect", "use_skill", "deposit"
+            })
 
         elif self.game_state == "conversation":
-            # say is visible here, as per user request
-            allowed = ["say", "bye", "take", "inventory", "look", "talk"]
-            for cmd in allowed:
-                if cmd in super().completenames(text, *ignored):
-                    base_cmds.append(cmd)
+            allowed.update({"say", "bye", "take", "inventory", "look", "talk"})
 
-        logging.debug(f"Always available commands: {base_cmds}")
-
-        # Get state-specific commands
-        state_cmds = []
-        # if self.cmd_mngr:
-        #    state_cmds = self.cmd_mngr.get_check_command(self.game_state)
-        # Note: cmd_mngr logic might be redundant now that we put everything in base_cmds,
-        # but ignoring for now.
-        logging.debug(f"State commands: {state_cmds}")
-
-        # Combine all commands
-        all_cmds = base_cmds + state_cmds
-        logging.debug(f"Combined commands: {all_cmds}")
-
-        # Filter by text prefix and append space
-        matching = [cmd + " " for cmd in all_cmds if cmd.startswith(text)]
-        logging.debug(f"Final matching commands: {matching}")
-
-        return matching
+        # 3. Filter candidates against whitelist
+        filtered_cmds = [c for c in candidates if c.strip() in allowed]
+        
+        logging.debug(f"Filtered commands for state {self.game_state}: {filtered_cmds}")
+        return filtered_cmds
 
     async def _display_rap_sheet(self, arg):
         """Internal method to display rap sheet"""
@@ -720,12 +694,13 @@ class ActionManager(AsyncCmd):
             "polished and your guns loaded, "
             "the neon jungle ain't no walk in the park."
         )
-        sys.exit()
+        return True
 
     def complete_whoami(self, text, line, begidx, endidx):
         """Complete whoami subcommands"""
         subcommands = ["stats", "bio", "soul"]
         return [s + " " for s in subcommands if s.startswith(text)]
+
 
     async def do_whoami(self, arg):
         """

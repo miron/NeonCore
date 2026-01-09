@@ -1,6 +1,8 @@
+import cmd
+import sys
 import asyncio
 import string
-from .game_io import GameIO
+from typing import Optional
 try:
     import readline
 except ImportError:
@@ -175,13 +177,35 @@ class AsyncCmd:
         pass
          
     # Completion - Keep synchronous common with cmd
-    def completenames(self, text, *ignored):
+    def completenames(self, text: str, *ignored) -> list[str]:
         dotext = 'do_' + text
-        return [a[3:] for a in self.get_names() if a.startswith(dotext)]
+        names = self.get_names()
+        candidates = [a[3:] + ' ' for a in names if a.startswith(dotext)]
+        return candidates
         
     def get_names(self):
         # type: () -> list[str]
         return dir(self.__class__)
+
+    async def get_completions(self, text: str, line: str, begidx: int, endidx: int) -> list[str]:
+        """
+        Public API to get completions without relying on readline globals.
+        Used by remote clients (via WebSocket) or prompt_toolkit.
+        """
+        if begidx > 0:
+            cmd, args, _ = self.parseline(line)
+            if cmd == '':
+                compfunc = self.completedefault
+            else:
+                try:
+                    compfunc = getattr(self, 'complete_' + cmd)
+                except AttributeError:
+                    compfunc = self.completedefault
+        else:
+            compfunc = self.completenames
+
+        res = compfunc(text, line, begidx, endidx)
+        return res
 
     def complete(self, text, state):
         """Return the next possible completion for 'text'.
@@ -196,19 +220,22 @@ class AsyncCmd:
                 begidx = readline.get_begidx() - stripped
                 endidx = readline.get_endidx() - stripped
                 
-                # Default logic from cmd.Cmd
+                # Use the new helper but execute synchronously because readline expects it
+                # Note: completenames is synchronous, so most completion logic is synchronous.
+                # If we had async completion logic, we'd need to loop run_until_complete here, which is risky.
+                # For now, we assume all completion logic (checking dict keys) is synchronous.
                 if begidx > 0:
-                    cmd, args, _ = self.parseline(line)
-                    if cmd == '':
-                        compfunc = self.completedefault
-                    else:
-                        try:
-                            compfunc = getattr(self, 'complete_' + cmd)
-                        except AttributeError:
-                            compfunc = self.completedefault
+                     cmd, args, _ = self.parseline(line)
+                     if cmd == '':
+                         compfunc = self.completedefault
+                     else:
+                         try:
+                             compfunc = getattr(self, 'complete_' + cmd)
+                         except AttributeError:
+                             compfunc = self.completedefault
                 else:
-                    compfunc = self.completenames
-
+                     compfunc = self.completenames
+                
                 self.completion_matches = compfunc(text, line, begidx, endidx)
             else:
                 pass # Can't complete without readline
