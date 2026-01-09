@@ -26,10 +26,11 @@ class GameDependencies:
     skill_check: SkillCheckCommand = None
 
     @classmethod
-    def initialize_game(cls) -> ActionManager:
+    def initialize_game(cls, io: GameIO = None) -> ActionManager:
         # Initialize IO
-        from .game_io import ConsoleIO
-        io = ConsoleIO()
+        if io is None:
+            from .game_io import ConsoleIO
+            io = ConsoleIO()
 
         char_mngr = CharacterManager()
         cmd_mngr = CommandManager()
