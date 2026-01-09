@@ -380,34 +380,8 @@ class ActionManager(AsyncCmd):
 
     async def _display_player_sheet(self, arg):
         """Internal method to display character sheet"""
-        # No game state check needed as this is called by whoami which checks
-
         data = self.char_mngr.get_player_sheet_data()
-        # Print header
-        await self.io.send(data["header"])
-
-        # Print ASCII Art (Integrated into skills, removed separate print)
-        
-        # Print stats
-        await self.async_columnize(data["stats"], displaywidth=80)
-
-        # Print combat
-        await self.async_columnize(data["combat"], displaywidth=80)
-
-        # Print skills (Side-by-side with Art, so print directly)
-        await self.io.send("\n".join(data["skills"]))
-
-        # Print defence
-        await self.io.send("\n".join(data["defence"]))
-
-        # Print weapons
-        await self.io.send("\n".join(data["weapons"]))
-
-        # Print abilities
-        await self.io.send("\n".join(data["abilities"]))
-
-        # Print cyberware
-        await self.io.send("\n".join(data["cyberware"]))
+        await self.io.display(data, view_type="character_sheet")
 
 
 

@@ -13,6 +13,11 @@ class GameIO(ABC):
         pass
 
     @abstractmethod
+    async def display(self, data: Any, view_type: str = "text"):
+        """Display structured data."""
+        pass
+
+    @abstractmethod
     async def prompt(self, text: str = "") -> str:
         """Get input from the client."""
         pass
@@ -24,6 +29,14 @@ class ConsoleIO(GameIO):
     async def send(self, text: str):
         print(text)
 
+    async def display(self, data: Any, view_type: str = "text"):
+        if view_type == "text":
+             print(data)
+        elif view_type == "character_sheet":
+             output = ConsoleRenderer.render_character_sheet(data)
+             print(output)
+        else:
+             print(f"[Unknown View: {view_type}] {data}")
 
     async def prompt(self, text: str = "") -> str:
         # Run synchronous input() in a thread to avoid blocking the event loop
