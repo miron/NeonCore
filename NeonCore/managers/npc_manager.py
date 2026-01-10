@@ -14,6 +14,7 @@ class NPC:
     skills: Dict[str, int] = field(default_factory=dict)
     combat_stats: Dict[str, int] = field(default_factory=lambda: {"hp": 20, "max_hp": 20})
     sp: int = 0
+    inventory: List[str] = field(default_factory=list)
 
     @property
     def handle(self):
@@ -81,7 +82,8 @@ class NPCManager:
             stats_block=dirty_cop_stats_block,
             skills={"handgun": 12, "brawling": 11, "perception": 9, "persuasion": 10, "evasion": 4}, # defaulting evasion to base cool/dex if not listed? Dex is 5. using conservative guess or just brawling/athletics? Added evasion
             combat_stats={"hp": 35, "max_hp": 35},
-            sp=7
+            sp=7,
+            inventory=["Briefcase (Locked)"]
         )
         # Evasion typically uses Evasion skill + DEX. If skill not listed, just Stat?
         # Added evasion: 4 (just a guess to make him fightable)
