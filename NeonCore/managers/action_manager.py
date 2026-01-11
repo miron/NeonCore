@@ -577,6 +577,8 @@ class ActionManager(AsyncCmd):
             self.char_mngr.player.digital_soul.stress = min(
                 100, self.char_mngr.player.digital_soul.stress + 5
             )
+            # Notify User
+            await self.io.send(f"\033[3;90m[!] Event Recorded: {event} (Drafted for Reflection)\033[0m")
 
             # Passive "Intrusive Thoughts" (Chance to trigger)
             # Only trigger random thoughts if stress is building up or event is significant
@@ -666,10 +668,22 @@ class ActionManager(AsyncCmd):
                         f"Their internal monologue asked: {question}. "
                         f"They answered: {answer}. "
                         "GOAL: Analyze this to update their character. "
+                        "1. CLASSIFY the connection between User's Nature (Traits/Triads) and Action:"
+                        "   - ALIGNMENT: Acting according to nature. EFFECT: Heals Stress."
+                        "   - DISSONANCE: Acting against nature. EFFECT: Increases Stress."
+                        "2. CLASSIFY the Motivation (The Soul Trilemma):"
+                        "   - SENTIMENT (Humanity): Genuine care. Effect: Heals Stress, Light Triad +."
+                        "   - NECESSITY (Survival): 'No choice'. Effect: NO stress heal (Numb), LOSS of Agreeableness."
+                        "   - TRANSACTIONAL/CYNIC (Masking): 'Fake kindness', 'Used them', 'Annoyed'. Effect: INCREASES Stress (Masking Cost), Dark Triad +, Agreeableness -."
+                        "   - RUTHLESSNESS (Power): Cruelty enjoyed. Effect: Heals stress, Dark Triad +."
+                        "3. LIGHT TRIAD: Did they show Kantianism (Principles), Humanism (Dignity), or Faith (Hope)? "
                         "Return ONLY a JSON object with keys: "
-                        "'stress_change' (integer, usually negative to heal), "
-                        "'new_traits' (list of strings, strictly new discovered traits based on answer), "
-                        "'memory_summary' (string, summary of this memory)."
+                        "'stress_change' (int), "
+                        "'new_traits' (list[str]), "
+                        "'memory_summary' (str), "
+                        "'big5_drift' (dict: keys openness, conscientiousness, extraversion, agreeableness, neuroticism. Values +/- int), "
+                        "'dark_triad_drift' (dict: keys machiavellianism, narcissism, psychopathy. Values + int), "
+                        "'light_triad_drift' (dict: keys kantianism, humanism, faith. Values + int)."
                     ),
                 },
             ]
@@ -678,13 +692,21 @@ class ActionManager(AsyncCmd):
             analysis_response = self.ai_backend.get_chat_completion(analyze_messages)
             analysis_text = analysis_response["message"]["content"]
 
-            # Clean generic markdown if present
-            if "```json" in analysis_text:
-                analysis_text = analysis_text.split("```json")[1].split("```")[0]
-            elif "```" in analysis_text:
-                analysis_text = analysis_text.split("```")[1].split("```")[0]
+            # Robust JSON extraction
+            import re
+            json_match = re.search(r"\{.*\}", analysis_text, re.DOTALL)
+            if json_match:
+                analysis_text = json_match.group(0)
+            
+            # SANITIZE JSON: Limit AI's creativity with "+" signs (e.g., +1 -> 1) which breaks JSON
+            # NOTE: Specific fix for Qwen 32b which tends to output non-compliant JSON integers (e.g. +1)
+            analysis_text = re.sub(r':\s*\+(\d+)', r': \1', analysis_text)
 
-            analysis = json.loads(analysis_text)
+            try:
+                analysis = json.loads(analysis_text)
+            except json.JSONDecodeError as e:
+                await self.io.send(f"\033[1;31m(Neural Glitch: {e})\033[0m")
+                return
 
             # Apply Changes
             soul.stress = max(
@@ -695,6 +717,44 @@ class ActionManager(AsyncCmd):
                 if t not in soul.traits:
                     soul.traits.append(t)
                     await self.io.send(f"\033[1;32m[+] NEW TRAIT ACQUIRED: {t}\033[0m")
+
+            # Apply Big 5 Drift
+            b5_drift = analysis.get("big5_drift", {})
+            for trait, delta in b5_drift.items():
+                if hasattr(soul.big5, trait):
+                    current = getattr(soul.big5, trait)
+                    new_val = max(0, min(100, current + delta))
+                    setattr(soul.big5, trait, new_val)
+                    if delta != 0:
+                        sign = "+" if delta > 0 else ""
+                        await self.io.send(f"\033[3m(Big 5 Shift: {trait.capitalize()} {sign}{delta})\033[0m")
+
+            # Apply Dark Triad Drift
+            dt_drift = analysis.get("dark_triad_drift", {})
+            # Ensure dark_triad exists (migration handle)
+            if not hasattr(soul, 'dark_triad'):
+                from .trait_manager import DarkTriad
+                soul.dark_triad = DarkTriad()
+
+            for trait, delta in dt_drift.items():
+                if hasattr(soul.dark_triad, trait) and delta > 0:
+                    current = getattr(soul.dark_triad, trait)
+                    new_val = max(0, min(100, current + delta))
+                    setattr(soul.dark_triad, trait, new_val)
+                    await self.io.send(f"\033[31m(Dark Triad Rise: {trait.capitalize()} +{delta})\033[0m")
+
+            # Apply Light Triad Drift
+            lt_drift = analysis.get("light_triad_drift", {})
+            if not hasattr(soul, 'light_triad'):
+                 from .trait_manager import LightTriad
+                 soul.light_triad = LightTriad()
+
+            for trait, delta in lt_drift.items():
+                if hasattr(soul.light_triad, trait) and delta > 0:
+                     current = getattr(soul.light_triad, trait)
+                     new_val = max(0, min(100, current + delta))
+                     setattr(soul.light_triad, trait, new_val)
+                     await self.io.send(f"\033[1;36m(Light Triad Rise: {trait.capitalize()} +{delta})\033[0m")
 
             memory = analysis.get("memory_summary")
             if memory:
@@ -788,6 +848,13 @@ class ActionManager(AsyncCmd):
             )
             await self.io.send(f"CYBER STRESS: 🧠 {color}[{bar}] {current_stress}%\033[0m")
 
+            # PENDING REFLECTIONS INDICATOR
+            pending = len(player.digital_soul.recent_events)
+            if pending > 0:
+                await self.io.send(f"\033[1;33m[!] PENDING REFLECTIONS: {pending} (Type 'reflect')\033[0m")
+            else:
+                await self.io.send(f"\033[1;30m(Mind Clear - No pending reflections)\033[0m")
+
             # HOST INSTINCT (The fixed trait of the body)
             await self.io.send(f"\n\033[1;35m[ HOST INSTINCT ]\033[0m")
             await self.io.send(f"{player.trait if player.trait else 'Survival'}")
@@ -818,29 +885,71 @@ class ActionManager(AsyncCmd):
             await self.io.send(
                 f"\n🧠 \033[1;36mDIGITAL SOUL INTERFACE\033[0m: {player.handle} [{player.role}]"
             )
-            print(f"{'⌁'*60}")
+            await self.io.send(f"{'⌁'*60}")
 
-            print(f"\n\033[1;35m[ BIG 5 PERSONALITY ]\033[0m")
+            if hasattr(self, "_ascii_bar_visual"):
+                 pass # Use helper if available
+            else:
+                 # Define helper locally or bind it
+                 def _ascii_bar_visual(val):
+                     if val == 50: return "\033[1;30m=\033[0m" # Neutral (was '?', changed to '=' for clarity)
+                     if val < 30: return "\033[1;31m--\033[0m"
+                     if val < 45: return "\033[1;33m-\033[0m"
+                     if val <= 55: return "\033[1;30m=\033[0m"
+                     if val < 70: return "\033[1;32m+\033[0m"
+                     return "\033[1;36m++\033[0m"
+                 self._ascii_bar_visual = _ascii_bar_visual
+
+            await self.io.send(f"\n\033[1;35m[ BIG 5 PERSONALITY ]\033[0m")
             b5 = soul.big5
-            print(f"Openness:          {b5.openness:>3}%")
-            print(f"Conscientiousness: {b5.conscientiousness:>3}%")
-            print(f"Extraversion:      {b5.extraversion:>3}%")
-            print(f"Agreeableness:     {b5.agreeableness:>3}%")
-            print(f"Neuroticism:       {b5.neuroticism:>3}%")
+            await self.io.send(f"Openness:          {self._ascii_bar_visual(b5.openness)}")
+            await self.io.send(f"Conscientiousness: {self._ascii_bar_visual(b5.conscientiousness)}")
+            await self.io.send(f"Extraversion:      {self._ascii_bar_visual(b5.extraversion)}")
+            await self.io.send(f"Agreeableness:     {self._ascii_bar_visual(b5.agreeableness)}")
+            await self.io.send(f"Neuroticism:       {self._ascii_bar_visual(b5.neuroticism)}")
 
-            print(f"\n\033[1;35m[ TRUE SELF ]\033[0m")
+            # Dark Triad Display
+            if hasattr(soul, 'dark_triad') and (soul.dark_triad.machiavellianism > 0 or soul.dark_triad.narcissism > 0 or soul.dark_triad.psychopathy > 0):
+                await self.io.send(f"\n\033[1;31m[ DARK TRIAD ]\033[0m")
+                dt = soul.dark_triad
+                def _dt_visual(val):
+                    if val == 0: return "\033[1;30m?\033[0m"
+                    if val < 30: return "\033[1;33m+\033[0m"
+                    if val < 70: return "\033[1;31m++\033[0m"
+                    return "\033[1;31m+++\033[0m" # Extreme
+                
+                if dt.machiavellianism > 0: await self.io.send(f"Machiavellianism:  {_dt_visual(dt.machiavellianism)}")
+                if dt.narcissism > 0:       await self.io.send(f"Narcissism:        {_dt_visual(dt.narcissism)}")
+                if dt.psychopathy > 0:      await self.io.send(f"Psychopathy:       {_dt_visual(dt.psychopathy)}")
+
+            # Light Triad Display
+            if hasattr(soul, 'light_triad') and (soul.light_triad.kantianism > 0 or soul.light_triad.humanism > 0 or soul.light_triad.faith > 0):
+                await self.io.send(f"\n\033[1;36m[ LIGHT TRIAD ]\033[0m")
+                lt = soul.light_triad
+                def _lt_visual(val):
+                     if val == 0: return "\033[1;30m?\033[0m"
+                     if val < 30: return "\033[1;34m+\033[0m"
+                     if val < 70: return "\033[1;36m++\033[0m"
+                     return "\033[1;37m+++\033[0m" # Radiant
+                
+                if lt.kantianism > 0: await self.io.send(f"Kantianism:        {_lt_visual(lt.kantianism)}")
+                if lt.humanism > 0:   await self.io.send(f"Humanism:          {_lt_visual(lt.humanism)}")
+                if lt.faith > 0:      await self.io.send(f"Faith in Humanity: {_lt_visual(lt.faith)}")
+
+
+            await self.io.send(f"\n\033[1;35m[ TRUE SELF ]\033[0m")
             if soul.traits:
-                print(
+                await self.io.send(
                     f"\033[1;35mTRAITS > {', '.join(player.digital_soul.traits)}\033[0m"
                 )
             else:
-                print("(No traits developed yet)")
+                await self.io.send("(No traits developed yet)")
 
-            print(f"\n\033[1;35m[ MEMORY STREAM ]\033[0m")
+            await self.io.send(f"\n\033[1;35m[ MEMORY STREAM ]\033[0m")
             if player.digital_soul.memories:
-                print("\n".join(player.digital_soul.memories) + "\033[0m")
+                await self.io.send("\n".join(player.digital_soul.memories) + "\033[0m")
             else:
-                print("(No memories recorded yet)")
+                await self.io.send("(No memories recorded yet)")
             return
 
     # Conversation Methods (Re-added)
@@ -900,8 +1009,10 @@ class ActionManager(AsyncCmd):
             await self.io.send(f"\033[1;35m{npc.name}: {response_content}\033[0m")
 
             # Update stress slightly if conversation is intense? (Simplification)
-            if "fuck" in arg.lower() or "kill" in arg.lower():
-                await self.log_event(f"Heated conversation with {npc.name}")
+            # Triggers: Profanity OR Strong Emotion words
+            triggers = ["fuck", "kill", "shit", "damn", "love", "help", "sorry", "thanks", "promise", "betray"]
+            if any(t in arg.lower() for t in triggers):
+                await self.log_event(f"Significant conversation with {npc.name}: '{arg}'")
 
         except Exception as e:
             await self.io.send(f"[{npc.name} glitches out... (AI Error: {e})]")

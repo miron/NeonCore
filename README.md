@@ -65,15 +65,36 @@ NeonCore utilizes a **Client-Server** architecture by default.
 #### AI Backend
 The game requires an LLM to power the "Digital Soul" and NPC interactions.
 
-1. **Gemini (Recommended - Cloud)**
+1. **Ollama (Recommended - Local)**
+   - Install [Ollama](https://ollama.com/) and pull the verified model:
+     ```bash
+     ollama pull qwen3:32b
+     ```
+   - *Note: Code includes specific JSON sanitization fixes for Qwen's creative output.*
+   - Configurable in `NeonCore/config.py`.
+
+2. **Gemini (Alternative - Cloud)**
    - Get API Key from Google AI Studio.
    - Set env var: `GEMINI_API_KEY="your-key"`
-   - *Default backend if key is present.*
+   - Change `default_backend` to `gemini` in `config.py`.
 
-2. **Ollama (Alternative - Local)**
-   - Install [Ollama](https://ollama.com/) and pull a model (e.g., `mistral`).
-   - Set env var: `NEONCORE_AI_BACKEND="ollama"` (or simply ensure `GEMINI_API_KEY` is not set).
-   - Configurable in `NeonCore/config.py`.
+3. **Remote Inference (Optional)**
+   If running Ollama on a separate powerful machine (e.g., a desktop with an RTX 4090), follow these steps:
+
+   **Host Machine (where Ollama runs):**
+   - **Bind Address:** Ensure Ollama listens on all interfaces.
+     - *Linux:* `OLLAMA_HOST="0.0.0.0" ollama serve`
+     - *Windows:* Set env var `OLLAMA_HOST` to `0.0.0.0` before starting.
+   - **Firewall:** Allow inbound traffic on port `11434` (TCP).
+     - *Fedora/RHEL:* `sudo firewall-cmd --add-port=11434/tcp --permanent && sudo firewall-cmd --reload`
+     - *Windows:* Add an Inbound Rule in "Windows Defender Firewall".
+
+   **Client Machine (where NeonCore runs):**
+   - Edit `.env` to point to the host:
+     ```bash
+     OLLAMA_HOST="http://192.168.0.x:11434"
+     OLLAMA_MODEL="qwen3:32b"  # Or your preferred model
+     ```
    
 ### In-Game Chat
 1. **Approach NPC**: Type `talk [NPC Name]` (e.g., `talk Lenard`).
