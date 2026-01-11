@@ -13,8 +13,24 @@ class Big5Traits:
 
 
 @dataclass
+class DarkTriad:
+    machiavellianism: int = 0
+    narcissism: int = 0
+    psychopathy: int = 0
+
+
+@dataclass
+class LightTriad:
+    kantianism: int = 0  # Treating people as ends, not means
+    humanism: int = 0    # Valuing dignity/worth of individuals
+    faith: int = 0       # Believing in fundamental goodness of people
+
+
+@dataclass
 class DigitalSoul:
     big5: Big5Traits = field(default_factory=Big5Traits)
+    dark_triad: DarkTriad = field(default_factory=DarkTriad)
+    light_triad: LightTriad = field(default_factory=LightTriad)
     skills: Dict[str, str] = field(default_factory=dict)
     traits: List[str] = field(default_factory=list)
     memories: List[str] = field(default_factory=list)
@@ -24,6 +40,8 @@ class DigitalSoul:
     def to_dict(self):
         return {
             "big5": self.big5.__dict__,
+            "dark_triad": self.dark_triad.__dict__,
+            "light_triad": self.light_triad.__dict__,
             "skills": self.skills,
             "traits": self.traits,
             "memories": self.memories,
@@ -36,6 +54,10 @@ class DigitalSoul:
         soul = cls()
         if "big5" in data:
             soul.big5 = Big5Traits(**data["big5"])
+        if "dark_triad" in data:
+            soul.dark_triad = DarkTriad(**data["dark_triad"])
+        if "light_triad" in data:
+            soul.light_triad = LightTriad(**data["light_triad"])
         soul.skills = data.get("skills", {})
         soul.traits = data.get("traits", [])
         soul.memories = data.get("memories", [])
@@ -54,12 +76,14 @@ class TraitManager:
 
         return DigitalSoul(
             big5=Big5Traits(
-                openness=random.randint(1, 100),
-                conscientiousness=random.randint(1, 100),
-                extraversion=random.randint(1, 100),
-                agreeableness=random.randint(1, 100),
-                neuroticism=random.randint(1, 100),
+                openness=50,
+                conscientiousness=50,
+                extraversion=50,
+                agreeableness=50,
+                neuroticism=50,
             ),
+            dark_triad=DarkTriad(),
+            light_triad=LightTriad(),
             skills={},  # Tabula Rasa: You learn by doing
             traits=[],  # Tabula Rasa: You develop traits by Reflecting
         )
