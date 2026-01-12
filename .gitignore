@@ -21,5 +21,5 @@ ENV/
 *.swo
 
 debug_models.py
-reference/
+
 extract_rules.py

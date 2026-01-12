@@ -84,6 +84,16 @@ class TestDigitalSoulIntegration(unittest.TestCase):
         print(f"Done ({duration:.1f}s)")
         
         content = response["message"]["content"]
+        
+        # Robust JSON extraction
+        import re
+        json_match = re.search(r"\{.*\}", content, re.DOTALL)
+        if json_match:
+            content = json_match.group(0)
+        
+        # SANITIZE JSON: Limit AI's creativity with "+" signs (e.g., +1 -> 1)
+        content = re.sub(r':\s*\+(\d+)', r': \1', content)
+
         try:
             return json.loads(content)
         except json.JSONDecodeError:

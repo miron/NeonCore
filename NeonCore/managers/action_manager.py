@@ -65,6 +65,16 @@ class ActionManager(AsyncCmd):
         self.ai_backends = {"gemini": GeminiBackend(), "ollama": OllamaBackend()}
         self.ai_backend = self.select_available_backend()
 
+    def get_names(self):
+        """Override to filter commands based on game state"""
+        if self.game_state == "grappling":
+            # Only allow specific commands in grapple mode
+            return ["do_choke", "do_throw", "do_go", "do_look", "do_release", "do_help", "do_quit", "do_say"]
+            # Added do_say for talking.
+        
+        # Default behavior: return all class attributes (AsyncCmd uses this)
+        return dir(self.__class__)
+
     async def postcmd(self, stop, line):
         """Hook method executed just after a command dispatch is finished."""
         await self.dependencies.story_manager.update()
@@ -215,6 +225,15 @@ class ActionManager(AsyncCmd):
         ]
 
 
+
+    async def do_go(self, arg):
+        """Move to a new location. If grappling, drags the target."""
+        if self.game_state == "grappling" and hasattr(self, "grapple_shell"):
+             await self.grapple_shell.do_go(arg)
+             return
+
+        # Normal Movement
+        await self.dependencies.world.do_go(arg)
 
     def complete_go(self, text, line, begidx, endidx):
         """Complete go command with available exits"""
@@ -440,7 +459,7 @@ class ActionManager(AsyncCmd):
             await self.io.send("No one is calling you right now, choomba.")
 
     async def do_use_skill(self, arg):
-        """Perform a skill check with the specified skill"""
+        """Perform a skill check or a combat action."""
         # Check if command is allowed in current game state
         allowed_states = ["before_perception_check", "conversation"]
         if self.game_state not in allowed_states:
@@ -476,33 +495,60 @@ class ActionManager(AsyncCmd):
                  await self.io.send("Error: NPC Manager not available.")
                  return
 
-            # Execute Opposed Check immediately (No Shell)
+            # Execute 2 Attacks (ROF 2) immediately
             player = self.char_mngr.player
-             # Ensure we use an asynchronous safe wrapper if roll_check has prints? 
-             # For now, roll_check uses wprint (sync). 
-             # We let it print.
-            check_data = player.roll_check(target_npc, "brawling", "evasion")
+            await self.io.send(f"\n\033[1;31m[COMBAT] {player.handle} attempts to BRAWL (ROF 2) with {target_npc.handle}!\033[0m")
             
-            result = check_data["result"]
-            
-            # Check for Brawling-specific Quest Triggers (e.g. Ambush on success)
-            # Logic: If success, do we trigger ambush?
-            # User previously had logic: "Trigger Ambush IS HERE NOW" upon snatch success.
-            # But straightforward brawling? "Ambush/Takedown" logic.
-            # I will map success to "ambush_trigger" return for the handler below.
-            if result == "success":
-                 # Return specific trigger for handling below
-                 if hasattr(self, "_trigger_ambush"): # Check if ambush logic exists
-                      # Just assume we return "ambush_trigger" if it was the intent?
-                      # Or let the standard result handling take care of it?
-                      # Line 495 checks result == "ambush_trigger".
-                      # So I should return that string if appropriate.
-                      # But simple brawling might just be damage.
-                      # For safety/regression fix, I just return the result string.
-                      pass
-            
-            # Line 492 assigns 'result' for standard skills. 
-            # I should update 'result' variable here to flow into Line 494 check.
+            for i in range(2):
+                await self.io.send(f"\033[1;33m--- Attack {i+1} ---\033[0m")
+                # Suppress internal prints of roll_check
+                check_data = player.roll_check(target_npc, "brawling", "evasion", verbose=False)
+                
+                # Manually Print Summary
+                att_total = check_data["att_total"]
+                def_total = check_data["def_total"]
+                details = check_data.get("details", {})
+                att_roll = details.get("att_roll", "?")
+                att_crit = details.get("att_crit")
+                def_crit = details.get("def_crit")
+                
+                roll_msg = f"Roll: {att_total} (Dice: {att_roll}"
+                if att_crit:
+                    roll_msg += f" [{att_crit}]"
+                roll_msg += f") vs Def: {def_total}"
+                if def_crit:
+                    roll_msg += f" [{def_crit}]"
+                
+                await self.io.send(roll_msg)
+                
+                if check_data["result"] == "success":
+                     # Apply Damage based on Body Stat
+                     # Body 0-4: 1d6, 5-6: 2d6, 7-10: 3d6, 11+: 4d6
+                     body = player.stats.get("body", 5)
+                     dmg_dice = 1
+                     if body >= 11: dmg_dice = 4
+                     elif body >= 7: dmg_dice = 3
+                     elif body >= 5: dmg_dice = 2
+                     
+                     dmg = 0
+                     dice_rolls = []
+                     for _ in range(dmg_dice):
+                         r = random.randint(1, 6)
+                         dmg += r
+                         dice_rolls.append(r)
+                         
+                     # Suppress internal prints of take_damage, we handle output
+                     taken = target_npc.take_damage(dmg, ignore_armor=False, verbose=False)
+                     
+                     dmg_str = f"{dmg} (Rolls: {dice_rolls})" if len(dice_rolls) > 1 else f"{dmg} (Roll: {dice_rolls[0]})"
+
+                     if taken == 0:
+                         await self.io.send(f"\033[1;32mHIT! Damage: {dmg_str} -> Absorbed by Armor (SP {target_npc.sp})\033[0m")
+                     else:
+                         await self.io.send(f"\033[1;32mHIT! Damage: {dmg_str} -> Taken: {taken}\033[0m")
+                else:
+                     await self.io.send("\033[1;30mMISS!\033[0m")
+                     
             return
 
         # Fallback to standard skill check for other skills
@@ -572,29 +618,17 @@ class ActionManager(AsyncCmd):
 
     async def do_look(self, arg):
         """Look around at your current location"""
+        if self.game_state == "grappling" and hasattr(self, "grapple_shell"):
+             await self.grapple_shell.do_look(arg)
+             return
+
         if self.game_state == "before_perception_check":
             await self.dependencies.world.do_look(arg)
         else:
-            await self.io.send("Nothing much to see here yet, choomba.")
+            # Fallback: Try looking anyway, or provide context
+             await self.dependencies.world.do_look(arg)
 
-    async def do_go(self, arg):
-        """Move to a new location"""
-        if self.game_state != "before_perception_check":
-            await self.io.send("That command isn't available right now, choomba.")
-            return
 
-        if not arg or arg.strip() == "":
-            await self.io.send("Go where? Try 'go north', 'go east', 'go south', or 'go west'.")
-            return
-
-        direction = arg.strip()
-        try:
-            await self.dependencies.world.do_go(direction)
-        except KeyError as e:
-            await self.io.send(f"Error: Location not found - {e}")
-            await self.io.send("This is a bug. Please report it.")
-        except Exception as e:
-            await self.io.send(f"Error moving: {e}")
 
     async def log_event(self, event):
         """Log an event to the player's recent_events buffer and trigger passive thoughts"""
@@ -716,8 +750,14 @@ class ActionManager(AsyncCmd):
             ]
 
             await self.io.send("\n\033[3m(Re-integrating psyche...)\033[0m")
-            analysis_response = self.ai_backend.get_chat_completion(analyze_messages)
-            analysis_text = analysis_response["message"]["content"]
+            try:
+                analysis_response = self.ai_backend.get_chat_completion(analyze_messages)
+                analysis_text = analysis_response["message"]["content"]
+            except Exception as e:
+                await self.io.send(f"\n\033[1;31m[ ERROR: Connection to Soul Severed ({e}) ]\033[0m")
+                await self.io.send("\033[31mYour thoughts scatter before they can form a coherent pattern.\033[0m")
+                self.char_mngr.player.digital_soul.recent_events.clear() # Clear events to unblock queue?
+                return
 
             # Robust JSON extraction
             import re
@@ -1199,112 +1239,87 @@ class ActionManager(AsyncCmd):
     # I will assume the user intends for this to be part of a `do_use_skill` method,
     async def do_grab(self, arg):
         """
-        Action: Grab a target (to Grapple) OR Grab an item from a target.
-        Usage:
-            grab <target>       -> Initiates Grapple
-            grab <item> <target> -> Snatches item from target
+        Action: Grab a target to initiate a Grapple.
+        Usage: grab <target>
         """
         if not arg:
-            print("Grab who or what?")
+            await self.io.send("Grab who?")
             return
-            
-        args = arg.split()
+
+        target_name = arg.strip()
         player = self.char_mngr.player
         
-        # Parse Intent
-        target_name = None
-        item_name = None
+        # 1. Find Target
+        target_npc = self.dependencies.npc_manager.get_npc(target_name)
+        if not target_npc:
+             target_npc = self.char_mngr.get_npc(target_name)
         
-        if len(args) == 1:
-            # Case A: grab <target>
-            target_name = args[0]
-            action_type = "grapple"
-        else:
-            # Case B: grab <item> <target> (Last arg is target usually)
-            # Simple heuristic: Last word is target, rest is item
-            target_name = args[-1]
-            item_name = " ".join(args[:-1])
-            action_type = "snatch"
-
-        # Find Target
-        target = self.dependencies.npc_manager.get_npc(target_name)
-        if not target:
-            print(f"You don't see '{target_name}' here.")
+        if not target_npc or target_npc.location != self.dependencies.world.player_position:
+            await self.io.send(f"You don't see '{target_name}' here.")
             return
 
-        # Check Location
-        if target.location != self.dependencies.world.player_position:
-             print(f"You don't see '{target_name}' here.")
-             return
+        # 2. Perform Opposed Check
+        await self.io.send(f"\n\033[33mAttempting to GRAB {target_npc.handle}...\033[0m")
+        # Rule: Grab uses Brawling vs Brawling (if Defender has it) or Evasion?
+        # CP Red: Attacker(DEX+Brawling) vs Defender(DEX+Brawling). If invalid/no brawling, use Evasion?
+        # We will check 'brawling' first.
+        result = player.roll_check(target_npc, "brawling", "brawling")
 
-        # Perform Opposed Check
-        # Rule: DEX + Brawling + 1d10 vs DEX + Brawling (or Evasion? Rules say Brawling stats for grab check)
-        # Using 'brawling' vs 'brawling' implies defender uses brawling to resist? 
-        # Rules: "both you and your target ... roll DEX + Brawling Skill + 1d10"
-        
-        print(f"\n\033[33mAttempting to {action_type} from {target.handle}...\033[0m")
-        result = player.roll_check(target, "brawling", "brawling") # Defender uses Brawling to resist grab
-        
         if result["result"] == "success":
-            if action_type == "snatch":
-                # Item Transfer Logic
-                # Check if target has item
-                # Simplified for Quest:
-                if "case" in item_name.lower() and "Briefcase (Locked)" in target.inventory: # assuming NPC inventory or script
-                     # Force transfer
-                     # (Note: NPC implementation might not have 'inventory' list fully populated in same way, 
-                     # but we can sim it or check our specific quest flags)
-                     print(f"\033[1;32m[SUCCESS] You rip the {item_name} from {target.handle}'s hands!\033[0m")
-                     player.inventory.append("Briefcase (Locked)")
-                     # Trigger Ambush IS HERE NOW
-                     self._trigger_ambush()
-                else:
-                     print(f"You grab at them, but they aren't holding '{item_name}'.")
-                     
-            elif action_type == "grapple":
-                # Enter Grapple State
-                print(f"\033[1;32m[SUCCESS] You wrap your arms around {target.handle}! You are now Grappling.\033[0m")
-                self.game_state = "grappling"
-                self.grappled_target = target
-                
-        else:
-             print(f"\033[1;31m[FAILURE] {target.handle} fends off your grab attempt!\033[0m")
-
-
-    async def do_choke(self, arg):
-        """Action: Choke a grappled opponent. Only available in Grapple."""
-        if self.game_state != "grappling" or not hasattr(self, "grappled_target"):
-            print("You aren't grappling anyone!")
-            return
+            await self.io.send(f"\033[1;32m[SUCCESS] You wrap your arms around {target_npc.handle}! You are now Grappling.\033[0m")
             
-        target = self.grappled_target
-        # Rule: Choke deals BODY stat damage directly? Or is it a roll?
-        # Rules (extracted): "Choke... damage equal to your BODY Statistic... ignores armor"
-        dmg = self.char_mngr.player.stats.get('body', 0)
-        print(f"\033[31mYou squeeze {target.handle}'s throat!\033[0m")
-        target.take_damage(dmg, ignore_armor=True)
+            # 3. Enter Grapple State / Shell
+            self.game_state = "grappling"
+            self.grappled_target = target_npc
+            
+            # Initialize Grapple Shell
+            from ..game_mechanics.combat_shells import GrappleShell
+            self.grapple_shell = GrappleShell(self.io, player, target_npc, self)
+            
+            # Switch Prompt
+            self.original_prompt = self.prompt
+            self.prompt = self.grapple_shell.prompt
+            
+            # Note: We don't enter a loop like cmdloop(). We just change state and let ActionManager handle commands.
+            # BUT the implementation_plan implies using the Shell class to handle logic.
+            # If we want commands like 'choke' to be handled by GrappleShell, we should probably forward them.
+            # OR we implement do_choke here and delegate to shell? 
+            # Design Choice: ActionManager `do_choke` calls `self.grapple_shell.do_choke()`.
+            
+        else:
+            await self.io.send(f"\033[1;31m[FAILURE] {target_npc.handle} fends off your grab attempt!\033[0m")
+            
+    async def do_choke(self, arg):
+        if self.game_state == "grappling" and hasattr(self, "grapple_shell"):
+             await self.grapple_shell.do_choke(arg)
+        else:
+             await self.io.send("You aren't grappling anyone.")
 
     async def do_throw(self, arg):
-         """Action: Throw a grappled opponent. Ends Grapple."""
-         if self.game_state != "grappling":
-            print("You aren't grappling anyone!")
-            return
-         
-         target = self.grappled_target
-         # Rule: Throw -> Prone + Damage? 
-         # Simplification: Ends grapple, prints msg.
-         print(f"\033[1;33mYou hurl {target.handle} to the ground!\033[0m")
-         # target.status = "prone" (if implemented)
-         self.game_state = "before_perception_check" # Reset state
-         del self.grappled_target
+        if self.game_state == "grappling" and hasattr(self, "grapple_shell"):
+             await self.grapple_shell.do_throw(arg)
+             # If throw ends grapple, shell should update state or return indicator
+             # But shell logic runs commands. We need to sync state.
+             # Ideally GrappleShell has a callback or we check state after.
+             if self.grapple_shell.grapple_ended:
+                  self.game_state = "before_perception_check"
+                  if hasattr(self, "original_prompt"):
+                      self.prompt = self.original_prompt
+                  del self.grappled_target
+                  del self.grapple_shell
+        else:
+             await self.io.send("You aren't grappling anyone.")
 
     async def do_release(self, arg):
-        """Action: Release a grappled opponent."""
-        if self.game_state == "grappling":
-             print("You let go.")
+         if self.game_state == "grappling":
+             await self.io.send("You release the grapple.")
              self.game_state = "before_perception_check"
-             if hasattr(self, "grappled_target"):
-                 del self.grappled_target
+             if hasattr(self, "original_prompt"):
+                 self.prompt = self.original_prompt
+             if hasattr(self, "grappled_target"): del self.grappled_target
+             if hasattr(self, "grapple_shell"): del self.grapple_shell
+         else:
+             await self.io.send("You aren't grappling anyone.")
 
     def _trigger_ambush(self):
         """Triggers the scripted ambush event."""

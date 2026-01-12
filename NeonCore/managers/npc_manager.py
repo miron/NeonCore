@@ -15,6 +15,7 @@ class NPC:
     skills: Dict[str, int] = field(default_factory=dict)
     combat_stats: Dict[str, int] = field(default_factory=lambda: {"hp": 20, "max_hp": 20})
     sp: int = 0
+    max_sp: int = 0
     inventory: List[str] = field(default_factory=list)
 
     @property
@@ -36,16 +37,19 @@ class NPC:
          # For now, let's implement basic skill_total which solves the immediate need.
          pass
 
-    def take_damage(self, amount: int, ignore_armor: bool = False):
+    def take_damage(self, amount: int, ignore_armor: bool = False, verbose: bool = True) -> int:
         effective_dmg = amount
         if not ignore_armor:
             if effective_dmg <= self.sp:
-                print(f"{self.name}'s armor absorbed the hit!")
-                return
+                if verbose:
+                    print(f"{self.name}'s armor absorbed the hit!")
+                return 0
             effective_dmg -= self.sp
         
         self.combat_stats["hp"] -= effective_dmg
-        print(f"{self.name} took {effective_dmg} damage! HP: {self.combat_stats['hp']}")
+        if verbose:
+            print(f"{self.name} took {effective_dmg} damage! HP: {self.combat_stats['hp']}")
+        return effective_dmg
 
 
 class NPCManager:
@@ -84,6 +88,7 @@ class NPCManager:
             skills={"handgun": 12, "brawling": 11, "perception": 9, "persuasion": 10, "evasion": 4}, # defaulting evasion to base cool/dex if not listed? Dex is 5. using conservative guess or just brawling/athletics? Added evasion
             combat_stats={"hp": 35, "max_hp": 35},
             sp=7,
+            max_sp=7,
             inventory=["Briefcase (Locked)"]
         )
         # Evasion typically uses Evasion skill + DEX. If skill not listed, just Stat?
