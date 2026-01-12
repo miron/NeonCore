@@ -1,36 +1,66 @@
-from ..utils import wprint
+from ..managers.story_manager import Story
 from ..managers.action_manager import ActionManager
 
+class PhoneCall(Story):
+    def __init__(self):
+        super().__init__("phone_call")
 
-class PhoneCall:
-    def __init__(self, char_mngr):
-        self.char_mngr = char_mngr
+    async def start(self, game_context):
+        """
+        Triggered when the story starts.
+        Effect: Prints notification of incoming call.
+        """
+        self.state = "ringing"
+        await game_context.io.send("\n\033[1;36m[INCOMING HOLO-CALL]\033[0m: Burner Phone (Lazlo)")
+        await game_context.io.send("Type 'answer' to accept the connection...")
+        
+        # Ensure dialogue context is cleared until answered
+        if game_context.char_mngr.player:
+            game_context.char_mngr.player.dialogue_context = None
 
-    def do_phone_call(self, args):
-        """Yo, chummer! You wanna make some eddies and climb the ranks?
-        You wanna be a player in Night City? Type 'phone_call' and let's get
-        this show on the road. Remember, in Night City, you gotta be quick on
-        your feet and make the right moves, or you'll end up as another memory
-        on the streets. So, you in or what?"""
-        wprint(
-            "Yo, listen up. You and your crew just hit the South Night City"
-            " docks and now you're chillin' with a burner phone call from "
-            "Lazlo, your fixer."
-        )
-        wprint(
-            "He's all like, 'Yo, we gotta change the spot for the payout. "
+    async def handle_answer(self, game_context):
+        """
+        Called when the player answers the call.
+        """
+        if self.state != "ringing":
+             return "already_answered"
+
+        self.state = "in_call"
+        await game_context.io.send(
+            "\nHe's all like, 'Yo, we gotta change the spot for the payout. "
             "Meet me at the industrial park in Heywood."
         )
-        wprint(
+        await game_context.io.send(
             "But something ain't right, 'cause Lazlo ain't telling you why."
             " He's just saying it's all good, but you can tell "
             "he's sweatin'."
         )
-        print("You got a bad feeling about this. Like, real bad.")
-        print("Yo chummer, you wanna roll for human perception check? ")
+        await game_context.io.send("You got a bad feeling about this. Like, real bad.")
+        await game_context.io.send("Yo chummer, you wanna roll for \033[1mHuman Perception\033[0m? (DV 17)")
+        
+        if game_context.char_mngr.player:
+            game_context.char_mngr.player.dialogue_context = "analyzing_lazlo_call"
+        
+        return "success"
 
-        # Return the new prompt and game state to be set by ActionManager
-        return {
-            "prompt": f"Hit TAB to see what's new!\n{ActionManager.prompt}",
-            "game_state": "before_perception_check",
-        }
+    async def update(self, game_context):
+        """
+        Check for triggers.
+        """
+        player = game_context.char_mngr.player
+        if not player or not getattr(player, "digital_soul", None):
+            return
+
+        # Check for Human Perception result
+        history_key = "Checked Lazlo Call"
+        if any(history_key in e for e in player.digital_soul.recent_events):
+            # The skill check logic (HumanPerceptionCheckCommand) already printed the reveal.
+            # We can now transition the story or mark it as resolved.
+            if self.state != "checked_perception":
+                self.state = "checked_perception"
+                # End the story as the call is finished
+                # This ensures ActionManager knows the story is over.
+                await game_context.story_manager.end_story()
+
+    async def end(self, game_context):
+        pass

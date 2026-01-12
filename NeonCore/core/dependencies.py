@@ -23,6 +23,7 @@ class GameDependencies:
     world: World
     npc_manager: NPCManager
     io: GameIO
+    story_manager: "StoryManager"
     skill_check: SkillCheckCommand = None
 
     @classmethod
@@ -36,6 +37,13 @@ class GameDependencies:
         cmd_mngr = CommandManager()
         npc_manager = NPCManager()
         world = World(char_mngr, npc_manager, io)
+        
+        # Initialize StoryManager
+        from ..managers.story_manager import StoryManager
+        from ..story_modules.phone_call import PhoneCall
+        
+        story_manager = StoryManager()
+        story_manager.register_story(PhoneCall)
 
         # Initialize the skill check command
         skill_check = SkillCheckCommand()
@@ -50,8 +58,12 @@ class GameDependencies:
             cmd_mngr=cmd_mngr,
             world=world,
             npc_manager=npc_manager,
+            story_manager=story_manager,
             skill_check=skill_check,
             io=io,
         )
+        
+        # Inject dependencies into StoryManager
+        story_manager.set_dependencies(dependencies)
 
         return ActionManager(dependencies)

@@ -27,7 +27,8 @@ class RockerboyAbility(RoleAbility):
         return RoleDisplayData(
             name="Charismatic Impact",
             description=(
-                "You know when someone is a fan and can influence them. "
+                "You know when someone is a fan and receive a +2 to any EMP or COOL "
+                "based Skill Check made against them, including Facedowns. "
                 "Use `look` to spot fans. `talk` to influence them."
             )
         )
