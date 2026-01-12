@@ -120,8 +120,24 @@ class World:
                     f"\n\033[1;36m=== {target_npc.name.upper()} ({target_npc.role}){rel_tag}\033[1;36m ===\033[0m"
                 )
                 await self.io.send(target_npc.description)
+                # Inject Dynamic Status into Stats Block
                 if target_npc.stats_block:
-                    await self.io.send(target_npc.stats_block)
+                    import re
+                    # Get current stats
+                    hp = target_npc.combat_stats.get("hp", "?")
+                    max_hp = target_npc.combat_stats.get("max_hp", "?")
+                    sp = target_npc.sp
+                    max_sp = getattr(target_npc, "max_sp", sp) # Fallback if not set
+                    
+                    # Update HP display
+                    block = target_npc.stats_block
+                    # Replace HP: 35 with HP: 24/35
+                    block = re.sub(r"(HP:\s*)(\d+)", f"HP: {hp}/{max_hp}", block)
+                    # Replace SP: 7 with SP: 7/7
+                    block = re.sub(r"(SP:\s*)(\d+)", f"SP: {sp}/{max_sp}", block)
+                    
+                    await self.io.send(block)
+
                 return
             else:
                 await self.io.send(f"You don't see '{arg}' here.")
@@ -164,33 +180,34 @@ class World:
         current_location = self.locations[self.player_position]
         try:
             self.player_position = current_location["exits"][direction]
-
-            # NPC encounter logic using EAFP
-            try:
-                npcs = current_location["npcs"]
-                # Random chance for  encounter
-                if random.random() < current_location.get("encounter_chance", 0.3):
-                    npc_name = random.choice(npcs)
-                    # Get actual NPC object from character manager
-                    npc = next(
-                        (
-                            npc
-                            for npc in self.char_mngr.npcs
-                            if npc.handle.lower() == npc_name.lower()
-                        ),
-                        None,
-                    )
-                    if npc:
-                        await self.io.send(f"You've encountered {npc.handle}!")
-                        SkillCheckCommand(self.char_mngr.player, npc=npc)
-            except KeyError:
-                pass  # No NPCs in this location
-            except Exception as e:
-                await self.io.send(f"Error during NPC encounter: {e}")
-
-            await self.do_look(None)  # Automatically look after moving
         except KeyError:
             await self.io.send(f"You can't go {direction} from here.")
+            return
+
+        # NPC encounter logic using EAFP
+        try:
+            npcs = current_location["npcs"]
+            # Random chance for  encounter
+            if random.random() < current_location.get("encounter_chance", 0.3):
+                npc_name = random.choice(npcs)
+                # Get actual NPC object from character manager
+                npc = next(
+                    (
+                        npc
+                        for npc in self.char_mngr.npcs
+                        if npc.handle.lower() == npc_name.lower()
+                    ),
+                    None,
+                )
+                if npc:
+                    await self.io.send(f"You've encountered {npc.handle}!")
+                    SkillCheckCommand(self.char_mngr.player, npc=npc)
+        except KeyError:
+            pass  # No NPCs in this location
+        except Exception as e:
+            await self.io.send(f"Error during NPC encounter: {e}")
+
+        await self.do_look(None)  # Automatically look after moving
 
     def do_quit(self, arg):
         """Quit the game."""

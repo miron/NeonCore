@@ -83,18 +83,13 @@ class Character:
         stat_value = self.stats.get(stat_name, 0)
         return stat_value + skill_rank
 
-    def roll_check(self, defender, skill_name, def_skill_name="evasion"):
+    def roll_check(self, defender, skill_name, def_skill_name="evasion", verbose=True):
         """
-        Perform an opposed skill check against a defender.
-        Returns dictionary with details: {'result': 'success'|'failure', 'att_total': int, 'def_total': int, ...}
+        Perform an opposed skill check.
+        verbose: If False, suppresses print statements (useful for multi-attack logic).
         """
         # Attacker Stats
         att_base = self.skill_total(skill_name)
-        
-        # Defender Stats
-        # Handle defender not having the skill gracefully (default to stat 0, skill 0 -> total 0, or just Ref/Dex?)
-        # For now assuming defender has the skill or default [0,0] from skill_total logic if I update it.
-        # But defender is also a Character instance? Yes.
         def_base = defender.skill_total(def_skill_name)
         
         # Rolls
@@ -119,52 +114,55 @@ class Character:
         att_total = att_base + roll_att
         def_total = def_base + roll_def
         
-        # Output
-        wprint(f"\n[ CHECK: {self.handle} ({skill_name}) vs {defender.handle} ({def_skill_name}) ]")
-        att_breakdown = f"Base {att_base} + Roll {roll_att}"
-        if att_crit:
-            att_breakdown += f" ({att_crit})"
-        wprint(f"Attacker Total: {att_total} ({att_breakdown})")
-        
-        def_breakdown = f"Base {def_base} + Roll {roll_def}"
-        if def_crit:
-            def_breakdown += f" ({def_crit})"
-        wprint(f"Defender Total: {def_total} ({def_breakdown})")
-        
-        if att_total > def_total:
-             wprint(f"Result: {self.handle} WINS!")
-             return {
-                 "result": "success",
-                 "att_total": att_total,
-                 "def_total": def_total
+        if verbose:
+            wprint(f"\n[ CHECK: {self.handle} ({skill_name}) vs {defender.handle} ({def_skill_name}) ]")
+            att_breakdown = f"Base {att_base} + Roll {roll_att}"
+            if att_crit: att_breakdown += f" ({att_crit})"
+            wprint(f"Attacker Total: {att_total} ({att_breakdown})")
+            
+            def_breakdown = f"Base {def_base} + Roll {roll_def}"
+            if def_crit: def_breakdown += f" ({def_crit})"
+            wprint(f"Defender Total: {def_total} ({def_breakdown})")
+            
+            if att_total > def_total:
+                 wprint(f"Result: {self.handle} WINS!")
+            else:
+                 wprint(f"Result: {defender.handle} WINS!")
+
+        return {
+             "result": "success" if att_total > def_total else "failure",
+             "att_total": att_total,
+             "def_total": def_total,
+             "details": {
+                 "att_roll": roll_att, 
+                 "def_roll": roll_def,
+                 "att_crit": att_crit,
+                 "def_crit": def_crit
              }
-        else:
-             wprint(f"Result: {defender.handle} WINS!")
-             return {
-                 "result": "failure",
-                 "att_total": att_total,
-                 "def_total": def_total
-             }
+        }
 
     def get_skills(self):
         return list(self.skills.keys())
 
-    def take_damage(self, amount: int, ignore_armor: bool = False):
+    def take_damage(self, amount: int, ignore_armor: bool = False, verbose=True) -> int:
         """
-        Apply damage to the character, accounting for armor unless ignored.
+        Apply damage to the character. Returns actual damage taken.
+        verbose: Suppress output if handled externally.
         """
         effective_damage = amount
         if not ignore_armor:
-             # Assuming 'sp' is in self.defence
              armor_sp = self.defence.get("sp", 0)
              if effective_damage <= armor_sp:
-                 print(f"Armor absorbed the damage! (SP: {armor_sp} vs Damage: {effective_damage})")
-                 return
+                 if verbose:
+                     print(f"Armor absorbed the damage! (SP: {armor_sp} vs Damage: {effective_damage})")
+                 return 0
              effective_damage -= armor_sp
 
         # Apply damage to HP
         self.combat["hp"] -= effective_damage
-        print(f"{self.handle} took {effective_damage} damage! HP Remaining: {self.combat['hp']}")
+        if verbose:
+            print(f"{self.handle} took {effective_damage} damage! HP Remaining: {self.combat['hp']}")
+        return effective_damage
 
 
 

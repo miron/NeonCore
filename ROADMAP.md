@@ -1,5 +1,10 @@
 # NeonCore Project Roadmap
 
+## Immediate Fixes (Regressions)
+- [x] **Choking Regression**: `choke lenard` confirms damage, but `look` shows full HP. (Fixed via `look` dynamic update)
+- [x] **Grappling UX**: Visual feedback in prompt when grappling; ensuring grappled target moves with player.
+- [x] **Reflect Crashes**: Investigate `test_soul_integration.py` failures/timeouts. (Added robust Error Handling)
+
 ## Phase 1: The Hook (Current Focus)
 - [ ] **Scene Implementation**:
     - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
