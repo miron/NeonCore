@@ -11,6 +11,7 @@ class NPC:
     dialogue_context: str = ""
     stats_block: str = ""
     # Combat Attributes
+    relationships: Dict[str, str] = field(default_factory=dict)
     skills: Dict[str, int] = field(default_factory=dict)
     combat_stats: Dict[str, int] = field(default_factory=lambda: {"hp": 20, "max_hp": 20})
     sp: int = 0

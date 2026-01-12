@@ -110,7 +110,10 @@ class CharacterManager:
             "ascii_art": self.player.ascii_art,
             "defence": self.player.defence,
             "weapons": self.player.weapons,
-            "role_ability": self.player.role_ability,
+            "role_ability": {
+                "name": self.player.role_ability.get_display_data().name,
+                "notes": self.player.role_ability.get_display_data().description
+            },
             "cyberware": self.player.cyberware,
             "inventory": self.player.inventory
         }

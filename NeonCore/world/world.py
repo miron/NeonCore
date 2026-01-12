@@ -110,8 +110,14 @@ class World:
             # Check NPCs
             target_npc = self.npc_manager.get_npc(arg)
             if target_npc and target_npc.location == self.player_position:
+                rel_tag = ""
+                player_handle = self.char_mngr.player.handle
+                status = target_npc.relationships.get(player_handle)
+                if status and status.lower() == "fan":
+                    rel_tag = " \033[1;36m[ FAN ]\033[0m"
+
                 await self.io.send(
-                    f"\n\033[1;36m=== {target_npc.name.upper()} ({target_npc.role}) ===\033[0m"
+                    f"\n\033[1;36m=== {target_npc.name.upper()} ({target_npc.role}){rel_tag}\033[1;36m ===\033[0m"
                 )
                 await self.io.send(target_npc.description)
                 if target_npc.stats_block:
@@ -132,9 +138,16 @@ class World:
         if visible_npcs:
             # unique list to avoid duplicates from aliases
             unique_npcs = {npc.name: npc for npc in visible_npcs}.values()
-            npc_names = [
-                f"\033[1;35m{npc.name} ({npc.role})\033[0m" for npc in unique_npcs
-            ]
+            npc_names = []
+            player_handle = self.char_mngr.player.handle
+            for npc in unique_npcs:
+                # Check for Relationship Status (e.g. Fan)
+                rel_tag = ""
+                status = npc.relationships.get(player_handle)
+                if status and status.lower() == "fan":
+                    rel_tag = " \033[1;36m[ FAN ]\033[0m" # Cyan tag for positive
+
+                npc_names.append(f"\033[1;35m{npc.name} ({npc.role}){rel_tag}\033[0m")
             await self.io.send(f"\nVisible Characters: {', '.join(npc_names)}")
 
         # Show available exits
