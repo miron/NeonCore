@@ -171,8 +171,14 @@ class ActionManager(AsyncCmd):
         self.conversing_npc = target_npc
         self.prompt = f"\033[1;32mYou -> {npc_name} > \033[0m"
 
+        # Fan Check for Header
+        rel_tag = ""
+        status = target_npc.relationships.get(player_name)
+        if status and status.lower() == "fan":
+             rel_tag = " \033[1;36m[ FAN ]\033[0m"
+
         print(
-            f"\n\033[1;35m[ Entering conversation with {npc_name}. Type 'bye' to exit. ]\033[0m"
+            f"\n\033[1;35m[ Entering conversation with {npc_name}{rel_tag}\033[1;35m. Type 'bye' to exit. ]\033[0m"
         )
 
         # If user provided an argument (e.g. "talk lazlo hello"), treat it as the first message
@@ -767,6 +773,17 @@ class ActionManager(AsyncCmd):
         except Exception as e:
             await self.io.send(f"\nReflection failed: {e}")
 
+    async def do_dev_fan(self, arg):
+        """[DEBUG] Make an NPC a Fan of the player. Usage: dev_fan <npc_handle>"""
+        npc = self.dependencies.npc_manager.get_npc(arg)
+        if npc:
+            player_handle = self.char_mngr.player.handle
+            npc.relationships[player_handle] = "Fan"
+            await self.io.send(f"\033[1;36m[DEBUG] {npc.name} is now a FAN of {player_handle}!\033[0m")
+            await self.io.send(f"Try: 'look {arg}' or 'talk {arg}'")
+        else:
+             await self.io.send(f"NPC '{arg}' not found.")
+
     async def do_help(self, arg):
         """Get help for commands - context-sensitive based on game state."""
         if not arg:
@@ -995,6 +1012,11 @@ class ActionManager(AsyncCmd):
                     "Keep responses short (under 2 sentences) and in-character (Cyberpunk slang). "
                     "Do not use quotes."
                 ),
+            },
+            # Role Ability Context Injection
+            {
+                "role": "system",
+                "content": player.role_ability.get_social_context(npc.relationships.get(player.handle))
             },
             # We should ideally keep a history buffer, but for now simple 1-turn
             {"role": "user", "content": arg},

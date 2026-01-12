@@ -2,6 +2,7 @@
 
 import random
 from .trait_manager import DigitalSoul
+from .role_manager import RoleManager
 from ..utils import DiceRoller, wprint
 
 
@@ -16,11 +17,12 @@ class Character:
         skills,
         defence,
         weapons,
-        role_ability,
         cyberware,
         gear,
         ascii_art,
+        role_ability=None,
         digital_soul=None,
+        relationships=None,
         inventory=None,  # New dynamic inventory
     ):
         self.char_id = char_id
@@ -34,6 +36,11 @@ class Character:
         self.cyberware = cyberware
         self.ascii_art = ascii_art
         self.digital_soul = digital_soul if digital_soul else DigitalSoul()
+        self.relationships = relationships if relationships else {}
+        # Initialize Role Ability via Manager
+        # Default rank 4 (standard start) or derived from stats later
+        self.role_ability = RoleManager.get_ability(self.role, rank=4)
+        
         # Unified Inventory (Starting Gear + Acquired Items)
         self.inventory = inventory if inventory else []
         if gear:

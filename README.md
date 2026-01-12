@@ -105,6 +105,13 @@ The game requires an LLM to power the "Digital Soul" and NPC interactions.
    ```
 3. **Commands**: Type `bye` to exit, or `take [item]` to grab things mid-conversation.
 
+### Developer & Debug Commands
+Use these commands to test game systems on the fly without setting up complex scenarios.
+
+- **`dev_fan [npc_name]`**: Forces the specified NPC to become a "Fan" of the player (Relationship Status: Fan).
+  - *Usage*: `dev_fan lenard`
+  - *Effect*: `look` shows `[ FAN ]` tag. `talk` uses "Charismatic Impact" context.
+
 ## Future Development Roadmap
 
 To expand NeonCore into a more substantial text RPG (similar to Sindome), the following components would need to be developed:

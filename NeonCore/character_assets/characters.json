@@ -206,10 +206,7 @@
                 "notes": "sword/baseball bat"
             }
         ],
-        "role_ability": {
-            "name": "Charismatic Impact",
-            "notes": "You know when someone is a fan and receive a +2 to any EMP or COOL based Skill Check made against them, including Facedowns"
-        },
+
         "cyberware": [
             {
                 "name": "Internal Agent",
@@ -447,10 +444,7 @@
                 "notes": "25 rounds extra"
             }
         ],
-        "role_ability": {
-            "name": "Combat Awareness",
-            "notes": "Add +4 to any Initiative roll you make."
-        },
+
         "cyberware": [
             {
                 "name": "Image Enhance Cybereyes",
@@ -676,10 +670,7 @@
                 "notes": "8 rounds extra"
             }
         ],
-        "role_ability": {
-            "name": "Maker",
-            "notes": "Your Electronics/Security Tech Skill is boosted by +4 (already included above)."
-        },
+
         "cyberware": [
             {
                 "name": "Tool Hand",
@@ -909,10 +900,7 @@
                 "notes": "small knife"
             }
         ],
-        "role_ability": {
-            "name": "Medicine",
-            "notes": "You have access to the Surgery Skill (already included above)."
-        },
+
         "cyberware": [
             {
                 "name": "Tool Hand",
@@ -1150,10 +1138,7 @@
                 "notes": "sword/folded tripod"
             }
         ],
-        "role_ability": {
-            "name": "Credibility",
-            "notes": "Once per hour, you may roll a 1d10. If you roll higher than 4, you learn a rumor pertinent to your current situation."
-        },
+
         "cyberware": [
             {
                 "name": "Internal Agent",
