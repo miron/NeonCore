@@ -4,6 +4,8 @@ from ..game_mechanics import SkillCheckCommand
 from ..utils import wprint
 
 
+from ..managers.database_manager import DatabaseManager
+
 class World:
     def __init__(self, char_mngr, npc_manager, io):
         self.char_mngr = char_mngr
@@ -12,6 +14,7 @@ class World:
         self.locations: Dict[str, Dict] = self._init_locations()
         self.player_position = "start_square"
         self.inventory = []
+        self.db = DatabaseManager()
 
     def _init_locations(self) -> Dict[str, Dict]:
         # Example structure
@@ -110,25 +113,52 @@ class World:
         }
 
     def add_item(self, location_id, item):
-        """Add an item to a location."""
-        if location_id in self.locations:
-            self.locations[location_id]["items"].append(item)
+        """Add an item to a location (Persist to DB)."""
+        item_name = item.get('name') if isinstance(item, dict) else item
+        
+        # 1. Check if it's already an existing DB instance (Has ID)
+        if isinstance(item, dict) and "id" in item:
+            self.db.update_item_state(item["id"], location_id=location_id, owner_id=None)
+            return
+
+        # 2. Legacy/New Item: Create a fresh instance from Template
+        # Try to find template by name (Simple lookup map for now, or query DB by name?)
+        # For prototype, we hardcode the mapping or rely on name matching
+        # In a real app, 'item' should ALWAYS have a template_id ref.
+        
+        # Look up template ID (Hack for now: Seeding assumed known IDs or Names)
+        # We'll just try to create an instance for "Glitching Burner"
+        template_id = None
+        conn = self.db._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM item_templates WHERE name LIKE ?", (item_name,))
+        row = cursor.fetchone()
+        
+        if row:
+            template_id = row[0]
+            self.db.create_instance(template_id, location_id=location_id)
+        else:
+            # Fallback: Create ad-hoc instance/template? 
+            # For now, just print warning, item is lost to the ether if not in DB.
+            print(f"Warning: Could not persist '{item_name}' (No Template).")
 
     def remove_item(self, location_id, item_name):
-        """Remove an item from a location by name. Returns the item object/dict."""
-        if location_id not in self.locations:
-            return None
-        
-        items = self.locations[location_id]["items"]
-        for i, item in enumerate(items):
-            name = item.get('name') if isinstance(item, dict) else item
-            if name.lower() == item_name.lower():
-                return items.pop(i)
+        """Pick up an item (Remove from Location in DB, return Instance)."""
+        # Find item in DB at this location
+        items = self.db.get_items_in_location(location_id)
+        for item in items:
+            if item["name"].lower() == item_name.lower():
+                # Found it.
+                # Update State: Remove from location (Conceptually). 
+                # Caller (ActionManager) will assign Owner, so we just return it.
+                # But to prevent 'look' from finding it before Owner assignment, we set loc=None.
+                self.db.update_item_state(item["id"], location_id=None, owner_id=None)
+                return item
         return None
 
     def get_items_in_location(self, location_id):
-        """Get list of items in a location."""
-        return self.locations.get(location_id, {}).get("items", [])
+        """Get list of items in a location (From DB)."""
+        return self.db.get_items_in_location(location_id)
 
     async def do_look(self, arg):
         """Look around your current location or at a specific character. Usage: look [target]"""
