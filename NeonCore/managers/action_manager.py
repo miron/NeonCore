@@ -70,10 +70,14 @@ class ActionManager(AsyncCmd):
         if self.game_state == "grappling":
             # Only allow specific commands in grapple mode
             return ["do_choke", "do_throw", "do_go", "do_look", "do_release", "do_help", "do_quit", "do_say"]
+            
+        if self.game_state == "choose_character":
+             # Initial State: Restrict to basics
+             return ["do_choose", "do_load", "do_reset", "do_help", "do_quit", "do_protocol", "do_shell"]
             # Added do_say for talking.
         
-        # Default behavior: return all class attributes (AsyncCmd uses this)
-        return dir(self.__class__)
+        # Default behavior: return all available commands
+        return dir(self)
 
     async def postcmd(self, stop, line):
         """Hook method executed just after a command dispatch is finished."""
@@ -262,6 +266,21 @@ class ActionManager(AsyncCmd):
         ]
 
 
+    async def do_reset(self, arg):
+        """
+        Delete your save file to start fresh.
+        Usage: reset <handle>
+        """
+        if not arg:
+            await self.io.send("Reset whom? (Usage: reset <handle>)")
+            return
+            
+        db = self.dependencies.world.db
+        if db.delete_player(arg):
+             await self.io.send(f"\033[1;33m[SYSTEM] Save file for '{arg}' deleted. You are now a blank slate.\033[0m")
+        else:
+             await self.io.send(f"No active save file found for '{arg}'.")
+
     async def do_choose(self, arg=None):
         """Allows the player to choose a character by Handle."""
         allowed_names = self.char_mngr.character_names()
@@ -296,28 +315,194 @@ class ActionManager(AsyncCmd):
         )
 
         if selected_char:
-             self.char_mngr.set_player(selected_char)
-             await self.io.send(f"\nLocked and loaded. You are now {selected_char.handle}.")
-
-             # Intro: Phone on Floor
-             await self.io.send(
-                 "\nYou materialize in the heavy air of Night City. "
-                 "A cheap plastic object vibrates violently on the concrete near your feet."
-             )
-             # Trigger perception check if needed or just welcome
+             # --- 3. Save/Load Check ---
+             db = self.dependencies.world.db
+             saved_state = db.load_player(selected_char.handle)
              
-        # Set remaining characters as NPCs
-        self.char_mngr.set_npcs(
-            [
-                c
-                for c in self.char_mngr.characters.values()
-                if c.char_id != selected_char.char_id
-            ]
-        )
-        # trigger the phone call story
-        await self.dependencies.story_manager.start_story("phone_call")
+             if saved_state:
+                 # RESUME GAME
+                 await self.io.send(f"\n\033[1;32m[SYSTEM] Signal re-acquired. Resuming session for {selected_char.handle}...\033[0m")
+                 
+                 # Restore Location
+                 if saved_state['location_id']:
+                     self.dependencies.world.player_position = saved_state['location_id']
+                 
+                 # Restore Items (Resolve IDs -> Dicts/Objects)
+                 # Note: Currently Items are Dicts in Inventory. DatabaseManager.get_item returns Dict.
+                 inv_ids = json.loads(saved_state['inventory_ids']) if saved_state['inventory_ids'] else []
+                 equip_ids = json.loads(saved_state['equipped_ids']) if saved_state['equipped_ids'] else []
+                 
+                 inv_items = []
+                 for i_id in inv_ids:
+                     item = db.get_item(i_id)
+                     if item: inv_items.append(item)
+                     
+                 equip_items = []
+                 for i_id in equip_ids:
+                     item = db.get_item(i_id)
+                     if item: equip_items.append(item)
+                 
+                 # PARSE STATS
+                 # Handle the new "attributes" + "combat" structure
+                 stats_payload = {}
+                 raw_stats = saved_state['stats']
+                 if isinstance(raw_stats, str):
+                     try:
+                        stats_payload = json.loads(raw_stats)
+                     except:
+                        pass
+                 elif isinstance(raw_stats, dict):
+                     stats_payload = raw_stats
+                     
+                 # Pass the Full Payload to restore_state
+                 selected_char.restore_state(stats_payload, inv_items, equip_items)
+                 
+                 self.char_mngr.set_player(selected_char)
+                 self.game_state = "active_game" # Skip Intro
+                 
+                 # Show Look immediately
+                 await self.do_look("")
+                 
+             else:
+                 # NEW GAME (Intro)
+                 self.char_mngr.set_player(selected_char)
+                 await self.io.send(f"\nLocked and loaded. You are now {selected_char.handle}.")
+                 
+                 # Initialize NPCs
+                 self.char_mngr.set_npcs(
+                    [
+                        c
+                        for c in self.char_mngr.characters.values()
+                        if c.char_id != selected_char.char_id
+                    ]
+                 )
+                 
+                 # Spawn Intro Item (The Glitching Burner)
+                 # We need to guarantee it exists for the "Take" interaction
+                 db = self.dependencies.world.db
+                 start_loc = self.dependencies.world.player_position
+                 
+                 # 1. Spawn Intro Burner
+                 burner_tid = db.get_template_id_by_name("Glitching Burner")
+                 if burner_tid:
+                      db.create_instance(burner_tid, location_id=start_loc)
+                 
+                 # 2. Persist Player Starting Gear
+                 new_inv = []
+                 for item in selected_char.inventory:
+                     name = item.get('name') if isinstance(item, dict) else item
+                     # Check/Create Template
+                     tid = db.get_template_id_by_name(name)
+                     if not tid:
+                         desc = item.get('notes', 'Standard gear.')
+                         tid = db.create_template(name, "gear", desc)
+                     
+                     iid = db.create_instance(tid, owner_id=selected_char.handle)
+                     
+                     if isinstance(item, dict):
+                         item['id'] = iid
+                     else:
+                         item = {"name": item, "id": iid}
+                     new_inv.append(item)
+                 selected_char.inventory = new_inv
 
-        self.game_state = "character_chosen"
+                 new_weapons = []
+                 for item in selected_char.weapons:
+                     name = item.get('name') if isinstance(item, dict) else item
+                     tid = db.get_template_id_by_name(name)
+                     if not tid:
+                         desc = item.get('notes', 'Weapon.')
+                         desc = item.get('notes', 'Weapon.')
+                         # Try to parse stats from json if possible or default
+                         # CAPTURE ALL STATS (Ammo, ROF, Dmg)
+                         stats = {}
+                         # specific keys to migrate to base_stats
+                         for key in ['dmg', 'damage', 'ammo', 'rof', 'range', 'cost']:
+                             if key in item: stats[key] = item[key]
+                             
+                         tid = db.create_template(name, "weapon", desc, base_stats=json.dumps(stats))
+                     
+                     iid = db.create_instance(tid, owner_id=selected_char.handle)
+                     if isinstance(item, dict):
+                         item['id'] = iid
+                     else:
+                         item = {"name": item, "id": iid}
+                     new_weapons.append(item)
+                 selected_char.weapons = new_weapons
+
+                 
+                 # Trigger Story
+                 await self.dependencies.story_manager.start_story("phone_call")
+                 
+                 # Set State to 'character_chosen' to trigger the Intro Flavor Text in do_look
+                 self.game_state = "character_chosen"
+                 # Trigger the first look (Intro)
+                 await self.do_look("")
+
+
+    async def do_save(self, arg):
+        """Manually save your progress."""
+        player = self.char_mngr.player
+        if not player:
+            await self.io.send("No character loaded to save.")
+            return
+            
+        # Serialize - NOW SAVING FULL STATS (Attributes + Combat)
+        data = player.to_dict()
+        
+        # Old Format (Buggy): data['stats'] (just attributes)
+        # New Format: { "attributes": {...}, "combat": {...} }
+        full_stats = {
+            "attributes": data['stats'], # Strength, Ref, etc.
+            "combat": data['combat']     # HP, SP, etc.
+        }
+        
+        loc = self.dependencies.world.player_position
+        
+        success = self.dependencies.world.db.save_player(
+            player.handle,
+            loc,
+            full_stats, # Pass Dict, DatabaseManager.save_player handles json.dumps in this project version
+            data['inventory_ids'],
+            data['equipped_ids']
+        )
+        
+        # 2. Persist Item States (Mutable Stats like Ammo)
+        # We must iterate over the player's actual item objects and update the DB instances
+        all_items = player.inventory + player.weapons
+        for item in all_items:
+            if isinstance(item, dict) and 'id' in item:
+                # Filter out non-stat keys for the stats payload if we want cleanliness, 
+                # or just dump the difference.
+                # Ideally, we save everything that isn't ID/Name/Desc?
+                # For simplicity, we save the whole dict as current_stats, 
+                # or just specific mutable fields.
+                # Let's save the whole mutable dict to ensure we capture ammo/notes changes.
+                # But we should exclude ID/Name if they are redundant? No, JSON is flexible.
+                self.dependencies.world.db.update_instance_stats(item['id'], item)
+        
+        if success:
+            await self.io.send("\033[1;32m[SYSTEM] Progress Saved.\033[0m")
+        else:
+            await self.io.send("\033[1;31m[ERROR] Save Failed.\033[0m")
+
+    async def do_load(self, arg):
+        """
+        Load a saved game.
+        Usage: load <handle>
+        """
+        if not arg:
+            await self.io.send("Load which character? (Use 'load <handle>')")
+            return
+            
+        # Strict Check: Must exist in DB
+        db = self.dependencies.world.db
+        if not db.load_player(arg):
+             await self.io.send(f"No save file found for '{arg}'. Use 'choose {arg}' to start a new game.")
+             return
+
+        await self.do_choose(arg)
+
 
     def complete_choose(self, text, line, begidx, endidx):
         """Complete character handles after 'choose' command"""
@@ -325,6 +510,11 @@ class ActionManager(AsyncCmd):
         # And filter manually + append space
         names = self.char_mngr.character_names()
         return [n + " " for n in names if n.lower().startswith(text.lower())]
+
+    def complete_load(self, text, line, begidx, endidx):
+        """Complete ONLY saved handles"""
+        saved = self.dependencies.world.db.get_all_saved_handles()
+        return [n + " " for n in saved if n.lower().startswith(text.lower())]
 
     async def start_game(self):
         """
@@ -366,8 +556,8 @@ class ActionManager(AsyncCmd):
         if self.game_state == "choose_character":
             allowed.add("choose")
 
-        elif self.game_state == "character_chosen":
-            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop"})
+        elif self.game_state in ["character_chosen", "active_game"]:
+            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop", "save", "load", "reset", "quit", "help"})
 
         elif self.game_state == "before_perception_check":
             allowed.update({
@@ -669,14 +859,14 @@ class ActionManager(AsyncCmd):
                  "\nA discard pile of tech litter surrounds you on the concrete."
              )
              
-             # Check if player already has the phone
-             has_phone = False
+             # Check if player already has the Glitching Phone specifically
+             has_glitching = False
              for w in self.char_mngr.player.weapons:
-                 if "burner" in w.get('name','').lower(): has_phone = True
+                 if "glitching" in w.get('name','').lower(): has_glitching = True
              for i in self.char_mngr.player.inventory:
-                 if "burner" in i.get('name','').lower(): has_phone = True
+                 if "glitching" in i.get('name','').lower(): has_glitching = True
                  
-             if not has_phone:
+             if not has_glitching:
                  await self.io.send(
                      "\n\033[1;33m[!] OBJECT OF INTEREST:\033[0m A \033[1;31mGlitching Burner\033[0m vibrates violently near your feet."
                      "\n(Type 'take Glitching Burner' to answer)"
@@ -1210,12 +1400,20 @@ class ActionManager(AsyncCmd):
                    # Fall through to normal Pickup/Draw logic
                    pass
               else:
-                  # Create the item and equip it (First time only)
-                  phone_item = {"name": "Glitching Burner", "type": "tool", "description": "A cheap, vibrating burner phone."}
-                  player.weapons.append(phone_item)
-                  await self.io.send("\033[1;32m[+ITEM] You snatch the vibrating Burner Phone.\033[0m")
-                  await self.io.send("(It continues to buzz in your hand. Use it to answer.)")
-                  return
+                  # Intro Pickup: Use DB logic but with custom flavor text
+                  # Try to pick it up from the world
+                  current_loc = self.dependencies.world.player_position
+                  # We use 'glitching burner' as keyword
+                  world_item = self.dependencies.world.remove_item(current_loc, "glitching burner")
+                  
+                  if world_item:
+                      player.weapons.append(world_item)
+                      await self.io.send("\033[1;32m[+ITEM] You snatch the vibrating Burner Phone.\033[0m")
+                      await self.io.send("(It continues to buzz in your hand. Use it to answer.)")
+                      return
+                  else:
+                      # If for some reason it's not there (bug?), fall through
+                      pass
 
         # --- 1. Environment Check (Pick Up) ---
         # Specific Quest Logic: Briefcase
@@ -1503,8 +1701,6 @@ class ActionManager(AsyncCmd):
             # BUT the implementation_plan implies using the Shell class to handle logic.
             # If we want commands like 'choke' to be handled by GrappleShell, we should probably forward them.
             # OR we implement do_choke here and delegate to shell? 
-            # Design Choice: ActionManager `do_choke` calls `self.grapple_shell.do_choke()`.
-            
         else:
             await self.io.send(f"\033[1;31m[FAILURE] {target_npc.handle} fends off your grab attempt!\033[0m")
             
