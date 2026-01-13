@@ -101,30 +101,55 @@ class CharacterManager:
         ]
         return names
 
-    def get_player_sheet_data(self):
+    def get_character_sheet_data(self, character=None):
         """Prepares raw character sheet data for rendering"""
-        return {
-            "handle": self.player.handle,
-            "role": self.player.role,
-            "stats": self.player.stats,
-            "combat": self.player.combat,
-            "skills": self.player.skills,
-            "ascii_art": self.player.ascii_art,
-            "defence": self.player.defence,
-            "weapons": self.player.weapons,
-            "role_ability": {
-                "name": self.player.role_ability.get_display_data().name,
-                "notes": self.player.role_ability.get_display_data().description
-            },
-            "cyberware": self.player.cyberware,
-            "inventory": self.player.inventory
+        from copy import deepcopy
+        
+        target = character if character else self.player
+        if not target:
+            return {}
+            
+        # Calculate Brawling Damage
+        body = target.stats.get('body', 5)
+        if body <= 4: dice = 1
+        elif body <= 6: dice = 2
+        elif body <= 10: dice = 3
+        else: dice = 4
+        
+        brawling_entry = {
+            "name": "Brawling",
+            "dmg": f"{dice}d6",
+            "ammo": "-",
+            "rof": 2,
+            "notes": "Unarmed"
         }
-        # if ability == ability_list[0]:
-        #    ability = "\033[1m" + ability + "\033[0m"
-        # if ware == ware_list[0]:
-        #    ware = "\033[1m" + ware + "\033[0m"
-        # if gear == gear_list[0]:
-        #    gear = "\033[1m" + gear + "\033[0m"
+        
+        # Deep copy weapons to avoid mutating the actual character object when adding Brawling
+        weapons_list = deepcopy(target.weapons)
+        weapons_list.insert(0, brawling_entry)
+
+        display_ability = {}
+        if target.role_ability:
+             # handle case where it might be a dict or object
+             if hasattr(target.role_ability, "get_display_data"):
+                 data = target.role_ability.get_display_data()
+                 display_ability = {"name": data.name, "notes": data.description}
+             elif isinstance(target.role_ability, dict):
+                 display_ability = target.role_ability
+        
+        return {
+            "handle": target.handle,
+            "role": target.role,
+            "stats": target.stats,
+            "combat": target.combat,
+            "skills": target.skills,
+            "ascii_art": target.ascii_art,
+            "defence": target.defence,
+            "weapons": weapons_list,
+            "role_ability": display_ability,
+            "cyberware": target.cyberware,
+            "inventory": target.inventory
+        }
 
     def do_rap_sheet(self, arg):
         """Yo, dis here's rap_sheet, it's gonna show ya all the deetz on
