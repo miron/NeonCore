@@ -56,9 +56,11 @@
         - [ ] `note` -> `add_note` / `read_notes` (Persistent Player Journal).
     - [ ] Advanced parser with macro support.
     - [ ] Comprehensive help system.
+        - [ ] **Context-Aware Help Listing**: Uncomment existing `do_help` logic to display available commands immediately (fixes "Tab to see commands" issue).
 - [ ] **Game State**:
     - [ ] Persistence (Save/Load functionality).
-    - [ ] Database integration (SQLite/Nostr).
+    - [x] Database integration (SQLite).
+    - [ ] Nostr Integration (Future).
 - [ ] **World Model**:
     - [ ] Time-based events and dynamic environment.
     - [ ] Weather effects.
@@ -96,6 +98,12 @@
             - *Resource*: `streetyoga/atapi` (`cmp/algo.py` for risk models, `api.py` for client base).
         - [ ] **Interactive Terminals**: "Risk/Reward Analysis" course framed as Corporate Training/Netrunner Tutorials.
         - [ ] **Urbit-style Sovereign Identity**: Crypto-wallets as player identity/bank.
+    - [ ] **Code Architecture**:
+        - [ ] **Decorators for Composition**: Use `functools` to compose behaviors (e.g., `@requires_state`, `@log_action`) instead of monolithic method logic.
+        - [ ] **Policy/Mechanism Separation**: Abstract *policies* (rules) from *mechanisms* (actions) to support dynamic rule changes (e.g., House Rules, different game modes).
+        - [ ] **Templates for String Replacement**: Use `string.Template` for user-facing text (prompts, dialogue) to allow for safe, externalizable configuration (e.g., config files for "Slang Packs") without code modification.
+        - [ ] **Nested Command Loops (Sub-shells)**: Replace `game_state` flags and proxy methods with true **Nested `cmdloop()` calls**.
+            - *Benefit*: Clean isolation of commands. When in `GrappleShell`, the `ActionManager` is paused on the stack, and only `Grapple` commands are valid. No `delattr` hacks needed.
 
 ## Phase 5: Multiplayer & Networking
 - [ ] **Networking**:
