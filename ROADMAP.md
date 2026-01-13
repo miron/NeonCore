@@ -8,8 +8,10 @@
 ## Phase 1: The Hook (Current Focus)
 - [ ] **Scene Implementation**:
     - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
+- [ ] **Scene Implementation**:
+    - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
     - [ ] Script "Heywood Industrial" (Full mission: Ambush, Key Fumble, Signal).
-        - *Reference*: `reference/full_mission.txt`
+        - *Reference*: `reference/full_mission.txt` and `reference/extracted_rules.md`
 - [ ] **Skill Checks**:
     - [ ] Implement `Human Perception` (DV 17) check for Lazlo's call.
     - [ ] Implement `Forgery` (DV 17) check for the counterfeit money.
@@ -189,7 +191,7 @@
 ## Backlog: User Feedback & Session Notes (2026-01-13)
 - [ ] **Combat & NPCs**:
     - [x] **Targeting Bug**: "Target lazlo not found" (Investigate NPC lookup/spawning).
-    - [ ] **Brawling**: `use_skill brawling` should hurt Lenard (Check `BrawlingShell` vs NPC Entity).
+    - [x] **Brawling**: `use_skill brawling` should hurt Lenard (Check `BrawlingShell` vs NPC Entity).
     - [ ] **Death Loop**: Zeroed state quits game; should allow respawn/restart.
     - [ ] **NPC Stats**: `look lenard` should match player stat format (Skills missing?).
 - [ ] **UI/UX Polish**:

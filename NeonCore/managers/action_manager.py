@@ -671,7 +671,7 @@ class ActionManager(AsyncCmd):
 
     async def _display_player_sheet(self, arg):
         """Internal method to display character sheet"""
-        data = self.char_mngr.get_player_sheet_data()
+        data = self.char_mngr.get_character_sheet_data()
         await self.io.display(data, view_type="character_sheet")
 
 
@@ -763,7 +763,7 @@ class ActionManager(AsyncCmd):
                      dmg_str = f"{dmg} (Rolls: {dice_rolls})" if len(dice_rolls) > 1 else f"{dmg} (Roll: {dice_rolls[0]})"
 
                      if taken == 0:
-                         await self.io.send(f"\033[1;32mHIT! Damage: {dmg_str} -> Absorbed by Armor (SP {target_npc.sp})\033[0m")
+                         await self.io.send(f"\033[1;32mHIT! Damage: {dmg_str} -> Absorbed by Armor (SP {target_npc.defence.get('sp', 0)})\033[0m")
                      else:
                          await self.io.send(f"\033[1;32mHIT! Damage: {dmg_str} -> Taken: {taken}\033[0m")
                 else:
