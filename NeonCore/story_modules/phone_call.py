@@ -11,8 +11,9 @@ class PhoneCall(Story):
         Effect: Prints notification of incoming call.
         """
         self.state = "ringing"
-        await game_context.io.send("\n\033[1;36m[INCOMING HOLO-CALL]\033[0m: Burner Phone (Lazlo)")
-        await game_context.io.send("Type 'answer' to accept the connection...")
+        self.state = "ringing"
+        await game_context.io.send("\n\033[1;36m[INCOMING HOLO-CALL]\033[0m: Burner Phone")
+        await game_context.io.send("(It continues to buzz violently.)")
         
         # Ensure dialogue context is cleared until answered
         if game_context.char_mngr.player:
@@ -26,9 +27,10 @@ class PhoneCall(Story):
              return "already_answered"
 
         self.state = "in_call"
+        await game_context.io.send("\n\033[1;32m[CALLER ID: LAZLO (FIXER)]\033[0m")
         await game_context.io.send(
-            "\nHe's all like, 'Yo, we gotta change the spot for the payout. "
-            "Meet me at the industrial park in Heywood."
+            "He's all like, 'Yo, we gotta change the spot for the payout. "
+            "Meet me at the industrial park in Heywood.'"
         )
         await game_context.io.send(
             "But something ain't right, 'cause Lazlo ain't telling you why."

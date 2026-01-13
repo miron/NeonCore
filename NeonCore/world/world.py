@@ -4,6 +4,8 @@ from ..game_mechanics import SkillCheckCommand
 from ..utils import wprint
 
 
+from ..managers.database_manager import DatabaseManager
+
 class World:
     def __init__(self, char_mngr, npc_manager, io):
         self.char_mngr = char_mngr
@@ -12,6 +14,7 @@ class World:
         self.locations: Dict[str, Dict] = self._init_locations()
         self.player_position = "start_square"
         self.inventory = []
+        self.db = DatabaseManager()
 
     def _init_locations(self) -> Dict[str, Dict]:
         # Example structure
@@ -21,6 +24,7 @@ class World:
                 "exits": {"north": "market_street", "east": "dark_alley"},
                 "ascii_art": None,  # No special art for this common place
                 "npcs": [],  # No NPCs in starting area
+                "items": [], # Items on the ground
                 "encounter_chance": 0,
             },
             "market_street": {
@@ -41,6 +45,7 @@ class World:
                     "netrunner",
                 ],  # Potential NPCs to encounter
                 "encounter_chance": 0.4,  # 40% chance of encounter
+                "items": [],
             },
             "dark_alley": {
                 "description": "A narrow passage between buildings, shrouded in shadow. Graffiti covers the walls and the air smells of chemicals and decay.",
@@ -55,6 +60,7 @@ class World:
                 """,
                 "npcs": ["street_thug", "cyberjunkie", "black_market_dealer"],
                 "encounter_chance": 0.6,  # 60% chance of encounter
+                "items": [],
             },
             "corporate_plaza": {
                 "description": "Clean and sterile, the corporate plaza gleams with polished surfaces and armed guards. Corporate logos dominate the skyline.",
@@ -69,6 +75,7 @@ class World:
                 """,
                 "npcs": ["corpo_exec", "security_guard", "office_worker"],
                 "encounter_chance": 0.3,
+                "items": [],
             },
             "industrial_zone": {
                 "description": "Massive factories and warehouses dominate this area. The air is thick with smog and the sound of machinery never stops.",
@@ -86,6 +93,7 @@ class World:
                     "corpo_security",
                 ],  # Removed gang_member to reduce clutter
                 "encounter_chance": 0.5,
+                "items": [],
             },
             "street_corner": {
                 "description": "A rain-slicked intersection under a flickering streetlight. A yellow 'NC Express' drop box stands against a graffiti-stained wall.",
@@ -100,8 +108,57 @@ class World:
                 """,
                 "npcs": [],
                 "encounter_chance": 0.1,
+                "items": [],
             },
         }
+
+    def add_item(self, location_id, item):
+        """Add an item to a location (Persist to DB)."""
+        item_name = item.get('name') if isinstance(item, dict) else item
+        
+        # 1. Check if it's already an existing DB instance (Has ID)
+        if isinstance(item, dict) and "id" in item:
+            self.db.update_item_state(item["id"], location_id=location_id, owner_id=None)
+            return
+
+        # 2. Legacy/New Item: Create a fresh instance from Template
+        # Try to find template by name (Simple lookup map for now, or query DB by name?)
+        # For prototype, we hardcode the mapping or rely on name matching
+        # In a real app, 'item' should ALWAYS have a template_id ref.
+        
+        # Look up template ID (Hack for now: Seeding assumed known IDs or Names)
+        # We'll just try to create an instance for "Glitching Burner"
+        template_id = None
+        conn = self.db._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM item_templates WHERE name LIKE ?", (item_name,))
+        row = cursor.fetchone()
+        
+        if row:
+            template_id = row[0]
+            self.db.create_instance(template_id, location_id=location_id)
+        else:
+            # Fallback: Create ad-hoc instance/template? 
+            # For now, just print warning, item is lost to the ether if not in DB.
+            print(f"Warning: Could not persist '{item_name}' (No Template).")
+
+    def remove_item(self, location_id, item_name):
+        """Pick up an item (Remove from Location in DB, return Instance)."""
+        # Find item in DB at this location
+        items = self.db.get_items_in_location(location_id)
+        for item in items:
+            if item["name"].lower() == item_name.lower():
+                # Found it.
+                # Update State: Remove from location (Conceptually). 
+                # Caller (ActionManager) will assign Owner, so we just return it.
+                # But to prevent 'look' from finding it before Owner assignment, we set loc=None.
+                self.db.update_item_state(item["id"], location_id=None, owner_id=None)
+                return item
+        return None
+
+    def get_items_in_location(self, location_id):
+        """Get list of items in a location (From DB)."""
+        return self.db.get_items_in_location(location_id)
 
     async def do_look(self, arg):
         """Look around your current location or at a specific character. Usage: look [target]"""
@@ -165,6 +222,15 @@ class World:
 
                 npc_names.append(f"\033[1;35m{npc.name} ({npc.role}){rel_tag}\033[0m")
             await self.io.send(f"\nVisible Characters: {', '.join(npc_names)}")
+
+        # List Items on the ground
+        items = self.locations[self.player_position].get("items", [])
+        if items:
+            item_names = []
+            for item in items:
+                name = item.get('name') if isinstance(item, dict) else item
+                item_names.append(f"\033[1;33m{name}\033[0m")
+            await self.io.send(f"\nItems on ground: {', '.join(item_names)}")
 
         # Show available exits
         exits = location["exits"]
