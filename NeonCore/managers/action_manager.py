@@ -146,7 +146,7 @@ class ActionManager(AsyncCmd):
         # Check if NPC is in current location
         current_location = self.dependencies.world.player_position
         present_npcs = [
-            npc.name.lower()
+            npc.handle.lower()
             for npc in self.dependencies.npc_manager.get_npcs_in_location(
                 current_location
             )
@@ -161,7 +161,7 @@ class ActionManager(AsyncCmd):
             target_name = arg.lower()
             target_npc = self.dependencies.npc_manager.get_npc(target_name)
             if target_npc and target_npc.location != current_location:
-                await self.io.send(f"You don't see {target_npc.name} here.")
+                await self.io.send(f"You don't see {target_npc.handle} here.")
                 return
             if not target_npc:
                 # Check if it's a generic NPC provided by the world description?
@@ -177,7 +177,7 @@ class ActionManager(AsyncCmd):
                 )
             return
 
-        npc_name = target_npc.name
+        npc_name = target_npc.handle
         npc_role = target_npc.role
         npc_context = target_npc.dialogue_context
 
@@ -221,7 +221,7 @@ class ActionManager(AsyncCmd):
             current_location
         )
         # Deduplicate by name
-        present_names = list({npc.name for npc in visible_npcs})
+        present_names = list({npc.handle for npc in visible_npcs})
 
         if not text:
             return [name + " " for name in present_names]
@@ -254,7 +254,7 @@ class ActionManager(AsyncCmd):
         """Complete talk command with visible NPC names"""
         current_location = self.dependencies.world.player_position
         present_npcs = [
-            npc.name
+            npc.handle
             for npc in self.dependencies.npc_manager.get_npcs_in_location(
                 current_location
             )
@@ -369,13 +369,13 @@ class ActionManager(AsyncCmd):
                  await self.io.send(f"\nLocked and loaded. You are now {selected_char.handle}.")
                  
                  # Initialize NPCs
-                 self.char_mngr.set_npcs(
-                    [
-                        c
-                        for c in self.char_mngr.characters.values()
-                        if c.char_id != selected_char.char_id
-                    ]
-                 )
+                 # Append unselected PCs to the NPC list so they exist in the world (Future Multiplayer)
+                 unselected_pcs = [
+                    c
+                    for c in self.char_mngr.characters.values()
+                    if c.char_id != selected_char.char_id
+                 ]
+                 self.char_mngr.npcs.extend(unselected_pcs)
                  
                  # Spawn Intro Item (The Glitching Burner)
                  # We need to guarantee it exists for the "Take" interaction
@@ -806,7 +806,7 @@ class ActionManager(AsyncCmd):
             # Completing Target (NPCs in location)
             loc = self.dependencies.world.player_position
             npcs = self.dependencies.npc_manager.get_npcs_in_location(loc)
-            candidates = [npc.name for npc in npcs]
+            candidates = [npc.handle for npc in npcs]
             return [
                 name + " "
                 for name in candidates
@@ -1099,7 +1099,7 @@ class ActionManager(AsyncCmd):
         if npc:
             player_handle = self.char_mngr.player.handle
             npc.relationships[player_handle] = "Fan"
-            await self.io.send(f"\033[1;36m[DEBUG] {npc.name} is now a FAN of {player_handle}!\033[0m")
+            await self.io.send(f"\033[1;36m[DEBUG] {npc.handle} is now a FAN of {player_handle}!\033[0m")
             await self.io.send(f"Try: 'look {arg}' or 'talk {arg}'")
         else:
              await self.io.send(f"NPC '{arg}' not found.")
@@ -1326,7 +1326,7 @@ class ActionManager(AsyncCmd):
             {
                 "role": "system",
                 "content": (
-                    f"You are {npc.name}, a {npc.role}. "
+                    f"You are {npc.handle}, a {npc.role}. "
                     f"Description: {npc.description}. "
                     f"Context: {npc.dialogue_context}. "
                     f"You are talking to {player.handle} ({player.role}). "
@@ -1349,16 +1349,16 @@ class ActionManager(AsyncCmd):
             response = self.ai_backend.get_chat_completion(messages)
             response_content = response["message"]["content"]
 
-            await self.io.send(f"\033[1;35m{npc.name}: {response_content}\033[0m")
+            await self.io.send(f"\033[1;35m{npc.handle}: {response_content}\033[0m")
 
             # Update stress slightly if conversation is intense? (Simplification)
             # Triggers: Profanity OR Strong Emotion words
             triggers = ["fuck", "kill", "shit", "damn", "love", "help", "sorry", "thanks", "promise", "betray"]
             if any(t in arg.lower() for t in triggers):
-                await self.log_event(f"Significant conversation with {npc.name}: '{arg}'")
+                await self.log_event(f"Significant conversation with {npc.handle}: '{arg}'")
 
         except Exception as e:
-            await self.io.send(f"[{npc.name} glitches out... (AI Error: {e})]")
+            await self.io.send(f"[{npc.handle} glitches out... (AI Error: {e})]")
 
     # do_take removed as per user request (replaced by skill interactions)
 
@@ -1418,7 +1418,7 @@ class ActionManager(AsyncCmd):
         # --- 1. Environment Check (Pick Up) ---
         # Specific Quest Logic: Briefcase
         if "case" in arg_lower:
-             present_npcs = [n.name.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
+             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
              if "lenard" in present_npcs:
                  await self.io.send("\033[1;33mYou reach for the case, but Lenard holds it tight.\033[0m")
                  await self.io.send("(Hint: He's holding it. You assume you'll have to \033[1mgrab\033[0m it from him.)")
@@ -1610,7 +1610,7 @@ class ActionManager(AsyncCmd):
         # Quest Specific: Briefcase Check
         if "case" in arg_lower or "suitcase" in arg_lower:
              current_loc = self.dependencies.world.player_position
-             present_npcs = [n.name.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
+             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
              if "lenard" in present_npcs:
                  await self.io.send("(Hint: Lenard is holding it. use 'grab'.)")
                  return
@@ -1647,7 +1647,7 @@ class ActionManager(AsyncCmd):
         if "case" in check_item.lower() or "suitcase" in check_item.lower():
              # Check if Lenard is here map-wise
              current_loc = self.dependencies.world.player_position
-             present_npcs = [n.name.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
+             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
              
              if "lenard" in present_npcs:
                  await self.io.send(f"\033[1;33m[!] You lunge for the briefcase! Lenard shouts!\033[0m")

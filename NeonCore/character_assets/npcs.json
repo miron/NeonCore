@@ -1,5 +1,170 @@
 [
     {
+        "handle": "Lazlo",
+        "role": "Fixer",
+        "location": "industrial_zone",
+        "dialogue_context": "Lazlo is currently being held hostage by dirty cops in the Heywood Industrial Zone. He is desperate but trying to maintain his cool.",
+        "description": "A middle-aged Fixer with a cybernetic eye and a nervous twitch. He looks uncharacteristically rattled.",
+        "stats": {
+            "int": 7,
+            "ref": 4,
+            "dex": 5,
+            "tech": 4,
+            "cool": 7,
+            "will": 6,
+            "luck": 5,
+            "move": 4,
+            "body": 5,
+            "emp": 6
+        },
+        "combat": {
+            "hp": 30,
+            "seriously_wounded": 15,
+            "death_save": 5
+        },
+        "skills": {
+            "human_perception": {
+                "stat": "emp",
+                "lvl": 6
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "trading": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "streetwise": {
+                "stat": "cool",
+                "lvl": 7
+            },
+            "handgun": {
+                "stat": "ref",
+                "lvl": 3
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 2,
+                "dice": "1d6"
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 4
+            }
+        },
+        "defence": {
+            "armor": "Kevlar Vest",
+            "sp": 7
+        },
+        "weapons": [
+            {
+                "name": "Light Pistol",
+                "dmg": "2d6",
+                "ammo": 10,
+                "rof": 2,
+                "notes": "Concealable"
+            }
+        ],
+        "role_ability": {
+            "name": "Operator",
+            "notes": "Can source items."
+        },
+        "cyberware": [
+            {
+                "name": "Cybereye",
+                "notes": "Targeting Scope"
+            }
+        ],
+        "gear": [],
+        "ascii_art": "lazlo_ascii_art.txt"
+    },
+    {
+        "handle": "Lenard",
+        "role": "Dirty Cop",
+        "location": "industrial_zone",
+        "dialogue_context": "Undercover cop posing as a contact. Holding a briefcase. Nervous.",
+        "description": "A hooded man in dark clothes. He keeps looking over his shoulder.",
+        "stats": {
+            "int": 3,
+            "ref": 6,
+            "dex": 5,
+            "tech": 2,
+            "cool": 4,
+            "will": 4,
+            "luck": 0,
+            "move": 4,
+            "body": 6,
+            "emp": 3
+        },
+        "combat": {
+            "hp": 35,
+            "seriously_wounded": 18,
+            "death_save": 6
+        },
+        "skills": {
+            "handgun": {
+                "stat": "ref",
+                "lvl": 6
+            },
+            "brawling": {
+                "stat": "dex",
+                "lvl": 6,
+                "dice": "2d6"
+            },
+            "perception": {
+                "stat": "int",
+                "lvl": 6
+            },
+            "persuasion": {
+                "stat": "cool",
+                "lvl": 6
+            },
+            "evasion": {
+                "stat": "dex",
+                "lvl": 4
+            },
+            "athletics": {
+                "stat": "dex",
+                "lvl": 4
+            }
+        },
+        "defence": {
+            "armor": "Kevlar",
+            "sp": 7
+        },
+        "weapons": [
+            {
+                "name": "Very Heavy Pistol",
+                "dmg": "4d6",
+                "ammo": 8,
+                "rof": 1,
+                "notes": "16 rounds extra"
+            }
+        ],
+        "role_ability": {
+            "name": "Backup",
+            "notes": "Can call for backup."
+        },
+        "cyberware": [
+            {
+                "name": "Radio/Communicator",
+                "notes": "Allows communication w/ other dirty cops"
+            }
+        ],
+        "gear": [
+            {
+                "name": "Very Heavy Pistol Ammo",
+                "notes": "x16"
+            },
+            {
+                "name": "Briefcase",
+                "notes": "Locked"
+            }
+        ],
+        "ascii_art": "dirty_cop_ascii_art.txt"
+    },
+    {
         "handle": "Dirty Cop",
         "role": "Lawman",
         "stats": {

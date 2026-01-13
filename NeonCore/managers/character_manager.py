@@ -42,6 +42,7 @@ class CharacterManager:
         # Load NPCs
         npc_path = Path(__file__).parent.parent / "character_assets/npcs.json"
 
+
         with open(char_path) as f:
             characters_data = json.load(f)
         
@@ -76,6 +77,7 @@ class CharacterManager:
             with open(npc_path) as f:
                 npcs_data = json.load(f)
             process_chars(npcs_data, target_list=self.npcs)
+
 
     def roles(self, text=""):
         """Return list of available character roles"""

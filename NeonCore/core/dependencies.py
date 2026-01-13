@@ -35,7 +35,7 @@ class GameDependencies:
 
         char_mngr = CharacterManager()
         cmd_mngr = CommandManager()
-        npc_manager = NPCManager()
+        npc_manager = NPCManager(char_mngr)
         world = World(char_mngr, npc_manager, io)
         
         # Initialize StoryManager
