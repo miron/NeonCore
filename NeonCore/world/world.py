@@ -21,6 +21,7 @@ class World:
                 "exits": {"north": "market_street", "east": "dark_alley"},
                 "ascii_art": None,  # No special art for this common place
                 "npcs": [],  # No NPCs in starting area
+                "items": [], # Items on the ground
                 "encounter_chance": 0,
             },
             "market_street": {
@@ -41,6 +42,7 @@ class World:
                     "netrunner",
                 ],  # Potential NPCs to encounter
                 "encounter_chance": 0.4,  # 40% chance of encounter
+                "items": [],
             },
             "dark_alley": {
                 "description": "A narrow passage between buildings, shrouded in shadow. Graffiti covers the walls and the air smells of chemicals and decay.",
@@ -55,6 +57,7 @@ class World:
                 """,
                 "npcs": ["street_thug", "cyberjunkie", "black_market_dealer"],
                 "encounter_chance": 0.6,  # 60% chance of encounter
+                "items": [],
             },
             "corporate_plaza": {
                 "description": "Clean and sterile, the corporate plaza gleams with polished surfaces and armed guards. Corporate logos dominate the skyline.",
@@ -69,6 +72,7 @@ class World:
                 """,
                 "npcs": ["corpo_exec", "security_guard", "office_worker"],
                 "encounter_chance": 0.3,
+                "items": [],
             },
             "industrial_zone": {
                 "description": "Massive factories and warehouses dominate this area. The air is thick with smog and the sound of machinery never stops.",
@@ -86,6 +90,7 @@ class World:
                     "corpo_security",
                 ],  # Removed gang_member to reduce clutter
                 "encounter_chance": 0.5,
+                "items": [],
             },
             "street_corner": {
                 "description": "A rain-slicked intersection under a flickering streetlight. A yellow 'NC Express' drop box stands against a graffiti-stained wall.",
@@ -100,8 +105,30 @@ class World:
                 """,
                 "npcs": [],
                 "encounter_chance": 0.1,
+                "items": [],
             },
         }
+
+    def add_item(self, location_id, item):
+        """Add an item to a location."""
+        if location_id in self.locations:
+            self.locations[location_id]["items"].append(item)
+
+    def remove_item(self, location_id, item_name):
+        """Remove an item from a location by name. Returns the item object/dict."""
+        if location_id not in self.locations:
+            return None
+        
+        items = self.locations[location_id]["items"]
+        for i, item in enumerate(items):
+            name = item.get('name') if isinstance(item, dict) else item
+            if name.lower() == item_name.lower():
+                return items.pop(i)
+        return None
+
+    def get_items_in_location(self, location_id):
+        """Get list of items in a location."""
+        return self.locations.get(location_id, {}).get("items", [])
 
     async def do_look(self, arg):
         """Look around your current location or at a specific character. Usage: look [target]"""
@@ -165,6 +192,15 @@ class World:
 
                 npc_names.append(f"\033[1;35m{npc.name} ({npc.role}){rel_tag}\033[0m")
             await self.io.send(f"\nVisible Characters: {', '.join(npc_names)}")
+
+        # List Items on the ground
+        items = self.locations[self.player_position].get("items", [])
+        if items:
+            item_names = []
+            for item in items:
+                name = item.get('name') if isinstance(item, dict) else item
+                item_names.append(f"\033[1;33m{name}\033[0m")
+            await self.io.send(f"\nItems on ground: {', '.join(item_names)}")
 
         # Show available exits
         exits = location["exits"]

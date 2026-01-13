@@ -29,23 +29,22 @@ class HelpSystem:
             "general": {
                 "help": "Displays help information for available commands. Usage: help [command]",
                 "quit": "Jack out. Exit the game.",
-                "talk": "Initiate conversation with an NPC. Usage: talk [name]",
                 "look": "Examine your surroundings or specific targets. Usage: look [target]",
                 "gear": "Check your inventory and equipment. Usage: gear",
             },
             # State-specific help texts
             "choose_character": {
                 "choose": "Select your character by Handle. Usage: choose [handle] (e.g. choose mover)",
-                "switch_ai": "Switch between available AI backends (grok/ollama). Usage: switch_ai [backend_name]",
+                # protocol hidden from help (dev/config only)
                 "_intro": "Welcome to NeonCore! Choose a character to begin. Hit TAB to see available commands.",
             },
             "character_chosen": {
                 "whoami": "View Identity Dashboard (Stats, Bio, Soul). Usage: whoami [stats|bio|soul]",
-                "reflect": "Process events and evolve your Digital Soul. Usage: reflect",
-                "answer": "Answer the incoming holo-call from Lazlo. Usage: answer",
-                "_intro": "Character selected! Incoming Holo-Call... Type 'answer' to pick up.",
+                "use_object": "Interact with items. Usage: use_object [item]",
+                "_intro": "Character selected! A \033[1;31mGlitching Burner\033[0m vibrates on the ground... Type 'use_object Glitching Burner' to interact.",
             },
             "before_perception_check": {
+                "talk": "Initiate conversation with an NPC. Usage: talk [name]",
                 "use_skill": "Use one of your character's skills. Usage: use_skill [skill_name]",
                 "go": "Move in a direction. Usage: go [north/east/south/west]",
                 "_intro": "You're in the game world. Explore and survive. Hit TAB to see available commands.",
