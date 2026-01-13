@@ -174,26 +174,63 @@ class World:
                     rel_tag = " \033[1;36m[ FAN ]\033[0m"
 
                 await self.io.send(
-                    f"\n\033[1;36m=== {target_npc.name.upper()} ({target_npc.role}){rel_tag}\033[1;36m ===\033[0m"
+                    f"\n\033[1;36m=== {target_npc.handle.upper()} ({target_npc.role}){rel_tag}\033[1;36m ===\033[0m"
                 )
                 await self.io.send(target_npc.description)
                 # Inject Dynamic Status into Stats Block
-                if target_npc.stats_block:
+                stats_block = target_npc.stats_block
+                
+                # Auto-generate if missing (Dynamic Fallback)
+                if not stats_block and target_npc.stats:
+                     s = target_npc.stats
+                     c = target_npc.combat
+                     d = target_npc.defence
+                     
+                     # Calculate Skill Bases for display (Top 4-5)
+                     skill_txts = []
+                     # Prioritize common combat/interaction skills
+                     prio_skills = ["handgun", "brawling", "evasion", "perception", "persuasion"]
+                     for sk_name in prio_skills:
+                         if sk_name in target_npc.skills:
+                             sk_data = target_npc.skills[sk_name]
+                             stat_val = s.get(sk_data['stat'], 0)
+                             base = stat_val + sk_data['lvl']
+                             skill_txts.append(f"{sk_name.capitalize()} {base}")
+                     
+                     skills_str = ", ".join(skill_txts)
+                     
+                     # Weapon string
+                     weps = [w['name'] if isinstance(w, dict) else w for w in target_npc.weapons]
+                     if not weps and target_npc.inventory:
+                         # Fallback to checking inventory for weapons if hand empty? 
+                         # Or just list significant items
+                         for i in target_npc.inventory:
+                             if isinstance(i, dict) and "dmg" in i:
+                                 weps.append(i['name'] + f" ({i['dmg']})")
+                     wep_str = ", ".join(weps) if weps else "None"
+
+                     stats_block = (
+                         f"\n[ {target_npc.handle.upper()} STATS ]\n"
+                         f"INT {s.get('int')} | REF {s.get('ref')} | DEX {s.get('dex')} | TECH {s.get('tech')} | COOL {s.get('cool')}\n"
+                         f"WILL {s.get('will')} | LUCK {s.get('luck')} | MOVE {s.get('move')} | BODY {s.get('body')} | EMP {s.get('emp')}\n"
+                         f"HP: {c.get('hp')} | SP: {d.get('sp')} ({d.get('armor', 'N/A')})\n"
+                         f"Weapons: {wep_str}\n"
+                         f"Skills: {skills_str}"
+                     )
+
+                if stats_block:
                     import re
-                    # Get current stats
-                    hp = target_npc.combat_stats.get("hp", "?")
-                    max_hp = target_npc.combat_stats.get("max_hp", "?")
-                    sp = target_npc.sp
-                    max_sp = getattr(target_npc, "max_sp", sp) # Fallback if not set
+                    # Get current stats (Live updates overriding block text if regex matches)
+                    hp = target_npc.combat.get("hp", "?")
+                    max_hp = target_npc.combat.get("max_hp", "?")
+                    sp = target_npc.defence.get("sp", 0) # Fixed attribute access
                     
-                    # Update HP display
-                    block = target_npc.stats_block
-                    # Replace HP: 35 with HP: 24/35
-                    block = re.sub(r"(HP:\s*)(\d+)", f"HP: {hp}/{max_hp}", block)
-                    # Replace SP: 7 with SP: 7/7
-                    block = re.sub(r"(SP:\s*)(\d+)", f"SP: {sp}/{max_sp}", block)
+                    # Update HP display (Find "HP: <number>" and replace with "HP: <current>")
+                    # Note: Generated block uses "HP: <current>" already, so this regex just ensures synch if block was static
+                    stats_block = re.sub(r"HP: \d+", f"HP: {hp}", stats_block)
+                    stats_block = re.sub(r"SP: \d+", f"SP: {sp}", stats_block)
                     
-                    await self.io.send(block)
+                    await self.io.send(stats_block)
 
                 return
             else:
@@ -210,7 +247,7 @@ class World:
         visible_npcs = self.npc_manager.get_npcs_in_location(self.player_position)
         if visible_npcs:
             # unique list to avoid duplicates from aliases
-            unique_npcs = {npc.name: npc for npc in visible_npcs}.values()
+            unique_npcs = {npc.handle: npc for npc in visible_npcs}.values()
             npc_names = []
             player_handle = self.char_mngr.player.handle
             for npc in unique_npcs:
@@ -220,7 +257,7 @@ class World:
                 if status and status.lower() == "fan":
                     rel_tag = " \033[1;36m[ FAN ]\033[0m" # Cyan tag for positive
 
-                npc_names.append(f"\033[1;35m{npc.name} ({npc.role}){rel_tag}\033[0m")
+                npc_names.append(f"\033[1;35m{npc.handle} ({npc.role}){rel_tag}\033[0m")
             await self.io.send(f"\nVisible Characters: {', '.join(npc_names)}")
 
         # List Items on the ground

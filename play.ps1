@@ -13,9 +13,8 @@ if (-not (Test-Path $VenvPython)) {
 }
 
 if ($Local) {
-    Write-Host "Starting NeonCore in Local Mode..."
-    $Script = Join-Path $PSScriptRoot "run_local.py"
-    & $VenvPython $Script @args
+    Write-Error "Local mode has been deprecated. Please run without -Local to start the server."
+    exit 1
 } else {
     Write-Host "Starting NeonCore Server & Client..."
     $ServerScript = Join-Path $PSScriptRoot "server.py"

@@ -14,9 +14,9 @@
     - [ ] Implement `Human Perception` (DV 17) check for Lazlo's call.
     - [ ] Implement `Forgery` (DV 17) check for the counterfeit money.
 - [ ] **NPCs**:
-    - [ ] Create `Lazlo` (Fixer).
-    - [ ] Create `Lenard Houston` (Dirty Cop).
-    - [ ] Create generic `Dirty Cop` enemies (Ambush).
+    - [x] Create `Lazlo` (Fixer).
+    - [x] Create `Lenard Houston` (Dirty Cop).
+    - [x] Create generic `Dirty Cop` enemies (Ambush).
 
 ## Phase 2: Combat System Refinement
 - [ ] **Core Mechanics**:
@@ -129,6 +129,9 @@
     - [ ] **Range & Movement** (Abstracted):
         - [ ] **Universal Range Model**: NPCs *and* Objects exist at Bands relative to Player.
             - [ ] *Implementation*: Runtime dictionary `player.distances = {target_id: band}`. Default is 'Far'. No DB changes needed.
+    - [ ] **Health & Death**:
+        - [ ] **Negative HP Handling**: Prevent raw negative values display. Implement "Dying" state at < 0 HP.
+        - [ ] **Death Saves**: Trigger Death Save logic when HP <= 0.
             - [ ] **Interception**: Enemies can "Guard" objects. Moving to guarded object triggers Combat/Stop.
         - [ ] **Micro-Movement** (Combat): Actions change Band relative to target (Move = Close Gap).
             - [ ] **Economy**: `Attack` command strictly checks `MOVE` stat.
@@ -185,7 +188,7 @@
 
 ## Backlog: User Feedback & Session Notes (2026-01-13)
 - [ ] **Combat & NPCs**:
-    - [ ] **Targeting Bug**: "Target lazlo not found" (Investigate NPC lookup/spawning).
+    - [x] **Targeting Bug**: "Target lazlo not found" (Investigate NPC lookup/spawning).
     - [ ] **Brawling**: `use_skill brawling` should hurt Lenard (Check `BrawlingShell` vs NPC Entity).
     - [ ] **Death Loop**: Zeroed state quits game; should allow respawn/restart.
     - [ ] **NPC Stats**: `look lenard` should match player stat format (Skills missing?).
@@ -204,6 +207,17 @@
     - [ ] **Stow Completion**: Tab completion missing.
 - [ ] **World Details**:
     - [ ] **Listing**: Glitching Burner listed separately from "Items on ground".
+
+
+- [ ] **Data Management**:
+    - [ ] **Note System**:
+        - [ ] Add `add_note` / `read_notes` commands.
+        - [ ] Allow players to store NPC backstories or clues persistently.
+        - [ ] Store Notes in `player_data` JSON/DB.
+- [ ] **Stats & Traits**:
+    - [ ] **Humanity Link**:
+        - [ ] Link `HUM` (Humanity) stat to Light Triad traits.
+        - [ ] **Cyberpsychosis Whisper**: Implement a "Conscience Voice" mechanic that whispers warnings/advice when HUM is low, based on Light Triad alignment.
 
 ## Backlog: Handoff Known Issues
 - [ ] **Glitching Burner Display Logic**: `Look` lists it twice/confusingly when dropped.

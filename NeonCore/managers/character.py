@@ -24,6 +24,11 @@ class Character:
         digital_soul=None,
         relationships=None,
         inventory=None,  # New dynamic inventory
+        dialogue_context="", # NPC specific
+        location="", # NPC specific
+        description="", # NPC specific
+        stats_block="", # NPC specific
+        **kwargs # Catch-all for extra JSON fields
     ):
         self.char_id = char_id
         self.handle = handle
@@ -37,6 +42,11 @@ class Character:
         self.ascii_art = ascii_art
         self.digital_soul = digital_soul if digital_soul else DigitalSoul()
         self.relationships = relationships if relationships else {}
+        self.dialogue_context = dialogue_context
+        self.location = location
+        self.description = description
+        self.stats_block = stats_block
+
         # Initialize Role Ability via Manager
         # Default rank 4 (standard start) or derived from stats later
         self.role_ability = RoleManager.get_ability(self.role, rank=4)
