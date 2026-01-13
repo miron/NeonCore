@@ -137,6 +137,7 @@
         - [ ] **Macro-Movement** (World): `go <dir>` changes Rooms (Flee check if in Combat).
 
 ## Backlog: Items & Cyberware
+- [ ] **Item Examination**: Implement `examine <item>` or `look <item>` to view detailed descriptions and notes (currently hidden in `gear` list).
 - [ ] **Cyberware mechanics**:
     - [ ] *Teleoptic Cybereye*:
         - [ ] *Scope*: Negates Range penalties for visual Perception checks.
@@ -181,4 +182,30 @@
         - [ ] **Unskilled Checks**: Allow manual execution of missing General Skills (use `STAT + 0`).
             - [ ] *UX*: Display warning "[UNSKILLED] Relying on REF Stat only!" when attempted.
         - [ ] **Role Validation**: Block missing Exclusive Skills (e.g. `Surgery`) completely.
+
+## Backlog: User Feedback & Session Notes (2026-01-13)
+- [ ] **Combat & NPCs**:
+    - [ ] **Targeting Bug**: "Target lazlo not found" (Investigate NPC lookup/spawning).
+    - [ ] **Brawling**: `use_skill brawling` should hurt Lenard (Check `BrawlingShell` vs NPC Entity).
+    - [ ] **Death Loop**: Zeroed state quits game; should allow respawn/restart.
+    - [ ] **NPC Stats**: `look lenard` should match player stat format (Skills missing?).
+- [ ] **UI/UX Polish**:
+    - [ ] **Animation**: Dice throwing visual effect.
+    - [ ] **Formatting**: Constrain text to 80 columns (Word wrap).
+    - [ ] **Stats**: `whoami` stats dont show total (Base + Cyber/Mod).
+    - [ ] **Damage Dice**: `1d6` for Brawling missing in `whoami stats`.
+    - [ ] **Movement Feedback**: Print location description or "You move..." text when changing rooms.
+    - [ ] **Phone Logic**: Moving while phone rings should print "Your phone is still ringing..." or similar feedback.
+    - [ ] **Look Exits**: Direction labels missing in `look` output.
+    - [ ] **Initial Gear Display**: Newly created chars show `(A disposable phone)` note, but Drops don't. (Low Prio).
+- [ ] **Command & Shells**:
+    - [ ] **Talk Shell**: Refactor from state flag to `cmd.Cmd` subclass (Tech Debt).
+    - [ ] **Go Completion**: Broken after moving East.
+    - [ ] **Stow Completion**: Tab completion missing.
+- [ ] **World Details**:
+    - [ ] **Listing**: Glitching Burner listed separately from "Items on ground".
+
+## Backlog: Handoff Known Issues
+- [ ] **Glitching Burner Display Logic**: `Look` lists it twice/confusingly when dropped.
+
 

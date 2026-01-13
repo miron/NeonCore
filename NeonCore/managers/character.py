@@ -166,6 +166,51 @@ class Character:
 
 
 
+    # --- Serialization ---
+    def to_dict(self):
+        """Export mutable state for DB storage."""
+        inventory_ids = []
+        for item in self.inventory:
+            if isinstance(item, dict) and 'id' in item:
+                inventory_ids.append(item['id'])
+        
+        equipped_ids = []
+        for item in self.weapons:
+            if isinstance(item, dict) and 'id' in item:
+                equipped_ids.append(item['id'])
+                
+        return {
+            "handle": self.handle,
+            "role": self.role,
+            "stats": self.stats,
+            "combat": self.combat,
+            "inventory_ids": inventory_ids,
+            "equipped_ids": equipped_ids
+        }
+
+    def restore_state(self, state_data, inventory_items, equipped_items):
+        """
+        Restore state from DB.
+        state_data: Dict containing 'attributes' and 'combat' keys (New Format).
+        inventory_items: List of Item Objects.
+        equipped_items: List of Item Objects.
+        """
+        # Restore Attribute Stats (STR, DEX, etc.)
+        if "attributes" in state_data:
+            self.stats = state_data["attributes"]
+            
+        # Restore Combat Stats (HP, SP, etc.)
+        if "combat" in state_data:
+            self.combat = state_data["combat"]
+            
+        # Fallback/Direct assignment (if structure is flat or mixed - though we enforce new format now)
+        # If 'state_data' itself is just the attributes (legacy bug possibility), we intentionally do nothing specific
+        # as we want to enforce the new structure.
+
+        self.inventory = inventory_items
+        self.weapons = equipped_items
+
+
 class Lifepath:
     def __init__(self):
         self.tables = {
