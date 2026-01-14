@@ -382,10 +382,26 @@ class ActionManager(AsyncCmd):
                  db = self.dependencies.world.db
                  start_loc = self.dependencies.world.player_position
                  
-                 # 1. Spawn Intro Burner
-                 burner_tid = db.get_template_id_by_name("Glitching Burner")
-                 if burner_tid:
-                      db.create_instance(burner_tid, location_id=start_loc)
+                 # 1. Spawn Intro Burner (Ensure ALL characters have one in INVENTORY)
+                 # Check if they already have it (loadout)
+                 has_burner = False
+                 for item in selected_char.inventory:
+                     name = item.get('name') if isinstance(item, dict) else item
+                     if "glitching burner" in name.lower():
+                         has_burner = True
+                         break
+                 
+                 if not has_burner:
+                      # Create and Add to Inventory
+                      burner_tid = db.get_template_id_by_name("Glitching Burner")
+                      if not burner_tid:
+                          burner_tid = db.create_template("Glitching Burner", "gear", "A cheap burner phone, screen cracked and glitching.")
+                      
+                      if burner_tid:
+                          # Create instance owned by player
+                          iid = db.create_instance(burner_tid, owner_id=selected_char.handle)
+                          # Add to inventory list so it's usable immediately
+                          selected_char.inventory.append({"name": "Glitching Burner", "id": iid})
                  
                  # 2. Persist Player Starting Gear
                  new_inv = []
@@ -431,13 +447,16 @@ class ActionManager(AsyncCmd):
                  selected_char.weapons = new_weapons
 
                  
-                 # Trigger Story
-                 await self.dependencies.story_manager.start_story("phone_call")
+                 # Set State to 'character_chosen' 
+                 # This state is special: Logic in 'do_look' used to trap it, but we removed that trap.
+                 # We simply want normal game behavior with an intro flavor.
+                 self.game_state = "character_chosen" 
                  
-                 # Set State to 'character_chosen' to trigger the Intro Flavor Text in do_look
-                 self.game_state = "character_chosen"
-                 # Trigger the first look (Intro)
+                 # 1. Trigger the first look (Intro Visuals + System Msg)
                  await self.do_look("")
+
+                 # 2. Trigger Story (Phone Call - Prints AFTER Visuals)
+                 await self.dependencies.story_manager.start_story("phone_call")
 
 
     async def do_save(self, arg):
@@ -556,15 +575,8 @@ class ActionManager(AsyncCmd):
         if self.game_state == "choose_character":
             allowed.add("choose")
 
-        elif self.game_state in ["character_chosen", "active_game"]:
-            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop", "save", "load", "reset", "quit", "help"})
-
-        elif self.game_state == "before_perception_check":
-            allowed.update({
-                "talk", "look", "go", "inventory", 
-                "whoami", "reflect", "use_skill", "deposit",
-                "take", "use_object", "grab", "answer", "gear", "drop", "stow"
-            })
+        if self.game_state in ["character_chosen", "active_game", "before_perception_check"]:
+            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop", "save", "load", "reset", "quit", "help", "talk", "inventory"})
 
         # elif self.game_state == "grappling" and hasattr(self, "grappled_target"):
         #     pass # Incorrectly returning string here caused tab completion bug
@@ -853,39 +865,51 @@ class ActionManager(AsyncCmd):
              return
 
         if self.game_state == "character_chosen":
-             # Soul/Spawn View
-             await self.io.send(
-                 "\nYou have taken form. The air is heavy with ozone and rain."
-                 "\nA discard pile of tech litter surrounds you on the concrete."
-             )
+             # Intro Sequence Visuals (One Time Only)
+             await self.io.send("\n[SYSTEM]: Connection Established.")
              
-             # Check if player already has the Glitching Phone specifically
-             has_glitching = False
-             for w in self.char_mngr.player.weapons:
-                 if "glitching" in w.get('name','').lower(): has_glitching = True
-             for i in self.char_mngr.player.inventory:
-                 if "glitching" in i.get('name','').lower(): has_glitching = True
-                 
-             if not has_glitching:
-                 await self.io.send(
-                     "\n\033[1;33m[!] OBJECT OF INTEREST:\033[0m A \033[1;31mGlitching Burner\033[0m vibrates violently near your feet."
-                     "\n(Type 'take Glitching Burner' to answer)"
-                 )
-             else:
-                 await self.io.send("\nThe \033[1;31mGlitching Burner\033[0m in your hand is buzzing.")
-             # Also show dropped items if any (Fix for 'nirvana' drop)
-             loc = self.dependencies.world.player_position
-             items = self.dependencies.world.get_items_in_location(loc)
-             if items:
-                 item_names = [i.get('name') if isinstance(i, dict) else i for i in items]
-                 await self.io.send(f"\nItems on ground: {', '.join(item_names)}")
+             # Fall through to standard World Look to show ASCII art and items
+             await self.dependencies.world.do_look(arg)
+             
+             # Transition state so this doesn't repeat
+             self.game_state = "active_game"
              return
 
-        if self.game_state == "before_perception_check":
-            await self.dependencies.world.do_look(arg)
-        else:
-            # Fallback: Try looking anyway, or provide context
-             await self.dependencies.world.do_look(arg)
+        # General "Active Game" Look (includes "before_perception_check")
+        # We fall through for any state that just needs standard world looking.
+        
+        # Standard World Look
+        await self.dependencies.world.do_look(arg)
+        
+        # Post-Look Hooks (Reminders)
+        if self.dependencies.story_manager.current_story and self.dependencies.story_manager.current_story.name == "phone_call":
+             if getattr(self.dependencies.story_manager.current_story, "state") == "ringing":
+                 # Check where the phone is
+                 has_burner = False
+                 for item in self.char_mngr.player.inventory:
+                     name = item.get('name', '') if isinstance(item, dict) else item
+                     if "glitching burner" in name.lower(): has_burner = True
+                 
+                 # Also checks weapons/equipped?
+                 
+                 if has_burner:
+                     await self.io.send("\n\033[1;33m[!] REMINDER:\033[0m Your pocket vibrates violently. (Type 'use burner' to answer)")
+                 else:
+                     # Check ground
+                     ground_burner = False
+                     loc = self.dependencies.world.player_position
+                     items = self.dependencies.world.get_items_in_location(loc)
+                     for item in items:
+                         name = item.get('name', '') if isinstance(item, dict) else item
+                         if "glitching burner" in name.lower(): ground_burner = True
+                     
+                     if ground_burner:
+                         await self.io.send("\n\033[1;33m[!] REMINDER:\033[0m A \033[1;31mGlitching Burner\033[0m on the ground vibrates violently. (Type 'take burner' then 'use burner')")
+                     else:
+                         # Far away? Or lost?
+                         await self.io.send("\n\033[1;33m[!] REMINDER:\033[0m You hear a faint electronic buzzing from somewhere nearby...")
+        return
+
 
 
 
@@ -1316,6 +1340,12 @@ class ActionManager(AsyncCmd):
         # Player inputs message
         await self.io.send(f"\033[1;32mYou: {arg}\033[0m")
 
+        # Story Hook: Check if current story wants to handle dialogue
+        if self.dependencies.story_manager.current_story and hasattr(self.dependencies.story_manager.current_story, 'handle_say'):
+             handled = await self.dependencies.story_manager.current_story.handle_say(self.dependencies, arg)
+             if handled:
+                 return
+
         # 1. Update Dialogue Context for NPC
         # We need to construct the prompt for the AI
         npc = self.conversing_npc
@@ -1451,6 +1481,17 @@ class ActionManager(AsyncCmd):
              return
 
         await self.io.send("You don't see that here or in your pack.")
+
+    async def do_answer(self, arg):
+        """Answer a ringing phone."""
+        # Story Hook for answering phone
+        if self.dependencies.story_manager.current_story and self.dependencies.story_manager.current_story.name == "phone_call":
+            if getattr(self.dependencies.story_manager.current_story, "state") == "ringing":
+                await self.dependencies.story_manager.current_story.handle_answer(self.dependencies)
+                # Ensure we reset dialogue context immediately so 'say' works cleanly after
+                return
+        
+        await self.io.send("There is no phone ringing right now.")
 
     async def do_drop(self, arg):
         """

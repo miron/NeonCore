@@ -62,7 +62,22 @@ class PhoneCall(Story):
                 self.state = "checked_perception"
                 # End the story as the call is finished
                 # This ensures ActionManager knows the story is over.
-                await game_context.story_manager.end_story()
+                # await game_context.story_manager.end_story()  <-- CHANGED: Chain to next story
+                await game_context.story_manager.start_story("heywood_ambush")
+        
+        # Fallback: If player leaves the area without checking, advance the story anyway
+        # Assuming call happened in 'start_square' (or wherever they were)
+        # We can just check if state is 'in_call' and they execute a move?
+        # Simpler: If they are 'in_call' and move to a new location.
+        if self.state == "in_call":
+            # If they leave start_square? Hard to know where they started without tracking.
+            # Let's just allow the story to proceed if they just move.
+            pass
+            # Actually, simply starting HeywoodAmbush doesn't hurt.
+            # But let's verify if they arrive at Heywood while still in 'PhoneCall'?
+            if game_context.world.player_position == "heywood_alley":
+                 # They arrived! Switch immediately.
+                 await game_context.story_manager.start_story("heywood_ambush")
 
     async def end(self, game_context):
         pass

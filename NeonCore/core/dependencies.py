@@ -41,9 +41,11 @@ class GameDependencies:
         # Initialize StoryManager
         from ..managers.story_manager import StoryManager
         from ..story_modules.phone_call import PhoneCall
+        from ..story_modules.heywood_ambush import HeywoodAmbush
         
         story_manager = StoryManager()
         story_manager.register_story(PhoneCall)
+        story_manager.register_story(HeywoodAmbush)
 
         # Initialize the skill check command
         skill_check = SkillCheckCommand()
