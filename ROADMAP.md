@@ -20,6 +20,9 @@
     - [x] Create `Lazlo` (Fixer).
     - [x] Create `Lenard Houston` (Dirty Cop).
     - [x] Create generic `Dirty Cop` enemies (Ambush).
+    - [ ] **Ambush Combat Integration**:
+        - [ ] Link `HeywoodAmbush` trigger to existing "3 Cops Attack" combat logic.
+        - [ ] Transition player to `CombatShell` when ambush starts.
 
 ## Phase 2: Combat System Refinement
 - [ ] **Core Mechanics**:
@@ -60,6 +63,9 @@
         - [ ] Map `skill` -> `use_skill` (Remove snake_case requirement).
         - [ ] Map `use` -> `use_object`.
         - [ ] `note` -> `add_note` / `read_notes` (Persistent Player Journal).
+        - [ ] **Navigation Shortcuts**:
+            - [ ] Map `n`, `s`, `e`, `w`, `u`, `d` to `go <direction>`.
+            - [ ] **Hidden**: Exclude from tab completion to prevent clutter.
     - [ ] Advanced parser with macro support.
     - [ ] **Debug Shell**: Dedicated shell for dev commands (teleport, spawn, state check) separate from Game Shell.
     - [ ] Comprehensive help system.
@@ -136,6 +142,12 @@
     - [ ] **Role Mechanics**:
         - [ ] **Surgery**: Restrict checks to Medtechs only.
         - [ ] **Charismatic Impact**: Apply +2 to all EMP/COOL checks when target is a `Fan` (Attack or Defense).
+    - [ ] **Stealth & Perception Interaction** (User Idea):
+        - [ ] **Active Stealth**: NPCs must *use* the `Stealth` skill to enter a hidden state (not automatic).
+        - [ ] **Sensory Hints**: Hidden NPCs emit subtle clues (e.g., "audible breathing") in room description.
+        - [ ] **Reveal Mechanic**:
+            - [ ] **Perception**: Used to spot hidden enemies (Physical Awareness).
+            - [ ] **Human Perception**: Used ONLY for body language/lie detection (Social Awareness).
 - [ ] **Combat**:
     - [ ] 3-second round timer (simulation).
     - [ ] **Range & Movement** (Abstracted):
@@ -164,7 +176,13 @@
         - [ ] `call/text`: Communication.
         - [ ] `map/gps`: Local area info (Data Pool).
         - [ ] `query`: Library Search / News.
+        - [ ] `query`: Library Search / News.
         - [ ] *Constraint*: Cannot Hack (requires Cyberdeck) or Teleport items.
+    - [ ] **Equipment System**:
+        - [ ] **Hands & Slots**:
+            - [ ] Separate Left/Right Hand slots.
+            - [ ] Restrict `equip` to valid slots (e.g., Heavy Weapon takes 2 hands).
+            - [ ] Auto-unequip logic when switching weapons.
     - [ ] **Glow Paint**:
         - [ ] *Spray Object/Wall*: Narrative marker (visible in `look`).
         - [ ] *Spray Enemy*: Negates Darkness penalties against them.

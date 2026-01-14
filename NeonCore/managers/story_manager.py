@@ -35,6 +35,7 @@ class StoryManager:
             cls._instance = super(StoryManager, cls).__new__(cls)
             cls._instance.current_story = None
             cls._instance.available_stories = {}
+            cls._instance.scene_triggered = False
         return cls._instance
 
     def set_dependencies(self, dependencies):
@@ -70,5 +71,7 @@ class StoryManager:
 
     async def update(self):
         """Updates the current story. Called from the main game loop."""
+        self.scene_triggered = False
         if self.current_story:
-            await self.current_story.update(self._dependencies)
+            return await self.current_story.update(self._dependencies)
+        return False

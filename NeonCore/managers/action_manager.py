@@ -79,9 +79,14 @@ class ActionManager(AsyncCmd):
         # Default behavior: return all available commands
         return dir(self)
 
+    async def emptyline(self):
+        """Do nothing on empty input (don't repeat last command)."""
+        pass
+
     async def postcmd(self, stop, line):
         """Hook method executed just after a command dispatch is finished."""
-        await self.dependencies.story_manager.update()
+        if not stop:
+             await self.dependencies.story_manager.update()
         return stop
 
     def select_available_backend(self):
@@ -238,7 +243,14 @@ class ActionManager(AsyncCmd):
              return
 
         # Normal Movement
+        # 1. Update Position
         await self.dependencies.world.do_go(arg)
+        # 2. Trigger Story Updates (e.g. Ambush Spawns)
+        await self.dependencies.story_manager.update()
+        
+        # 3. Look at new location (If Story didn't already do it)
+        if not getattr(self.dependencies.story_manager, "scene_triggered", False):
+            await self.dependencies.world.do_look("")
 
     def complete_go(self, text, line, begidx, endidx):
         """Complete go command with available exits"""
@@ -576,7 +588,7 @@ class ActionManager(AsyncCmd):
             allowed.add("choose")
 
         if self.game_state in ["character_chosen", "active_game", "before_perception_check"]:
-            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop", "save", "load", "reset", "quit", "help", "talk", "inventory"})
+            allowed.update({"use_object", "look", "gear", "whoami", "take", "drop", "save", "load", "reset", "quit", "help", "talk", "inventory", "go", "use_skill", "stow"})
 
         # elif self.game_state == "grappling" and hasattr(self, "grappled_target"):
         #     pass # Incorrectly returning string here caused tab completion bug
@@ -657,6 +669,18 @@ class ActionManager(AsyncCmd):
             
         return [i for i in items if i.lower().startswith(text.lower())]
 
+    def complete_stow(self, text, line, begidx, endidx):
+        """Autocomplete for stow command (Equipped Weapons)"""
+        if not self.char_mngr.player:
+            return []
+            
+        items = []
+        for w in self.char_mngr.player.weapons:
+            name = w.get('name') if isinstance(w, dict) else w
+            items.append(name)
+            
+        return [i for i in items if i.lower().startswith(text.lower())]
+
     def complete_grab(self, text, line, begidx, endidx):
         """Autocomplete for grab (NPCs or Items)"""
         # Suggest NPCs primarily
@@ -693,7 +717,7 @@ class ActionManager(AsyncCmd):
     async def do_use_skill(self, arg):
         """Perform a skill check or a combat action."""
         # Check if command is allowed in current game state
-        allowed_states = ["before_perception_check", "conversation"]
+        allowed_states = ["before_perception_check", "conversation", "active_game"]
         if self.game_state not in allowed_states:
             await self.io.send("That command isn't available right now, choomba.")
             return
@@ -800,7 +824,7 @@ class ActionManager(AsyncCmd):
         """Complete skill names AND targets for use_skill command"""
         # Update allowed states to match do_use_skill
         if (
-            self.game_state not in ["before_perception_check", "conversation"]
+            self.game_state not in ["before_perception_check", "conversation", "active_game"]
             or not self.char_mngr.player
         ):
             return []
@@ -885,12 +909,18 @@ class ActionManager(AsyncCmd):
         if self.dependencies.story_manager.current_story and self.dependencies.story_manager.current_story.name == "phone_call":
              if getattr(self.dependencies.story_manager.current_story, "state") == "ringing":
                  # Check where the phone is
+                 # Check where the phone is
                  has_burner = False
                  for item in self.char_mngr.player.inventory:
                      name = item.get('name', '') if isinstance(item, dict) else item
                      if "glitching burner" in name.lower(): has_burner = True
                  
-                 # Also checks weapons/equipped?
+                 # Also checks weapons/equipped
+                 if not has_burner:
+                     for item in self.char_mngr.player.weapons:
+                         name = item.get('name', '') if isinstance(item, dict) else item
+                         if "glitching burner" in name.lower(): has_burner = True
+
                  
                  if has_burner:
                      await self.io.send("\n\033[1;33m[!] REMINDER:\033[0m Your pocket vibrates violently. (Type 'use burner' to answer)")
@@ -1445,24 +1475,7 @@ class ActionManager(AsyncCmd):
                       # If for some reason it's not there (bug?), fall through
                       pass
 
-        # --- 1. Environment Check (Pick Up) ---
-        # Specific Quest Logic: Briefcase
-        if "case" in arg_lower:
-             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
-             if "lenard" in present_npcs:
-                 await self.io.send("\033[1;33mYou reach for the case, but Lenard holds it tight.\033[0m")
-                 await self.io.send("(Hint: He's holding it. You assume you'll have to \033[1mgrab\033[0m it from him.)")
-                 return
-
-        # Generic Pickup from World
-        world_item = self.dependencies.world.remove_item(current_loc, arg)
-        if world_item:
-            player.inventory.append(world_item)
-            name = world_item.get('name') if isinstance(world_item, dict) else world_item
-            await self.io.send(f"You pick up the \033[1m{name}\033[0m.")
-            return
-
-        # --- 2. Inventory Check (Draw/Equip - Permissive) ---
+        # --- 1. Inventory Check (Draw/Equip - Priority) ---
         found_item = None
         for item in player.inventory:
             name = item.get('name') if isinstance(item, dict) else item
@@ -1479,6 +1492,23 @@ class ActionManager(AsyncCmd):
                  verb = "hold"
              await self.io.send(f"You {verb} your \033[1m{found_item.get('name', found_item)}\033[0m.")
              return
+
+        # --- 2. Environment Check (Pick Up) ---
+        # Specific Quest Logic: Briefcase
+        if "case" in arg_lower:
+             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
+             if "lenard" in present_npcs:
+                 await self.io.send("\033[1;33mYou reach for the case, but Lenard holds it tight.\033[0m")
+                 await self.io.send("(Hint: He's holding it. You assume you'll have to \033[1mgrab\033[0m it from him.)")
+                 return
+
+        # Generic Pickup from World
+        world_item = self.dependencies.world.remove_item(current_loc, arg)
+        if world_item:
+            player.inventory.append(world_item)
+            name = world_item.get('name') if isinstance(world_item, dict) else world_item
+            await self.io.send(f"You pick up the \033[1m{name}\033[0m.")
+            return
 
         await self.io.send("You don't see that here or in your pack.")
 
@@ -1640,6 +1670,19 @@ class ActionManager(AsyncCmd):
                  await self.io.send(f"You use the {found_item.get('name')}. It is {effect}.")
                  return
              
+             # Special Case: Glitching Burner can be used from inventory
+             if "burner" in found_item.get('name', '').lower():
+                  answered = False
+                  if self.dependencies.story_manager.current_story and self.dependencies.story_manager.current_story.name == "phone_call":
+                      # We just call handle_answer. It checks state internally.
+                      res = await self.dependencies.story_manager.current_story.handle_answer(self.dependencies)
+                      if res != "already_answered":
+                          answered = True
+                  
+                  if not answered:
+                       await self.io.send("\033[1;32m[PHONE]\033[0m Signal erratic. No new messages.")
+                  return
+
              # If weapon in inv, use -> equip? 
              # User said "take is take, use is use". 
              # So use_object gun (in inv) -> "You need to take/equip it first."
