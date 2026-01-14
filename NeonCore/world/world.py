@@ -331,7 +331,8 @@ ____/___/_________________/___/________
         except Exception as e:
             await self.io.send(f"Error during NPC encounter: {e}")
 
-        await self.do_look(None)  # Automatically look after moving
+        # await self.do_look(None)  # Moved to ActionManager to allow Story Priority
+        pass
 
     def do_quit(self, arg):
         """Quit the game."""

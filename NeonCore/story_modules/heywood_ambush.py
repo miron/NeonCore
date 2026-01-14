@@ -12,7 +12,14 @@ class HeywoodAmbush(Story):
         We wait for the player to travel to the location.
         """
         self.state = "waiting_for_arrival"
-        # Optional: Add a journal entry or quest log update here?
+        
+        # Move Lenard to location immediately (He is waiting for you)
+        lenard = game_context.npc_manager.get_npc("Lenard")
+        if lenard:
+            lenard.location = "heywood_alley"
+            
+        # Immediate check in case we are already there (e.g. arrived via move)
+        await self.update(game_context)
 
     async def update(self, game_context):
         world = game_context.world
@@ -35,14 +42,18 @@ class HeywoodAmbush(Story):
         io = game_context.io
         world = game_context.world
         
+        # Signal that we are handling the output
+        game_context.story_manager.scene_triggered = True
+        
+        # 1. Show Room Description (With Lenard visible)
+        await world.do_look("")
+        
+        # 2. Show Scene Intro
         await io.send("\n\033[1;33m[SCENE START]\033[0m")
         await io.send("The alley is tight. Steam vents hiss above you.")
         await io.send("Ahead, Lenard stands nervously. He clutches a briefcase to his chest.")
         
-        # Verify Lenard is here (He should be from npcs.json)
-        # If we need to force spawn him:
-        # npc_mgr = game_context.npc_manager
-        # ... logic to ensure he's visible ...
+
 
         await asyncio.sleep(1)
         await io.send("\n\033[1;36mLENARD:\033[0m \"Did... did anyone follow you?\"")
