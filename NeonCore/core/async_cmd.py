@@ -2,9 +2,13 @@ import cmd
 import sys
 import asyncio
 import string
+
 from typing import Optional
+# Lazy import attempt
 try:
     import readline
+    if not hasattr(readline, "backend"):
+        readline.backend = "pyreadline3"
 except ImportError:
     readline = None
 
@@ -36,6 +40,11 @@ class AsyncCmd:
         self.preloop()
         
         # Set up readline completer if available
+        # Fallback: Check if readline is loaded elsewhere (e.g. ActionManager)
+        global readline
+        if readline is None and 'readline' in sys.modules:
+            readline = sys.modules['readline']
+
         if readline:
             self.old_completer = readline.get_completer()
             readline.set_completer(self.complete)
@@ -46,23 +55,31 @@ class AsyncCmd:
         if self.intro:
             await self.io.send(self.intro)
             
-        stop = None
-        while not stop:
-            if await self.precmd(self.lastcmd): # Hook for pre-command logic
-                 pass # precmd returned True? In std cmd it returns the line.
-                 # Let's assume precmd returns the line to execute or something.
-                 # Actually standard cmd.Cmd.precmd return the line.
-                 # Implementing full hook later if needed.
-                 pass
+        # REGISTER AS ACTIVE HANDLER FOR COMPLETIONS
+        # This ensures that if this runs as a sub-shell (nested),
+        # the IO knows to ask THIS instance for completions, not the parent.
+        old_handler = getattr(self.io, "cmd_handler", None)
+        if hasattr(self.io, "set_cmd_handler"):
+            self.io.set_cmd_handler(self)
 
-            try:
-                line = await self.io.prompt(self.prompt)
-            except EOFError:
-                line = "EOF"
-            
-            line = await self.precmd(line)
-            stop = await self.onecmd(line)
-            stop = await self.postcmd(stop, line)
+        stop = None
+        try:
+            while not stop:
+                if await self.precmd(self.lastcmd): # Hook for pre-command logic
+                     pass 
+    
+                try:
+                    line = await self.io.prompt(self.prompt)
+                except EOFError:
+                    line = "EOF"
+                
+                line = await self.precmd(line)
+                stop = await self.onecmd(line)
+                stop = await self.postcmd(stop, line)
+        finally:
+            # RESTORE PREVIOUS HANDLER
+            if hasattr(self.io, "set_cmd_handler"):
+                self.io.set_cmd_handler(old_handler)
             
         self.postloop()
 

@@ -253,3 +253,5 @@
 - [ ] **Glitching Burner Display Logic**: `Look` lists it twice/confusingly when dropped.
 
 
+- [ ] **Mover's Burner Phone**: Fix bug where Mover's phone incorrectly triggers the Lazlo mission (should only be the "Glitching Burner").
+- [ ] **Death Loop Bug**: Fix regression where dying in combat returns the player to the previous dialog shell (Lenard) instead of handling Game Over.

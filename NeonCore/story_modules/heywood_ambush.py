@@ -1,5 +1,8 @@
 from ..managers.story_manager import Story
 import asyncio
+import uuid
+from ..game_mechanics.combat_system import CombatEncounter
+from ..managers.character import Character
 
 class HeywoodAmbush(Story):
     def __init__(self):
@@ -95,6 +98,53 @@ class HeywoodAmbush(Story):
         
         await io.send("A figure steps out from behind a pile of crates. Lawman uniform. Badge taped over.")
         await io.send("It's a setup.")
+        
+        # --- AMBUSH LOGIC ---
+        # 1. Identify Enemies
+        enemies = []
+        
+        # Lenard (He is part of the ambush now?)
+        # Rules imply he is one of the enemies? "Dirty cops equal to PCs + 2, including Lenard".
+        # Yes, Lenard betrays you.
+        lenard = game_context.npc_manager.get_npc("Lenard")
+        if lenard:
+             enemies.append(lenard)
+        
+        # 2. Spawn Dirty Cops (2 more)
+        for i in range(1, 3):
+            cop = Character(
+                char_id=uuid.uuid4(),
+                handle=f"Dirty Cop {i}",
+                role="Lawman",
+                stats={"ref": 8, "dex": 6, "body": 6, "luck": 0},
+                combat={"hp": 35},
+                skills={"handgun": {"stat": "ref", "lvl": 6}, "evasion": {"stat": "dex", "lvl": 4}},
+                defence={"sp": 7},
+                weapons=[{"name": "Heavy Pistol", "dmg": "4d6"}],
+                cyberware=[],
+                gear=[],
+                ascii_art="No Art"
+            )
+            # Add implicit weapon damage attribute used by CombatSystem fallback
+            cop.weapon_dmg = 4 
+            enemies.append(cop)
+            
+        # 3. Start Combat
+        player = game_context.char_mngr.player
+        combat_encounter = CombatEncounter(player, enemies, io)
+        
+        # Transfer control to Combat Shell
+        await combat_encounter.start_combat()
+        
+        # 4. Handle Outcome
+        if combat_encounter.combat_over: # Escaped
+             self.state = "escaped"
+        elif not enemies: # Victory
+             self.state = "victory"
+             await io.send("\n\033[1;32m[SCENE END] The alley is silent. You survived the setup.\033[0m")
+        elif player.combat["hp"] <= 0:
+             self.state = "dead"
+             # Game Over logic handled largely by combat shell print, but we could enforce it here.
 
     async def end(self, game_context):
         pass
