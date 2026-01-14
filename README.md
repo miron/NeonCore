@@ -34,12 +34,6 @@ Built with Python, NeonCore delivers a classic RPG experience inspired by the Cy
    ```
    *Starts the Game Server in the background and launches the Client.*
 
-   **Standalone Mode**:
-   ```powershell
-   .\play.ps1 -Local
-   ```
-   *Runs the game as a single monolithic process (useful for development/debugging).*
-
    > **Note:** `play.ps1` automatically uses the virtual environment's Python, bypassing the need for manual activation scripts and avoiding common PowerShell permission errors.
 
 #### Linux/MacOS

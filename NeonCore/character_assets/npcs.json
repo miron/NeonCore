@@ -82,7 +82,6 @@
     {
         "handle": "Lenard",
         "role": "Dirty Cop",
-        "location": "industrial_zone",
         "dialogue_context": "Undercover cop posing as a contact. Holding a briefcase. Nervous.",
         "description": "A hooded man in dark clothes. He keeps looking over his shoulder.",
         "stats": {

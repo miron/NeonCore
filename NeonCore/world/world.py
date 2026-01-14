@@ -22,22 +22,25 @@ class World:
             "start_square": {
                 "description": "You stand in the heart of Neon City, surrounded by towering skyscrapers and flickering holographic ads.",
                 "exits": {"north": "market_street", "east": "dark_alley"},
-                "ascii_art": None,  # No special art for this common place
-                "npcs": [],  # No NPCs in starting area
-                "items": [], # Items on the ground
+                "ascii_art": """
+   | |      .      | |
+   | |      |      | |
+   | |  |¯| | |¯|  | |
+   | |  | | | | |  | |
+___|_|__|_|_|_|_|__|_|___
+""",
                 "encounter_chance": 0,
             },
             "market_street": {
                 "description": "Vendors hawk everything from black market tech to street food. The air buzzes with the hum of drones.",
                 "exits": {"south": "start_square", "west": "corporate_plaza"},
                 "ascii_art": """
-                +----------------+
-                |   MARKET ST.   |
-                |  [ ] [ ] [ ]   |
-                |  [ ] [X] [ ]   |
-                |  [ ] [ ] [ ]   |
-                +----------------+
-                """,
+      _______       _______
+     |  ___  |     |  ___  |
+     | |___| |     | |___| | [Shop]
+     |_______|     |_______|
+_____|_______|_____|_______|_____
+""",
                 "npcs": [
                     "street_thug",
                     "gang_member",
@@ -51,13 +54,12 @@ class World:
                 "description": "A narrow passage between buildings, shrouded in shadow. Graffiti covers the walls and the air smells of chemicals and decay.",
                 "exits": {"west": "start_square", "north": "industrial_zone"},
                 "ascii_art": """
-                +----------------+
-                |   DARK ALLEY   |
-                |  [\\] [|] [/]   |
-                |  [\\] [|] [/]   |
-                |  [\\] [|] [/]   |
-                +----------------+
-                """,
+      _______
+     |   |   | [Gener8r]
+     |   |   |   _____
+     |   |___|  [_____]
+_____|___________________
+""",
                 "npcs": ["street_thug", "cyberjunkie", "black_market_dealer"],
                 "encounter_chance": 0.6,  # 60% chance of encounter
                 "items": [],
@@ -66,46 +68,100 @@ class World:
                 "description": "Clean and sterile, the corporate plaza gleams with polished surfaces and armed guards. Corporate logos dominate the skyline.",
                 "exits": {"east": "market_street"},
                 "ascii_art": """
-                +----------------+
-                |    CORP PLAZA  |
-                |  [█] [█] [█]   |
-                |  [█] [X] [█]   |
-                |  [█] [█] [█]   |
-                +----------------+
-                """,
+      .___________.
+      |           |
+      |   ( $ )   |
+      |___________|
+______|___________|______
+""",
                 "npcs": ["corpo_exec", "security_guard", "office_worker"],
                 "encounter_chance": 0.3,
                 "items": [],
             },
             "industrial_zone": {
                 "description": "Massive factories and warehouses dominate this area. The air is thick with smog and the sound of machinery never stops.",
-                "exits": {"south": "dark_alley", "east": "street_corner"},
+                "exits": {"south": "dark_alley", "east": "street_corner", "north": "heywood_industrial"},
                 "ascii_art": """
-                +----------------+
-                | INDUSTRIAL ZN  |
-                |  [▮] [▮] [▮]   |
-                |  [▮] [X] [▮]   |
-                |  [▮] [▮] [▮]   |
-                +----------------+
-                """,
+    /\\      /\\      /\\
+   |  |    |  |    |  |
+   |__|____|__|____|__|
+   |  |    |  |    |  |
+___|__|____|__|____|__|___
+""",
                 "npcs": [
                     "factory_worker",
                     "corpo_security",
-                ],  # Removed gang_member to reduce clutter
+                ],
                 "encounter_chance": 0.5,
+                "items": [],
+            },
+            "heywood_industrial": {
+                "description": "An industrial park in Heywood. The alleyway looks perfect for a shady deal. Or an ambush.",
+                "exits": {"south": "industrial_zone", "north": "heywood_alley"},
+                "ascii_art": """
+       _______
+      |       |
+      |Factory|      OPEN
+      |_______|      AREA
+______|_______|_________________
+""",
+                "npcs": [],
+                "encounter_chance": 0,
+                "items": [],
+            },
+            "heywood_alley": {
+                "description": "A dead-end alleyway between massive industrial structures. A hooded man stands here waiting.",
+                "exits": {"south": "heywood_industrial", "north": "warehouse_entrance"},
+                "ascii_art": """
+      | |
+      | |    (Hooded Man)
+      | |        O
+      | |       /|\\
+______| |_______/ \\_____
+""",
+                "npcs": [],  # Hooked Man (Lenard) is spawned by script, not random encounter
+                "encounter_chance": 0,
+                "items": [],
+            },
+            "warehouse_entrance": {
+                "description": "The entrance to a large warehouse. It looks quiet. Too quiet.",
+                "exits": {"south": "heywood_alley", "enter": "warehouse_interior"},
+                "ascii_art": """
+    _________________
+   |    WAREHOUSE    |
+   |   ___________   |
+   |  |   |   |   |  |
+___|__|_^_|_^_|_^_|__|___
+""",
+                "npcs": [],
+                "encounter_chance": 0,
+                "items": [],
+            },
+            "warehouse_interior": {
+                "description": "Inside the warehouse. Rows of crates and conveyor belts fill the space.",
+                "exits": {"exit": "warehouse_entrance"},
+                "ascii_art": """
+ || [BOX] | [BOX] ||
+ || [BOX] | [BOX] ||
+ ||_______|_______||
+ || [===] | [===] ||
+_||_______|_______||_
+""",
+                "npcs": [], # Ambush cops spawn here
+                "encounter_chance": 0,
                 "items": [],
             },
             "street_corner": {
                 "description": "A rain-slicked intersection under a flickering streetlight. A yellow 'NC Express' drop box stands against a graffiti-stained wall.",
                 "exits": {"west": "industrial_zone"},
                 "ascii_art": """
-                +----------------+
-                | STREET CORNER  |
-                |      [BOX]     |
-                |  [ ] [X] [ ]   |
-                |  [ ] [ ] [ ]   |
-                +----------------+
-                """,
+      |   |         .       |   |
+      |   |       .   .     |   |
+      |   |       |___|     |   |
+______|___|_______|___|_____|___|______
+     /   /       [BOX]     /   /
+____/___/_________________/___/________
+""",
                 "npcs": [],
                 "encounter_chance": 0.1,
                 "items": [],
@@ -138,9 +194,14 @@ class World:
             template_id = row[0]
             self.db.create_instance(template_id, location_id=location_id)
         else:
-            # Fallback: Create ad-hoc instance/template? 
-            # For now, just print warning, item is lost to the ether if not in DB.
-            print(f"Warning: Could not persist '{item_name}' (No Template).")
+            # Fallback: Create ad-hoc template so item is not lost
+            # Check for description in item dict if available
+            desc = "A dropped item."
+            if isinstance(item, dict):
+                 desc = item.get("notes", desc)
+                 
+            template_id = self.db.create_template(item_name, "gear", desc)
+            self.db.create_instance(template_id, location_id=location_id)
 
     def remove_item(self, location_id, item_name):
         """Pick up an item (Remove from Location in DB, return Instance)."""
@@ -195,6 +256,13 @@ class World:
         await self.io.send(location["description"])
         if location["ascii_art"]:
             await self.io.send(location["ascii_art"])
+
+        # Story Check Hook (Safety Net)
+        if self.player_position == "heywood_alley":
+             # If we are here, dirty cops should NOT be visible unless the ambush started.
+             # If the script failed to trigger in 'update', we might trigger it here manually?
+             # No, better to trust the StoryManager loop, but we can verify visibility.
+             pass
 
         # List NPCs currently in this location
         visible_npcs = self.npc_manager.get_npcs_in_location(self.player_position)

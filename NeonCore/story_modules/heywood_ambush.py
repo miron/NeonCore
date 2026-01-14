@@ -1,0 +1,89 @@
+from ..managers.story_manager import Story
+import asyncio
+
+class HeywoodAmbush(Story):
+    def __init__(self):
+        super().__init__("heywood_ambush")
+        self.state = "start"
+
+    async def start(self, game_context):
+        """
+        Called when the story begins (likely after Phone Call ends).
+        We wait for the player to travel to the location.
+        """
+        self.state = "waiting_for_arrival"
+        # Optional: Add a journal entry or quest log update here?
+
+    async def update(self, game_context):
+        world = game_context.world
+        player = game_context.char_mngr.player
+
+        if not player:
+            return
+
+        # Trigger 1: Arriving at Heywood Alley
+        if self.state == "waiting_for_arrival":
+            if world.player_position == "heywood_alley":
+                self.state = "scene_start"
+                await self._run_intro_scene(game_context)
+                
+        # Trigger 2: Scene Interaction flow
+        # This could be handled by do_say hooks if we wire them up, 
+        # but for now we might simple push the narrative after the intro.
+
+    async def _run_intro_scene(self, game_context):
+        io = game_context.io
+        world = game_context.world
+        
+        await io.send("\n\033[1;33m[SCENE START]\033[0m")
+        await io.send("The alley is tight. Steam vents hiss above you.")
+        await io.send("Ahead, Lenard stands nervously. He clutches a briefcase to his chest.")
+        
+        # Verify Lenard is here (He should be from npcs.json)
+        # If we need to force spawn him:
+        # npc_mgr = game_context.npc_manager
+        # ... logic to ensure he's visible ...
+
+        await asyncio.sleep(1)
+        await io.send("\n\033[1;36mLENARD:\033[0m \"Did... did anyone follow you?\"")
+        await io.send("(He looks past you, eyes darting to the shadows.)")
+        
+        self.state = "negotiation"
+
+    async def handle_say(self, game_context, message):
+        """
+        Called by ActionManager.do_say if story is active.
+        """
+        if self.state == "negotiation":
+            await game_context.io.send(f"\n\033[1;36mLENARD:\033[0m \"Just take it. Lazlo said give it to you.\"")
+            await game_context.io.send("(He fumbles with a key card attached to his wrist.)")
+            await asyncio.sleep(1)
+            await game_context.io.send("\033[1;31m*CLATTER*\033[0m")
+            await game_context.io.send("The briefcase hits the wet pavement.")
+            
+            await self._trigger_ambush(game_context)
+            return True
+        return False
+
+    async def _trigger_ambush(self, game_context):
+        io = game_context.io
+        world = game_context.world
+        db = world.db
+        
+        self.state = "ambush"
+        await asyncio.sleep(1)
+        
+        await io.send("\n\033[1;31m\"DROP IT! NCPD!\"\033[0m")
+        await io.send("Identify Friend Foe overlay flashes: \033[1;31mHOSTILE DETECTED\033[0m.")
+        
+        # Spawn Dirty Cop
+        cop_handle = "Dirty Cop"
+        # Check if he's already there (from npcs.json)
+        # If not, spawn him at 'heywood_alley'
+        # Assuming he is there from previous steps.
+        
+        await io.send("A figure steps out from behind a pile of crates. Lawman uniform. Badge taped over.")
+        await io.send("It's a setup.")
+
+    async def end(self, game_context):
+        pass

@@ -10,7 +10,8 @@
     - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
 - [ ] **Scene Implementation**:
     - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
-    - [ ] Script "Heywood Industrial" (Full mission: Ambush, Key Fumble, Signal).
+    - [/] Script "Heywood Industrial" (Full mission: Ambush, Key Fumble, Signal).
+        - [x] **Map Expansion**: Added `heywood_industrial` and `warehouse`.
         - *Reference*: `reference/full_mission.txt` and `reference/extracted_rules.md`
 - [ ] **Skill Checks**:
     - [ ] Implement `Human Perception` (DV 17) check for Lazlo's call.
@@ -26,8 +27,11 @@
         - [ ] Roll `REF` + `1d10` + `Combat Awareness` (Solo).
         - [ ] Tie-breaking: Roll again.
         - [ ] Cyclic Queue: Descending order, loops every round.
-    - [ ] Ranged Combat (Distances, DV table).
-    - [ ] Cover & Line of Sight.
+    - [ ] **Range & Movement** (New Design: Theater of the Mind):
+        - [ ] Implement **Intra-Tile Range Bands**: Engaged (0-2m), Near (2-10m), Medium (10-25m), Far (25m+).
+        - [ ] **Actions**: `advance` (Close Gap), `retreat` (Open Gap).
+        - [ ] **Visuals**: First-person text descriptions w/ "Wolfenstein" depth scaling (Future).
+    - [ ] Cover & Line of Sight (Abstracted Zones).
 - [ ] **Damage**:
     - [ ] Ablation of SP (Armor).
     - [ ] Critical Injuries table.
@@ -57,6 +61,7 @@
         - [ ] Map `use` -> `use_object`.
         - [ ] `note` -> `add_note` / `read_notes` (Persistent Player Journal).
     - [ ] Advanced parser with macro support.
+    - [ ] **Debug Shell**: Dedicated shell for dev commands (teleport, spawn, state check) separate from Game Shell.
     - [ ] Comprehensive help system.
         - [ ] **Context-Aware Help Listing**: Uncomment existing `do_help` logic to display available commands immediately (fixes "Tab to see commands" issue).
 - [ ] **Game State**:
@@ -89,9 +94,14 @@
     - [ ] **Decoupling**: Refactor `wprint` to emit structured JSON events (Game Loop -> API -> UI).
     - [ ] **Frontend Agnostic**: Server handles state; Client handles presentation (Text, Web, FMV).
         - [ ] **Web Client**: Support custom fonts (e.g., Cyberpunk-themed, Silhouettes) and CRT effects.
+        - [ ] **Hybrid Media**: Integrate FMV narrative elements (video overlays) triggered by Server events (e.g., Phone Calls).
+            - [ ] **Creator Services (Vision 2077)**: Hosting FMV content behind paywalls/access keys, purchasable with in-game Eddies.
     - [ ] **Server-Side Persistence**: Replace transient per-connection state with a persistent Database/State Manager (Redis/SQL).
         - *Note: Avoid Singleton pattern; use Dependency Injection.*
-    - [ ] **Story Engine**:
+    - [ ] **Digital Souls (The "Disco Elysium" Layer)**:
+        - [ ] **Mechanic**: `reflect` command manages "Cyber Stress".
+        - [ ] **Consequence**: High stress leads to UI Glitches, intrusive overlapping text (The "Inner Voice"), and eventually Cyberpsychosis.
+        - [ ] **Integration**: The "Soul" comments on game events (e.g., during the Ambush).
         - [ ] **StoryManager**: Implement to manage active quest states (Decouple from `ActionManager`).
         - [ ] **Refactor**: Move hardcoded mission logic (`briefcase` checks, `do_deposit`) from `ActionManager` into `StoryModules`.
     - [ ] **Dynamic Command Handling**: Investigate State Pattern or Dynamic Registration to clean up `ActionManager`.
@@ -196,7 +206,7 @@
     - [ ] **NPC Stats**: `look lenard` should match player stat format (Skills missing?).
 - [ ] **UI/UX Polish**:
     - [ ] **Animation**: Dice throwing visual effect.
-    - [ ] **Formatting**: Constrain text to 80 columns (Word wrap).
+    - [ ] **Formatting**: Constrain text to 80 columns (Word wrap) - *User Request*.
     - [ ] **Stats**: `whoami` stats dont show total (Base + Cyber/Mod).
     - [ ] **Damage Dice**: `1d6` for Brawling missing in `whoami stats`.
     - [ ] **Movement Feedback**: Print location description or "You move..." text when changing rooms.
