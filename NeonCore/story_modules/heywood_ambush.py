@@ -37,9 +37,25 @@ class HeywoodAmbush(Story):
                 self.state = "scene_start"
                 await self._run_intro_scene(game_context)
                 
-        # Trigger 2: Scene Interaction flow
-        # This could be handled by do_say hooks if we wire them up, 
-        # but for now we might simple push the narrative after the intro.
+        # Trigger 2: Left Area without checking?
+        if self.state == "briefcase_dropped":
+             if world.player_position != "heywood_alley":
+                 # They tried to leave? Trigger ambush!
+                 # Ideally we catch this in 'do_go' hook but update runs after move?
+                 # If they moved, it's too late to block, but we can spawn them.
+                 # "You try to leave..."
+                 await self._trigger_ambush(game_context)
+        
+        # Trigger 3: Took Briefcase?
+        # Check inventory
+        if self.state == "briefcase_dropped":
+             has_briefcase = False
+             for item in player.inventory:
+                 name = item.get('name') if isinstance(item, dict) else item
+                 if "briefcase" in name.lower(): has_briefcase = True
+             
+             if has_briefcase:
+                 await self._trigger_ambush(game_context)
 
     async def _run_intro_scene(self, game_context):
         io = game_context.io
@@ -64,6 +80,80 @@ class HeywoodAmbush(Story):
         
         self.state = "negotiation"
 
+    async def handle_use_skill(self, game_context, skill_name, target_name):
+        """
+        Specific interactions for Ambush Scene.
+        """
+        io = game_context.io
+        player = game_context.char_mngr.player
+
+        # Forgery check available in multiple states (negotiation, after briefcase dropped, or after combat)
+        valid_states = ["negotiation", "briefcase_dropped", "escaped", "victory", "ambush"]
+        if skill_name == "forgery" and self.state in valid_states:
+            if not target_name or ("money" not in target_name.lower() and "briefcase" not in target_name.lower()):
+                 await io.send("Check forgery on what? (e.g., 'money' or 'briefcase')")
+                 return True
+
+            # Prerequisite Check: Briefcase must be open to check money
+            if "money" in target_name.lower() and not getattr(self, "briefcase_open", False):
+                 await io.send("You can't check the money without opening the briefcase first. (Try 'use briefcase')")
+                 return True
+            
+            # DV 17 Check
+            await io.send(f"\033[1;33m[SKILL CHECK]\033[0m Inspecting {target_name}...")
+            
+            # Crash Fix: Ensure player is valid
+            if not player:
+                 await io.send("Error: Player not found in context.")
+                 return True
+
+            # Calculate Total
+            # We can use player.roll_check directly effectively acting as the skill logic
+            # Since 'forgery' targets an object, not an entity, we run a Difficulty Check.
+            
+            stat_val = player.skill_total("forgery")
+            roll = 0
+            # Simulating dice roll if not exposed helper
+            import random
+            roll = random.randint(1, 10)
+            total = stat_val + roll
+            
+            dv = 17
+            
+            await io.send(f"Forgery Check (DV {dv}): Rolled {total} ({stat_val} + {roll})")
+            
+            if total >= dv:
+                await io.send("\n\033[1;36m[SUCCESS]\033[0m You inspect the bills closely. The holograms are off-center.")
+                await io.send("These eddies are \033[1;31mCOUNTERFEIT\033[0m. High quality, but fake.")
+                await game_context.action_manager.log_event("Discovered Counterfeit Money")
+                
+                # Narrative Pacing: Checking reveals the trap -> Trigger Ambush!
+                await asyncio.sleep(1)
+                await io.send("\nAs the realization hits you, Lenard's eyes go wide.")
+                await self._trigger_ambush(game_context)
+            else:
+                await io.send("\n\033[1;31m[FAILURE]\033[0m Look real enough to you.")
+                # If failed, allow them to remain... until they take it?
+                
+            return True
+        return False
+        
+    async def handle_use_object(self, game_context, object_name):
+        """
+        Handle 'use briefcase' to open it.
+        """
+        # Briefcase can be opened in multiple states
+        valid_states = ["briefcase_dropped", "escaped", "victory", "ambush"]
+        if self.state in valid_states and "case" in object_name.lower():
+            # Open the briefcase
+            self.briefcase_open = True
+            await game_context.io.send("You pop the latches on the briefcase.")
+            await asyncio.sleep(0.5)
+            await game_context.io.send("Inside, stacks of crisp Eurodollars are neatly arranged. Looks like the full amount.")
+            await game_context.io.send("(You can now inspect the \033[1mmoney\033[0m or \033[1mtake\033[0m the case.)")
+            return True
+        return False
+
     async def handle_say(self, game_context, message):
         """
         Called by ActionManager.do_say if story is active.
@@ -74,8 +164,11 @@ class HeywoodAmbush(Story):
             await asyncio.sleep(1)
             await game_context.io.send("\033[1;31m*CLATTER*\033[0m")
             await game_context.io.send("The briefcase hits the wet pavement.")
+            await game_context.io.send("(It's unlocked. You can \033[1mtake\033[0m it or check it.)")
             
-            await self._trigger_ambush(game_context)
+            self.state = "briefcase_dropped"
+            # Spawn the item in the world for interaction
+            game_context.world.add_item("heywood_alley", {"name": "Briefcase", "desc": "A heavy corporate briefcase."})
             return True
         return False
 

@@ -105,6 +105,18 @@ class CombatEncounter(AsyncCmd):
         else:
              await self.io.send("You don't have that in your gear.")
 
+    def complete_take(self, text, line, begidx, endidx):
+        """Autocomplete for take command (Inventory -> Hand)"""
+        if not self.player:
+            return []
+            
+        items = []
+        for item in self.player.inventory:
+             name = item.get('name') if isinstance(item, dict) else item
+             items.append(name)
+             
+        return [i + " " for i in items if i.lower().startswith(text.lower())]
+
     async def do_quit(self, arg):
         """Exit the game."""
         await self.io.send("You give up the ghost.")

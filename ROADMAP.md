@@ -5,6 +5,21 @@
 - [x] **Grappling UX**: Visual feedback in prompt when grappling; ensuring grappled target moves with player.
 - [x] **Reflect Crashes**: Investigate `test_soul_integration.py` failures/timeouts. (Added robust Error Handling)
 
+## Phase 0: Architectural Foundation (HIGH PRIORITY)
+> **Blocking**: Quest progression and NPC interactions depend on this refactor.
+
+- [ ] **Item Properties System**:
+    - [ ] Add `properties` JSON column to `item_instances` for state (e.g., `{"opened": true}`).
+    - [ ] Display item state in `look` (e.g., "Briefcase [open]").
+- [ ] **NPC Inventory System**:
+    - [ ] NPCs get `inventory` and `held_items` lists.
+    - [ ] "Drop" removes from NPC possession, adds to world.
+    - [ ] Fix: Lenard "holding" briefcase after dropping it.
+- [ ] **Quest Item Architecture**:
+    - [ ] Add `story_id` FK to link items to stories.
+    - [ ] Add `on_use(context)` handler to items.
+    - [ ] Clean up quest items on story reset/completion.
+
 ## Phase 1: The Hook (Current Focus)
 - [ ] **Scene Implementation**:
     - [/] Script "The Phone Call" (Trigger: `ActionManager` - [x] Intro Hook Implemented).
@@ -14,15 +29,15 @@
         - [x] **Map Expansion**: Added `heywood_industrial` and `warehouse`.
         - *Reference*: `reference/full_mission.txt` and `reference/extracted_rules.md`
 - [ ] **Skill Checks**:
-    - [ ] Implement `Human Perception` (DV 17) check for Lazlo's call.
-    - [ ] Implement `Forgery` (DV 17) check for the counterfeit money.
+    - [x] Implement `Human Perception` (DV 17) check for Lazlo's call.
+    - [x] Implement `Forgery` (DV 17) check for the counterfeit money.
 - [ ] **NPCs**:
     - [x] Create `Lazlo` (Fixer).
     - [x] Create `Lenard Houston` (Dirty Cop).
     - [x] Create generic `Dirty Cop` enemies (Ambush).
-    - [ ] **Ambush Combat Integration**:
-        - [ ] Link `HeywoodAmbush` trigger to existing "3 Cops Attack" combat logic.
-        - [ ] Transition player to `CombatShell` when ambush starts.
+    - [x] **Ambush Combat Integration**:
+        - [x] Link `HeywoodAmbush` trigger to existing "3 Cops Attack" combat logic.
+        - [x] Transition player to `CombatShell` when ambush starts.
 
 ## Phase 2: Combat System Refinement
 - [ ] **Core Mechanics**:
@@ -183,6 +198,7 @@
             - [ ] Separate Left/Right Hand slots.
             - [ ] Restrict `equip` to valid slots (e.g., Heavy Weapon takes 2 hands).
             - [ ] Auto-unequip logic when switching weapons.
+            - [ ] **Bug**: Player can hold 3+ items (max should be 2). Enforce limit.
     - [ ] **Glow Paint**:
         - [ ] *Spray Object/Wall*: Narrative marker (visible in `look`).
         - [ ] *Spray Enemy*: Negates Darkness penalties against them.
@@ -251,6 +267,10 @@
 
 ## Backlog: Handoff Known Issues
 - [ ] **Glitching Burner Display Logic**: `Look` lists it twice/confusingly when dropped.
+- [ ] **Quest Item Persistence**: Briefcase and other quest items persist across sessions, causing duplicates. Consider:
+    - Flagging quest items as non-persistent.
+    - Cleaning up quest items on story reset/completion.
+- [ ] **Money Autocomplete**: `use_skill forgery money` should only suggest "money" once briefcase is open (story state aware).
 
 
 - [ ] **Mover's Burner Phone**: Fix bug where Mover's phone incorrectly triggers the Lazlo mission (should only be the "Glitching Burner").

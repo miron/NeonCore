@@ -120,6 +120,7 @@ class SkillCheckCommand(Singleton):
             "human_perception": HumanPerceptionCheckCommand,
             "brawling": BrawlingCheckCommand,
             "pick_pocket": PickPocketCheckCommand,
+            "forgery": ForgeryCheckCommand,
         }
 
         if not self.char_mngr or not self.char_mngr.player:
@@ -214,6 +215,18 @@ class PickPocketCheckCommand(SkillCheckCommand):
 
     def perform_check(self, skill, difficulty, modifier):
         wprint("You don't see anything else worth swiping.")
+
+
+class ForgeryCheckCommand(SkillCheckCommand):
+    """Generic forgery check - usually intercepted by story hooks."""
+    def check_skill(self, target_name=None):
+        if not target_name:
+            wprint("Check forgery on what?")
+            return
+        
+        # Generic fallback (Story hooks should intercept this for quest items)
+        wprint(f"You examine the {target_name}... looks authentic to you.")
+        return None
 
 
 class BrawlingCheckCommand(SkillCheckCommand):
