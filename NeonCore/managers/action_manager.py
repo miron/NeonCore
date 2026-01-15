@@ -666,7 +666,14 @@ class ActionManager(AsyncCmd):
             for item in self.char_mngr.player.inventory:
                 name = item.get('name') if isinstance(item, dict) else item
                 items.append(name)
-            
+    
+        # 4. Ground Items (to interact with)
+        current_loc = self.dependencies.world.player_position
+        ground_items = self.dependencies.world.get_items_in_location(current_loc)
+        for item in ground_items:
+             name = item.get('name') if isinstance(item, dict) else item
+             items.append(name)
+        
         return [i for i in items if i.lower().startswith(text.lower())]
 
     def complete_stow(self, text, line, begidx, endidx):
@@ -730,6 +737,12 @@ class ActionManager(AsyncCmd):
         parts = arg.strip().split(maxsplit=1)
         skill_name = parts[0].lower() if parts else ""
         target_name = parts[1] if len(parts) > 1 else None
+
+        # 0. Story Hook Override
+        if self.dependencies.story_manager.current_story:
+             handled = await self.dependencies.story_manager.current_story.handle_use_skill(self.dependencies, skill_name, target_name)
+             if handled:
+                 return
 
         if skill_name == "brawling":
             if not target_name:
@@ -839,7 +852,19 @@ class ActionManager(AsyncCmd):
             completing_target = True
 
         if completing_target:
-            # Completing Target (NPCs in location)
+            # Context-Aware Target Completion
+            skill = args[1].lower() if len(args) > 1 else ""
+            
+            # 1. Forgery: Suggest Items, not NPCs
+            if skill == "forgery":
+                # Only suggest money if briefcase is open
+                candidates = ["briefcase"]
+                story = self.dependencies.story_manager.current_story
+                if story and getattr(story, "briefcase_open", False):
+                    candidates.append("money")
+                return [c + " " for c in candidates if c.startswith(text.lower())]
+
+            # 2. Default: Suggest NPCs
             loc = self.dependencies.world.player_position
             npcs = self.dependencies.npc_manager.get_npcs_in_location(loc)
             candidates = [npc.handle for npc in npcs]
@@ -1496,9 +1521,16 @@ class ActionManager(AsyncCmd):
         # --- 2. Environment Check (Pick Up) ---
         # Specific Quest Logic: Briefcase
         if "case" in arg_lower:
-             present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
-             if "lenard" in present_npcs:
-                 await self.io.send("\033[1;33mYou reach for the case, but Lenard holds it tight.\033[0m")
+             # Check if Story allows taking it (Briefcase Dropped)
+             story = self.dependencies.story_manager.current_story
+             allowed = False
+             if story and story.name == "heywood_ambush" and story.state in ["briefcase_dropped", "ambush", "victory"]:
+                 allowed = True
+             
+             if not allowed:
+                 present_npcs = [n.handle.lower() for n in self.dependencies.npc_manager.get_npcs_in_location(current_loc)]
+                 if "lenard" in present_npcs:
+                     await self.io.send("\033[1;33mYou reach for the case, but Lenard holds it tight.\033[0m")
                  await self.io.send("(Hint: He's holding it. You assume you'll have to \033[1mgrab\033[0m it from him.)")
                  return
 
@@ -1604,6 +1636,12 @@ class ActionManager(AsyncCmd):
              
         player = self.char_mngr.player
         arg_lower = arg.lower()
+
+        # 0. Story Hook
+        if self.dependencies.story_manager.current_story:
+             handled = await self.dependencies.story_manager.current_story.handle_use_object(self.dependencies, arg_lower)
+             if handled:
+                 return
 
         # --- Specific Quest: The Burner Phone ---
         if self.game_state == "character_chosen" and ("glitching" in arg_lower or "burner" in arg_lower or "phone" in arg_lower):

@@ -282,7 +282,7 @@ ____/___/_________________/___/________
             await self.io.send(f"\nVisible Characters: {', '.join(npc_names)}")
 
         # List Items on the ground
-        items = self.locations[self.player_position].get("items", [])
+        items = self.get_items_in_location(self.player_position)
         if items:
             item_names = []
             for item in items:

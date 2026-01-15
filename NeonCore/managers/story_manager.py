@@ -23,6 +23,19 @@ class Story(ABC):
         """Called when the story ends."""
         pass
 
+    async def handle_use_skill(self, game_context, skill_name, target):
+        """
+        Optional: Handle skill checks specific to this story step.
+        Returns True if handled, False/None if default logic should proceed.
+        """
+        return False
+
+    async def handle_use_object(self, game_context, object_name):
+        """
+        Optional: Handle object usage specific to this story.
+        """
+        return False
+
 
 class StoryManager:
     """Singleton class that manages the active story and transition logic."""
